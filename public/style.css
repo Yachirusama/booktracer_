@@ -8,6 +8,82 @@ body {
     background-size: 400% 400%;
     animation: neonBackground 15s ease infinite;
 }
+/* Updated Fonts */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    color: #e0e0e0;
+    background: linear-gradient(-45deg, #1a0033, #002b36, #0a043c, #1f003d);
+    background-size: 400% 400%;
+    animation: neonBackground 15s ease infinite;
+}
+
+/* Header with slight transparency and center alignment */
+header {
+    background: rgba(0, 0, 0, 0.7);
+    color: #39ff14;
+    padding: 20px 40px;
+    border-radius: 20px;
+    margin: 30px auto;
+    width: fit-content;
+    box-shadow: 0 0 15px #39ff14;
+}
+
+/* Refined Search Bar Layout */
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px auto;
+    max-width: 600px;
+}
+
+input {
+    flex: 1;
+    min-width: 60%;
+    padding: 12px 20px;
+    border-radius: 30px;
+    border: 1px solid #0ff;
+    background: #111;
+    color: white;
+    box-shadow: inset 0 0 8px #0ff;
+    font-size: 16px;
+}
+
+/* Unified button style */
+button, .back-button {
+    padding: 12px 20px;
+    border-radius: 30px;
+    background: #111;
+    border: 1px solid #0ff;
+    color: #0ff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+button:hover, .back-button:hover {
+    background: #0ff;
+    color: #111;
+}
+
+/* Book card style cleanup */
+.book-card {
+    background: #141414;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(57, 255, 20, 0.3);
+    padding: 20px;
+    transition: 0.3s ease-in-out;
+}
+
+.book-card:hover {
+    box-shadow: 0 0 20px #ff00ff;
+    transform: translateY(-6px);
+}
 
 /* Background animation */
 @keyframes neonBackground {
