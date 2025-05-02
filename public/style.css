@@ -102,6 +102,9 @@ body.dark .search-container input[type="text"] {
   border-radius: 12px;
   margin-bottom: 25px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
 }
 
 body.dark .recommendation-box {
@@ -109,35 +112,28 @@ body.dark .recommendation-box {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
-.recommendation-box h3 {
-  font-size: 1.4rem;
-  margin-bottom: 15px;
-  text-align: center;
-}
-
-.recommendation-box-content {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 15px;
-  text-align: left;
-  justify-content: start;
-}
-
 .recommendation-box img {
-  max-width: 100px;
+  max-width: 150px;
+  height: auto;
   flex-shrink: 0;
   border-radius: 8px;
 }
 
 .recommendation-text {
   flex: 1;
+  text-align: justify;
+}
+
+.recommendation-text h3 {
+  font-size: 1.4rem;
+  margin-bottom: 15px;
 }
 
 .recommendation-text p {
-  margin-bottom: 6px;
   font-size: 0.95rem;
   color: #333;
+  margin-bottom: 6px;
+  text-align: justify;
 }
 
 body.dark .recommendation-text p {
@@ -249,13 +245,13 @@ body.dark .offline-banner {
     font-size: 1rem;
   }
 
-  .recommendation-box-content {
+  .recommendation-box {
     flex-direction: column;
     align-items: center;
     text-align: center;
   }
 
   .recommendation-text {
-    text-align: center;
+    text-align: justify;
   }
 }
