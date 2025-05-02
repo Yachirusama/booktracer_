@@ -203,11 +203,40 @@ function updateOfflineBanner() {
     banner.style.display = navigator.onLine ? "none" : "flex";
 }
 
-// Listen to network status changes
-window.addEventListener("online", updateOfflineBanner);
-window.addEventListener("offline", updateOfflineBanner);
+// ===== DARK MODE PERSISTENCE =====
+function setupDarkMode() {
+    const savedTheme = localStorage.getItem("theme");
+    const toggle = document.getElementById("darkModeToggle");
+    const icon = document.getElementById("themeIcon");
+
+    if (savedTheme === "dark") {
+        document.body.classList.add("dark");
+        if (toggle) toggle.checked = true;
+        if (icon) icon.textContent = "🌙";
+    }
+
+    if (toggle && icon) {
+        toggle.addEventListener("change", () => {
+            if (toggle.checked) {
+                document.body.classList.add("dark");
+                localStorage.setItem("theme", "dark");
+                icon.textContent = "🌙";
+            } else {
+                document.body.classList.remove("dark");
+                localStorage.setItem("theme", "light");
+                icon.textContent = "🌞";
+            }
+        });
+    }
+}
+
+// ===== INIT =====
 window.addEventListener("DOMContentLoaded", () => {
     createOfflineBanner();
     updateOfflineBanner();
     loadRandomRecommendation();
+    setupDarkMode();
 });
+
+window.addEventListener("online", updateOfflineBanner);
+window.addEventListener("offline", updateOfflineBanner);
