@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -19,6 +19,15 @@
     <header>
       <h1>Book Tracer</h1>
       <h2>A Place for Book Lovers 📚</h2>
+
+      <!-- 🌙 Theme Toggle -->
+      <div class="theme-toggle">
+        <label class="switch">
+          <input type="checkbox" id="darkModeToggle">
+          <span class="slider round"></span>
+        </label>
+        <span id="themeIcon">🌞</span>
+      </div>
     </header>
 
     <!-- Main Section -->
@@ -53,7 +62,7 @@
   <!-- JavaScript -->
   <script src="script.js"></script>
   <script>
-    // Register Service Worker
+    // 🛠 Service Worker Registration
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js')
         .then(() => console.log('✅ Service Worker Registered'))
@@ -80,6 +89,28 @@
     window.addEventListener("online", updateOnlineStatus);
     window.addEventListener("offline", updateOnlineStatus);
     updateOnlineStatus();
+
+    // 🌗 Dark Mode Toggle
+    const darkToggle = document.getElementById("darkModeToggle");
+    const themeIcon = document.getElementById("themeIcon");
+
+    if (localStorage.getItem("theme") === "dark") {
+      document.body.classList.add("dark");
+      darkToggle.checked = true;
+      themeIcon.textContent = "🌙";
+    }
+
+    darkToggle.addEventListener("change", () => {
+      if (darkToggle.checked) {
+        document.body.classList.add("dark");
+        localStorage.setItem("theme", "dark");
+        themeIcon.textContent = "🌙";
+      } else {
+        document.body.classList.remove("dark");
+        localStorage.setItem("theme", "light");
+        themeIcon.textContent = "🌞";
+      }
+    });
   </script>
 </body>
 </html>
