@@ -1,37 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Tracer</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book Tracer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Book Tracer</h1>
-            <h2>A Place for Book Lovers 📚</h2>
-        </header>
+  <div class="container">
+    <header>
+      <h1>Book Tracer</h1>
+      <h2>A Place for Book Lovers 📚</h2>
+    </header>
 
-        <main>
-            <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Search for books...">
-                <button onclick="searchBooksManual()">🔍</button>
-                <button onclick="goBack()" class="back-button hidden">back</button>
-            </div>
+    <main>
+      <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search for books..." />
+        <button onclick="searchBooksManual()">🔍</button>
+        <button onclick="goBack()" class="back-button hidden">Back</button>
+      </div>
 
-            <div id="bookResults" class="book-list"></div>
-        </main>
-    </div>
+      <!-- 📘 Recommended Book Section -->
+      <div id="recommendedBook" class="recommendation-box">
+        <h3>📘 Recommended Book</h3>
+        <p><strong>Title:</strong> The Midnight Library</p>
+        <p><strong>Author:</strong> Matt Haig</p>
+      </div>
 
-    <script src="script.js"></script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js')
-                .then(() => console.log('✅ Service Worker Registered'))
-                .catch(err => console.error('❌ Service Worker Failed', err));
-        }
-    </script>
+      <div id="bookResults" class="book-list"></div>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(() => console.log('✅ Service Worker Registered'))
+        .catch(err => console.error('❌ Service Worker Failed', err));
+    }
+  </script>
 </body>
 </html>
