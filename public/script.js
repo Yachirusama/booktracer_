@@ -5,8 +5,15 @@ function normalize(str) {
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
 
+// Hide recommendation when user interacts
+function hideRecommendation() {
+    const recBox = document.getElementById("recommendedBook");
+    if (recBox) recBox.style.display = "none";
+}
+
 // Live search with debounce
 document.getElementById("searchInput").addEventListener("input", () => {
+    hideRecommendation();
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => {
         const query = document.getElementById("searchInput").value.trim();
@@ -21,6 +28,7 @@ document.getElementById("searchInput").addEventListener("input", () => {
 // Manual search with Enter
 document.getElementById("searchInput").addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
+        hideRecommendation();
         const query = e.target.value.trim();
         if (query) {
             searchBooks(query);
@@ -102,4 +110,6 @@ function clearResults() {
 function goBack() {
     clearResults();
     document.getElementById("searchInput").value = "";
+    const recBox = document.getElementById("recommendedBook");
+    if (recBox) recBox.style.display = "block";
 }
