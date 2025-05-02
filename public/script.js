@@ -1,241 +1,226 @@
 let debounceTimer;
 
-// Normalize to handle special/accented characters
+// Normalize a string by removing diacritics and converting to lowercase
 function normalize(str) {
-    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
 
-// Hide recommendation when user interacts
+// Hide the recommendation box
 function hideRecommendation() {
-    const recBox = document.getElementById("recommendedBook");
-    if (recBox) recBox.style.display = "none";
+  const recBox = document.getElementById("recommendedBook");
+  if (recBox) recBox.style.display = "none";
 }
 
-// Live search with debounce
+// Debounced live search
 document.getElementById("searchInput").addEventListener("input", () => {
-    hideRecommendation();
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
-        const query = document.getElementById("searchInput").value.trim();
-        if (query) {
-            searchBooks(query);
-        } else {
-            clearResults();
-        }
-    }, 500);
+  hideRecommendation();
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(performSearch, 500);
 });
 
-// Manual search with Enter
+// Enter key triggers manual search
 document.getElementById("searchInput").addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-        hideRecommendation();
-        const query = e.target.value.trim();
-        if (query) {
-            searchBooks(query);
-        } else {
-            clearResults();
-        }
-    }
+  if (e.key === "Enter") {
+    hideRecommendation();
+    performSearch();
+  }
 });
 
-// Manual search button handler
+// Manual search button
 function searchBooksManual() {
-    const query = document.getElementById("searchInput").value.trim();
-    hideRecommendation();
-    if (query) {
-        searchBooks(query);
-    } else {
-        clearResults();
-    }
+  hideRecommendation();
+  performSearch();
 }
 
-// Fetch and display books from multiple APIs
-async function searchBooks(query) {
-    const normalizedQuery = normalize(query);
-    const bookResults = document.getElementById("bookResults");
-    bookResults.innerHTML = "<p>🔍 Searching for books...</p>";
-    let resultsFound = false;
-
-    try {
-        const [itbookData, googleData, openLibraryData] = await Promise.all([
-            fetch(`https://api.itbook.store/1.0/search/${encodeURIComponent(normalizedQuery)}`).then(res => res.json()),
-            fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(normalizedQuery)}`).then(res => res.json()),
-            fetch(`https://openlibrary.org/search.json?title=${encodeURIComponent(normalizedQuery)}`).then(res => res.json())
-        ]);
-
-        bookResults.innerHTML = "";
-        document.querySelector(".back-button").classList.remove("hidden");
-
-        if (itbookData.books?.length) {
-            resultsFound = true;
-            itbookData.books.forEach(book => {
-                const image = book.image || "https://via.placeholder.com/150";
-                bookResults.appendChild(createBookCard(image, book.title, book.subtitle, book.url));
-            });
-        }
-
-        if (googleData.items?.length) {
-            resultsFound = true;
-            googleData.items.forEach(book => {
-                const info = book.volumeInfo;
-                const image = info.imageLinks?.thumbnail || "https://via.placeholder.com/150";
-                const authors = info.authors ? info.authors.join(", ") : "Unknown Author";
-                bookResults.appendChild(createBookCard(image, info.title, authors, info.infoLink));
-            });
-        }
-
-        if (openLibraryData.docs?.length) {
-            const booksToShow = openLibraryData.docs.slice(0, 10);
-            if (booksToShow.length) resultsFound = true;
-            booksToShow.forEach(book => {
-                const image = book.cover_i
-                    ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`
-                    : "https://via.placeholder.com/150";
-                const authors = book.author_name ? book.author_name.join(", ") : "Unknown Author";
-                const link = `https://openlibrary.org${book.key}`;
-                bookResults.appendChild(createBookCard(image, book.title, authors, link));
-            });
-        }
-
-        if (!resultsFound) {
-            bookResults.innerHTML = "<p>📭 No books found. Try another search.</p>";
-        }
-
-    } catch (error) {
-        console.error("Error fetching book data:", error);
-        bookResults.innerHTML = "<p>❌ Failed to load books. Please try again.</p>";
-    }
-}
-
-// Book card generator
-function createBookCard(image, title, subtitle, link) {
-    const bookCard = document.createElement("div");
-    bookCard.classList.add("book-card");
-    bookCard.innerHTML = `
-        <a href="${link}" target="_blank">
-            <img src="${image}" alt="${title}">
-        </a>
-        <h3>${title}</h3>
-        <p>${subtitle || "No description available."}</p>
-        <a href="${link}" target="_blank">View Details</a>
-    `;
-    return bookCard;
-}
-
-// Clear all results
-function clearResults() {
-    document.getElementById("bookResults").innerHTML = "";
-    document.querySelector(".back-button").classList.add("hidden");
-}
-
-// Reset UI
-function goBack() {
+// Perform the actual search
+function performSearch() {
+  const query = document.getElementById("searchInput").value.trim();
+  if (query) {
+    searchBooks(query);
+  } else {
     clearResults();
-    document.getElementById("searchInput").value = "";
-    const recBox = document.getElementById("recommendedBook");
-    if (recBox) recBox.style.display = "block";
+  }
 }
 
-// Load random recommendation from API on page load
+// Fetch and display results from APIs
+async function searchBooks(query) {
+  const normalizedQuery = normalize(query);
+  const resultsContainer = document.getElementById("bookResults");
+  resultsContainer.innerHTML = "<p>🔍 Searching for books...</p>";
+
+  let resultsFound = false;
+
+  try {
+    const [itbook, google, openlib] = await Promise.all([
+      fetch(`https://api.itbook.store/1.0/search/${encodeURIComponent(normalizedQuery)}`).then(res => res.json()),
+      fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(normalizedQuery)}`).then(res => res.json()),
+      fetch(`https://openlibrary.org/search.json?title=${encodeURIComponent(normalizedQuery)}`).then(res => res.json())
+    ]);
+
+    resultsContainer.innerHTML = "";
+    document.querySelector(".back-button").classList.remove("hidden");
+
+    if (itbook.books?.length) {
+      resultsFound = true;
+      itbook.books.forEach(book => {
+        resultsContainer.appendChild(createBookCard(
+          book.image || "https://via.placeholder.com/150",
+          book.title,
+          book.subtitle,
+          book.url
+        ));
+      });
+    }
+
+    if (google.items?.length) {
+      resultsFound = true;
+      google.items.forEach(book => {
+        const info = book.volumeInfo;
+        resultsContainer.appendChild(createBookCard(
+          info.imageLinks?.thumbnail || "https://via.placeholder.com/150",
+          info.title,
+          info.authors?.join(", ") || "Unknown Author",
+          info.infoLink
+        ));
+      });
+    }
+
+    if (openlib.docs?.length) {
+      const topBooks = openlib.docs.slice(0, 10);
+      if (topBooks.length) resultsFound = true;
+      topBooks.forEach(book => {
+        resultsContainer.appendChild(createBookCard(
+          book.cover_i
+            ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`
+            : "https://via.placeholder.com/150",
+          book.title,
+          book.author_name?.join(", ") || "Unknown Author",
+          `https://openlibrary.org${book.key}`
+        ));
+      });
+    }
+
+    if (!resultsFound) {
+      resultsContainer.innerHTML = "<p>📭 No books found. Try another search.</p>";
+    }
+  } catch (err) {
+    console.error("Search error:", err);
+    resultsContainer.innerHTML = "<p>❌ Failed to load books. Please try again.</p>";
+  }
+}
+
+// Create a book card element
+function createBookCard(image, title, subtitle, link) {
+  const card = document.createElement("div");
+  card.className = "book-card";
+  card.innerHTML = `
+    <a href="${link}" target="_blank">
+      <img src="${image}" alt="${title}">
+    </a>
+    <h3>${title}</h3>
+    <p>${subtitle || "No description available."}</p>
+    <a href="${link}" target="_blank">View Details</a>
+  `;
+  return card;
+}
+
+// Clear book results
+function clearResults() {
+  document.getElementById("bookResults").innerHTML = "";
+  document.querySelector(".back-button").classList.add("hidden");
+}
+
+// Reset search UI
+function goBack() {
+  clearResults();
+  document.getElementById("searchInput").value = "";
+  const recBox = document.getElementById("recommendedBook");
+  if (recBox) recBox.style.display = "block";
+}
+
+// Load a random recommended book
 async function loadRandomRecommendation() {
-    const recommendedBox = document.getElementById("recommendedBook");
-    if (!recommendedBox) return;
+  const box = document.getElementById("recommendedBook");
+  if (!box) return;
 
-    try {
-        const res = await fetch("https://www.googleapis.com/books/v1/volumes?q=bestseller&maxResults=40");
-        const data = await res.json();
-        if (!data.items || data.items.length === 0) throw new Error("No books found");
+  try {
+    const res = await fetch("https://www.googleapis.com/books/v1/volumes?q=bestseller&maxResults=40");
+    const data = await res.json();
+    if (!data.items?.length) throw new Error("No books found");
 
-        const randomBook = data.items[Math.floor(Math.random() * data.items.length)];
-        const info = randomBook.volumeInfo;
+    const random = data.items[Math.floor(Math.random() * data.items.length)];
+    const info = random.volumeInfo;
 
-        const title = info.title || "Unknown Title";
-        const author = info.authors ? info.authors.join(", ") : "Unknown Author";
-        const image = info.imageLinks?.thumbnail || "https://via.placeholder.com/100";
-        const infoLink = info.infoLink || "#";
-
-        recommendedBox.innerHTML = `
-            <h3>📘 Recommended Book</h3>
-            <a href="${infoLink}" target="_blank" style="text-decoration: none; color: inherit;">
-                <img src="${image}" alt="Book Cover" style="width:100px; height:auto; border-radius:8px; margin-bottom:10px;" />
-                <p><strong>Title:</strong> ${title}</p>
-                <p><strong>Author:</strong> ${author}</p>
-            </a>
-        `;
-    } catch (err) {
-        console.error("Recommendation error:", err);
-        recommendedBox.innerHTML = `
-            <h3>📘 Recommended Book</h3>
-            <p>⚠️ Could not load recommendation.</p>
-        `;
-    }
+    box.innerHTML = `
+      <h3>📘 Recommended Book</h3>
+      <a href="${info.infoLink}" target="_blank" style="text-decoration: none; color: inherit;">
+        <img src="${info.imageLinks?.thumbnail || "https://via.placeholder.com/100"}" alt="Cover" style="width:100px; border-radius:8px; margin-bottom:10px;" />
+        <p><strong>Title:</strong> ${info.title}</p>
+        <p><strong>Author:</strong> ${info.authors?.join(", ") || "Unknown Author"}</p>
+      </a>
+    `;
+  } catch (err) {
+    console.error("Recommendation error:", err);
+    box.innerHTML = `
+      <h3>📘 Recommended Book</h3>
+      <p>⚠️ Could not load recommendation.</p>
+    `;
+  }
 }
 
-// ===== OFFLINE BANNER HANDLING =====
+// Handle offline banner
 function createOfflineBanner() {
-    let banner = document.getElementById("offlineBanner");
-    if (!banner) {
-        banner = document.createElement("div");
-        banner.id = "offlineBanner";
-        banner.className = "offline-banner";
+  let banner = document.getElementById("offlineBanner");
+  if (!banner) {
+    banner = document.createElement("div");
+    banner.id = "offlineBanner";
+    banner.className = "offline-banner";
 
-        const textSpan = document.createElement("span");
-        textSpan.textContent = "⚠️ You are offline. Some features may not be available.";
+    banner.innerHTML = `
+      <span>⚠️ You are offline. Some features may not be available.</span>
+      <span id="closeBanner" style="margin-left: 15px; cursor: pointer;">❌</span>
+    `;
+    document.body.appendChild(banner);
 
-        const closeBtn = document.createElement("span");
-        closeBtn.id = "closeBanner";
-        closeBtn.innerHTML = "❌";
-        closeBtn.style.marginLeft = "15px";
-        closeBtn.style.cursor = "pointer";
-        closeBtn.onclick = () => {
-            banner.style.display = "none";
-        };
-
-        banner.appendChild(textSpan);
-        banner.appendChild(closeBtn);
-        document.body.appendChild(banner);
-    }
+    document.getElementById("closeBanner").onclick = () => {
+      banner.style.display = "none";
+    };
+  }
 }
 
 function updateOfflineBanner() {
-    const banner = document.getElementById("offlineBanner");
-    if (!banner) return;
+  const banner = document.getElementById("offlineBanner");
+  if (banner) {
     banner.style.display = navigator.onLine ? "none" : "flex";
+  }
 }
 
-// ===== DARK MODE PERSISTENCE =====
+// Dark mode handling
 function setupDarkMode() {
-    const savedTheme = localStorage.getItem("theme");
-    const toggle = document.getElementById("darkModeToggle");
-    const icon = document.getElementById("themeIcon");
+  const savedTheme = localStorage.getItem("theme");
+  const toggle = document.getElementById("darkModeToggle");
+  const icon = document.getElementById("themeIcon");
 
-    if (savedTheme === "dark") {
-        document.body.classList.add("dark");
-        if (toggle) toggle.checked = true;
-        if (icon) icon.textContent = "🌙";
-    }
+  if (savedTheme === "dark") {
+    document.body.classList.add("dark");
+    toggle?.setAttribute("checked", "true");
+    if (icon) icon.textContent = "🌙";
+  }
 
-    if (toggle && icon) {
-        toggle.addEventListener("change", () => {
-            if (toggle.checked) {
-                document.body.classList.add("dark");
-                localStorage.setItem("theme", "dark");
-                icon.textContent = "🌙";
-            } else {
-                document.body.classList.remove("dark");
-                localStorage.setItem("theme", "light");
-                icon.textContent = "🌞";
-            }
-        });
-    }
+  toggle?.addEventListener("change", () => {
+    const isDark = toggle.checked;
+    document.body.classList.toggle("dark", isDark);
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+    if (icon) icon.textContent = isDark ? "🌙" : "🌞";
+  });
 }
 
-// ===== INIT =====
+// Initialize everything on page load
 window.addEventListener("DOMContentLoaded", () => {
-    createOfflineBanner();
-    updateOfflineBanner();
-    loadRandomRecommendation();
-    setupDarkMode();
+  createOfflineBanner();
+  updateOfflineBanner();
+  loadRandomRecommendation();
+  setupDarkMode();
 });
 
 window.addEventListener("online", updateOfflineBanner);
