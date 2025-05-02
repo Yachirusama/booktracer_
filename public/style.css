@@ -1,200 +1,200 @@
 /* General Styling */
 body {
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-    color: #e0e0e0;
-    background: linear-gradient(-45deg, #1a0033, #002b36, #0a043c, #1f003d);
-    background-size: 400% 400%;
-    animation: neonBackground 15s ease infinite;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  color: #e0e0e0;
+  background: linear-gradient(-45deg, #1a0033, #002b36, #0a043c, #1f003d);
+  background-size: 400% 400%;
+  animation: neonBackground 15s ease infinite;
 }
 
 @keyframes neonBackground {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 /* Header */
 header {
-    background: rgba(0, 0, 0, 0.7);
-    color: #39ff14;
-    padding: 20px 40px;
-    border-radius: 20px;
-    margin: 30px auto;
-    width: fit-content;
-    box-shadow: 0 0 15px #39ff14;
+  background: rgba(0, 0, 0, 0.7);
+  color: #39ff14;
+  padding: 20px 40px;
+  border-radius: 20px;
+  margin: 30px auto;
+  width: fit-content;
+  box-shadow: 0 0 15px #39ff14;
 }
 
 h1 {
-    font-size: 32px;
-    font-weight: 700;
-    margin: 5px 0 0;
-    color: #39ff14;
-    text-shadow: 0 0 8px #39ff14;
+  font-size: 32px;
+  font-weight: 700;
+  margin: 5px 0 0;
+  color: #39ff14;
+  text-shadow: 0 0 8px #39ff14;
 }
 
 h2 {
-    font-size: 16px;
-    font-weight: 300;
-    margin: 4px 0 8px;
-    color: #00ffff;
-    text-shadow: 0 0 6px #00ffff;
+  font-size: 16px;
+  font-weight: 300;
+  margin: 4px 0 8px;
+  color: #00ffff;
+  text-shadow: 0 0 6px #00ffff;
 }
 
 /* Search Bar */
 .search-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin: 20px auto;
-    max-width: 600px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px auto;
+  max-width: 600px;
 }
 
 input {
-    flex: 1;
-    min-width: 60%;
-    padding: 12px 20px;
-    border-radius: 30px;
-    border: 1px solid #0ff;
-    background: #111;
-    color: white;
-    box-shadow: inset 0 0 8px #0ff;
-    font-size: 16px;
+  flex: 1;
+  min-width: 60%;
+  padding: 12px 20px;
+  border-radius: 30px;
+  border: 1px solid #0ff;
+  background: #111;
+  color: white;
+  box-shadow: inset 0 0 8px #0ff;
+  font-size: 16px;
 }
 
 button, .back-button {
-    padding: 12px 20px;
-    border-radius: 30px;
-    background: #111;
-    border: 1px solid #0ff;
-    color: #0ff;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.3s ease;
+  padding: 12px 20px;
+  border-radius: 30px;
+  background: #111;
+  border: 1px solid #0ff;
+  color: #0ff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s ease;
 }
 
 button:hover, .back-button:hover {
-    background: #0ff;
-    color: #111;
+  background: #0ff;
+  color: #111;
 }
 
 .back-button:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-    box-shadow: none;
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 .hidden {
-    display: none;
+  display: none;
 }
 
-/* Book List as Responsive Grid */
+/* Book List Grid */
 .book-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 20px;
-    padding: 30px;
-    justify-items: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  padding: 30px;
+  justify-items: center;
 }
 
 /* Book Card Styling */
 .book-card {
-    width: 100%;
-    max-width: 250px;
-    background: #141414;
-    color: #e0e0e0;
-    border-radius: 12px;
-    box-shadow: 0 0 12px rgba(0, 255, 255, 0.2);
-    text-align: center;
-    padding: 16px;
-    transition: transform 0.3s ease;
+  width: 100%;
+  max-width: 250px;
+  background: #141414;
+  color: #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.2);
+  text-align: center;
+  padding: 16px;
+  transition: transform 0.3s ease;
 }
 
 .book-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 20px #00ffff;
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px #00ffff;
 }
 
 .book-card img {
-    width: 100px;
-    height: 100px;
-    object-fit: contain;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px #0ff;
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #0ff;
 }
 
 .book-card h3 {
-    font-size: 18px;
-    font-weight: 600;
-    margin: 5px 0;
-    color: #00ffff;
-    text-shadow: 0 0 6px #00ffff;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 5px 0;
+  color: #00ffff;
+  text-shadow: 0 0 6px #00ffff;
 }
 
 .book-card p {
-    font-size: 14px;
-    color: #ccc;
-    margin-bottom: 10px;
+  font-size: 14px;
+  color: #ccc;
+  margin-bottom: 10px;
 }
 
 .book-card a {
-    font-size: 14px;
-    color: #39ff14;
-    font-weight: bold;
-    text-decoration: none;
-    transition: 0.3s;
-    text-shadow: 0 0 6px #39ff14;
+  font-size: 14px;
+  color: #39ff14;
+  font-weight: bold;
+  text-decoration: none;
+  transition: 0.3s;
+  text-shadow: 0 0 6px #39ff14;
 }
 
 .book-card a:hover {
-    color: #ff00ff;
-    text-shadow: 0 0 10px #ff00ff;
+  color: #ff00ff;
+  text-shadow: 0 0 10px #ff00ff;
 }
 
 /* Recommendation Box */
 .recommendation-box {
-    background: rgba(0, 255, 255, 0.05);
-    border-left: 4px solid #00ffff;
-    box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
-    padding: 20px;
-    margin: 20px auto;
-    width: 90%;
-    max-width: 600px;
-    border-radius: 10px;
-    text-align: left;
+  background: rgba(0, 255, 255, 0.05);
+  border-left: 4px solid #00ffff;
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
+  padding: 20px;
+  margin: 20px auto;
+  width: 90%;
+  max-width: 600px;
+  border-radius: 10px;
+  text-align: left;
 }
 
 .recommendation-box h3 {
-    margin-top: 0;
-    font-size: 20px;
-    color: #00ffff;
-    text-shadow: none; /* Glow removed */
+  margin-top: 0;
+  font-size: 20px;
+  color: #00ffff;
+  text-shadow: none;
 }
 
 .recommendation-box p {
-    font-size: 16px;
-    color: #ccc;
-    line-height: 1.5;
+  font-size: 16px;
+  color: #ccc;
+  line-height: 1.5;
 }
 
-/* Responsive Tweaks */
+/* Responsive Design */
 @media (max-width: 600px) {
-    input {
-        width: 90%;
-    }
+  input {
+    width: 90%;
+  }
 
-    .search-container {
-        flex-direction: column;
-        align-items: stretch;
-    }
+  .search-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
 
-    button, .back-button {
-        width: 100%;
-        margin-left: 0;
-    }
+  button, .back-button {
+    width: 100%;
+    margin-left: 0;
+  }
 }
