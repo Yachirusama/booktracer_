@@ -168,4 +168,40 @@ async function loadRandomRecommendation() {
     }
 }
 
-window.addEventListener("DOMContentLoaded", loadRandomRecommendation);
+// ===== OFFLINE BANNER HANDLING =====
+function updateOfflineBanner() {
+    let banner = document.getElementById("offlineBanner");
+
+    if (!banner) {
+        banner = document.createElement("div");
+        banner.id = "offlineBanner";
+        banner.textContent = "⚠️ You are offline. Some features may not be available.";
+        banner.style.cssText = `
+            background: #ff0033;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            font-weight: bold;
+            display: none;
+        `;
+        document.body.appendChild(banner);
+    }
+
+    if (!navigator.onLine) {
+        banner.style.display = "block";
+    } else {
+        banner.style.display = "none";
+    }
+}
+
+// Listen to network status changes
+window.addEventListener("online", updateOfflineBanner);
+window.addEventListener("offline", updateOfflineBanner);
+window.addEventListener("DOMContentLoaded", () => {
+    updateOfflineBanner();
+    loadRandomRecommendation();
+});
