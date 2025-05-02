@@ -1,4 +1,4 @@
-/* Reset & Base */
+/* Reset & Base Styles */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -14,13 +14,12 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Dark Mode Base */
 body.dark {
   background-color: #121212;
   color: #e0e0e0;
 }
 
-/* Container */
+/* Layout Container */
 .container {
   max-width: 960px;
   margin: 0 auto;
@@ -56,17 +55,19 @@ body.dark header h2 {
   justify-content: center;
   gap: 10px;
   margin-bottom: 25px;
+  flex-wrap: wrap;
 }
 
 .search-container input[type="text"] {
-  width: 70%;
+  flex: 1;
+  min-width: 250px;
   padding: 10px 14px;
   font-size: 1rem;
   border: 2px solid #ddd;
   border-radius: 8px;
-  outline: none;
   background-color: #fff;
   color: #000;
+  outline: none;
 }
 
 body.dark .search-container input[type="text"] {
@@ -101,12 +102,12 @@ body.dark .search-container input[type="text"] {
   border-radius: 12px;
   margin-bottom: 25px;
   text-align: center;
-  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 }
 
 body.dark .recommendation-box {
   background-color: #1f2b3a;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
 .recommendation-box h3 {
@@ -133,13 +134,13 @@ body.dark .recommendation-box {
   padding: 15px;
   border-radius: 12px;
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease, background-color 0.3s ease;
 }
 
 body.dark .book-card {
   background-color: #1e1e1e;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .book-card:hover {
@@ -202,16 +203,16 @@ body.dark .offline-banner {
   border-color: #aa4444;
 }
 
-/* Toggle hidden class */
+/* Utility: Hidden */
 .hidden {
   display: none !important;
 }
 
-/* Responsive Enhancements */
+/* Responsive Design */
 @media (max-width: 600px) {
   .search-container {
     flex-direction: column;
-    gap: 8px;
+    align-items: stretch;
   }
 
   .search-container input[type="text"] {
@@ -220,5 +221,9 @@ body.dark .offline-banner {
 
   .book-card img {
     max-width: 80px;
+  }
+
+  .book-card h3 {
+    font-size: 1rem;
   }
 }
