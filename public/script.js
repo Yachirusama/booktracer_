@@ -1,46 +1,46 @@
-// Load a random recommended book with short description and rating
-async function loadRandomRecommendation() {
-  const box = document.getElementById("recommendedBook");
-  if (!box) return;
+async function searchBooksManual() {
+  const query = document.getElementById("searchInput").value.trim();
+  const resultsContainer = document.getElementById("bookResults");
+  const backButton = document.querySelector(".back-button");
 
-  const keywords = ["fiction", "classic", "bestseller", "history", "science", "mystery", "fantasy", "technology"];
-  const randomKeyword = keywords[Math.floor(Math.random() * keywords.length)];
+  if (!query) {
+    alert("Please enter a search term.");
+    return;
+  }
+
+  // Show back button
+  backButton.classList.remove("hidden");
 
   try {
-    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${randomKeyword}&maxResults=40&timestamp=${Date.now()}`);
+    resultsContainer.innerHTML = "<p>🔎 Searching...</p>";
+    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=20`);
     const data = await res.json();
-    if (!data.items?.length) throw new Error("No books found");
 
-    const random = data.items[Math.floor(Math.random() * data.items.length)];
-    const info = random.volumeInfo;
+    if (!data.items || data.items.length === 0) {
+      resultsContainer.innerHTML = "<p>❌ No results found.</p>";
+      return;
+    }
 
-    const plainDesc = info.description?.replace(/<\/?[^>]+(>|$)/g, "");
-    const description = plainDesc
-      ? plainDesc.slice(0, 100) + (plainDesc.length > 100 ? "..." : "")
-      : "No description available.";
+    resultsContainer.innerHTML = data.items.map(item => {
+      const info = item.volumeInfo;
+      const title = info.title || "No title";
+      const authors = info.authors?.join(", ") || "Unknown author";
+      const thumbnail = info.imageLinks?.thumbnail || "https://via.placeholder.com/100";
+      const infoLink = info.infoLink || "#";
 
-    const rating = info.averageRating
-      ? `<p><strong>Rating:</strong> ${info.averageRating} ⭐ (${info.ratingsCount || 0} ratings)</p>`
-      : "<p><strong>Rating:</strong> Not rated</p>";
-
-    box.innerHTML = `
-      <h3>📘 Recommended Book</h3>
-      <div class="recommendation-box-content">
-        <img src="${info.imageLinks?.thumbnail || "https://via.placeholder.com/100"}" alt="Cover" />
-        <div class="recommendation-text">
-          <p><strong>Title:</strong> ${info.title}</p>
-          <p><strong>Author:</strong> ${info.authors?.join(", ") || "Unknown Author"}</p>
-          ${rating}
-          <p><strong>Description:</strong> ${description}</p>
-          <p><a href="${info.infoLink}" target="_blank">More Info</a></p>
+      return `
+        <div class="book-card">
+          <img src="${thumbnail}" alt="Book cover">
+          <div class="book-info">
+            <h4>${title}</h4>
+            <p><strong>Author:</strong> ${authors}</p>
+            <a href="${infoLink}" target="_blank">View Book</a>
+          </div>
         </div>
-      </div>
-    `;
+      `;
+    }).join("");
   } catch (err) {
-    console.error("Recommendation error:", err);
-    box.innerHTML = `
-      <h3>📘 Recommended Book</h3>
-      <p>⚠️ Could not load recommendation.</p>
-    `;
+    console.error("Search error:", err);
+    resultsContainer.innerHTML = "<p>⚠️ An error occurred while searching. Please try again later.</p>";
   }
 }
