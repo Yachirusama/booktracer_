@@ -161,7 +161,7 @@ button:focus, .back-button:focus, input:focus {
   text-shadow: 0 0 10px #ff00ff;
 }
 
-/* Recommendation Box (clickable version) */
+/* Recommendation Box (clickable) */
 .recommendation-box {
   display: block;
   background: rgba(0, 255, 255, 0.05);
@@ -199,7 +199,10 @@ button:focus, .back-button:focus, input:focus {
 
 /* Offline Banner */
 .offline-banner {
-  display: none; /* Hidden by default */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   position: fixed;
   top: 0;
   left: 0;
@@ -207,11 +210,25 @@ button:focus, .back-button:focus, input:focus {
   background: #ff004c;
   color: white;
   font-weight: bold;
-  padding: 12px;
+  padding: 12px 20px;
   text-align: center;
   box-shadow: 0 0 20px #ff004c;
   z-index: 1000;
   animation: pulseOffline 2s infinite;
+}
+
+.offline-banner span#closeBanner {
+  margin-left: auto;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 0 10px;
+  color: #fff;
+  transition: transform 0.2s;
+}
+
+.offline-banner span#closeBanner:hover {
+  transform: scale(1.2);
+  color: #000;
 }
 
 @keyframes pulseOffline {
