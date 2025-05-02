@@ -11,6 +11,13 @@ body {
   color: #333;
   padding: 20px;
   min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dark Mode Base */
+body.dark {
+  background-color: #121212;
+  color: #e0e0e0;
 }
 
 /* Container */
@@ -30,9 +37,17 @@ header h1 {
   color: #4b0082;
 }
 
+body.dark header h1 {
+  color: #bb86fc;
+}
+
 header h2 {
   font-size: 1.3rem;
   color: #666;
+}
+
+body.dark header h2 {
+  color: #aaa;
 }
 
 /* Search Section */
@@ -50,6 +65,14 @@ header h2 {
   border: 2px solid #ddd;
   border-radius: 8px;
   outline: none;
+  background-color: #fff;
+  color: #000;
+}
+
+body.dark .search-container input[type="text"] {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  border-color: #444;
 }
 
 .search-container button {
@@ -81,6 +104,11 @@ header h2 {
   box-shadow: 0 0 10px rgba(0,0,0,0.05);
 }
 
+body.dark .recommendation-box {
+  background-color: #1f2b3a;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
 .recommendation-box h3 {
   font-size: 1.4rem;
   margin-bottom: 15px;
@@ -106,7 +134,12 @@ header h2 {
   border-radius: 12px;
   text-align: center;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+body.dark .book-card {
+  background-color: #1e1e1e;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
 .book-card:hover {
@@ -131,10 +164,18 @@ header h2 {
   margin-bottom: 10px;
 }
 
+body.dark .book-card p {
+  color: #ccc;
+}
+
 .book-card a {
   font-size: 0.9rem;
   color: #4b0082;
   text-decoration: underline;
+}
+
+body.dark .book-card a {
+  color: #bb86fc;
 }
 
 /* Offline Banner */
@@ -155,6 +196,13 @@ header h2 {
   z-index: 999;
 }
 
+body.dark .offline-banner {
+  background-color: #552222;
+  color: #ffb3b3;
+  border-color: #aa4444;
+}
+
+/* Toggle hidden class */
 .hidden {
   display: none !important;
 }
@@ -174,4 +222,3 @@ header h2 {
     max-width: 80px;
   }
 }
-s
