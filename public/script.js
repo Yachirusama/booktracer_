@@ -107,12 +107,14 @@ async function searchBooks(query) {
     }
 }
 
-// Book card generator
+// Book card generator — includes clickable cover image
 function createBookCard(image, title, subtitle, link) {
     const bookCard = document.createElement("div");
     bookCard.classList.add("book-card");
     bookCard.innerHTML = `
-        <img src="${image}" alt="${title}">
+        <a href="${link}" target="_blank">
+            <img src="${image}" alt="${title}">
+        </a>
         <h3>${title}</h3>
         <p>${subtitle || "No description available."}</p>
         <a href="${link}" target="_blank">View Details</a>
