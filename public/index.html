@@ -30,10 +30,19 @@
         <button onclick="goBack()" class="back-button hidden">Back</button>
       </div>
 
-      <!-- 📘 Dynamic Recommended Book Section -->
+      <!-- 📘 Recommended Book Section -->
       <div id="recommendedBook" class="recommendation-box">
         <h3>📘 Recommended Book</h3>
-        <div id="recommendationContent">Loading recommendation...</div>
+        <div id="recommendationContent">
+          <div class="recommendation-box-content">
+            <img src="https://covers.openlibrary.org/b/id/8379256-L.jpg" alt="Book Cover" />
+            <div class="recommendation-text">
+              <p><strong>Title:</strong> Handbook for Mortals</p>
+              <p><strong>Author:</strong> Lani Sarem</p>
+              <p><strong>Description:</strong> A mysterious young woman arrives in Las Vegas to join a magic show and discovers much more about herself and her powers.</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Search Results Section -->
@@ -54,13 +63,11 @@
     const offlineBanner = document.getElementById("offlineBanner");
     const closeBannerBtn = document.getElementById("closeBanner");
 
-    // Close banner manually
     closeBannerBtn.addEventListener("click", () => {
       offlineBanner.classList.add("hidden");
       sessionStorage.setItem("bannerDismissed", "true");
     });
 
-    // Handle network status changes
     function updateOnlineStatus() {
       const dismissed = sessionStorage.getItem("bannerDismissed") === "true";
       if (navigator.onLine || dismissed) {
