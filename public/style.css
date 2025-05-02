@@ -161,8 +161,9 @@ button:focus, .back-button:focus, input:focus {
   text-shadow: 0 0 10px #ff00ff;
 }
 
-/* Recommendation Box */
+/* Recommendation Box (clickable version) */
 .recommendation-box {
+  display: block;
   background: rgba(0, 255, 255, 0.05);
   border-left: 4px solid #00ffff;
   box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
@@ -172,6 +173,15 @@ button:focus, .back-button:focus, input:focus {
   max-width: 600px;
   border-radius: 10px;
   text-align: left;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+.recommendation-box:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 20px #00ffff;
 }
 
 .recommendation-box h3 {
