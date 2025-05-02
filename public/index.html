@@ -41,17 +41,7 @@
 
       <!-- 📘 Recommended Book Section -->
       <div id="recommendedBook" class="recommendation-box">
-        <h3>📘 Recommended Book</h3>
-        <div id="recommendationContent">
-          <div class="recommendation-box-content">
-            <img id="recommendationCover" src="" alt="Book Cover" />
-            <div class="recommendation-text">
-              <p><strong>Title:</strong> <span id="recommendationTitle">Loading...</span></p>
-              <p><strong>Author:</strong> <span id="recommendationAuthor">Loading...</span></p>
-              <p><strong>Rating:</strong> <span id="bookRating">Loading...</span></p>
-            </div>
-          </div>
-        </div>
+        <!-- Content will be injected by JavaScript -->
       </div>
 
       <!-- Search Results Section -->
@@ -59,7 +49,7 @@
     </main>
   </div>
 
-  <!-- JavaScript -->
+  <!-- JS Scripts -->
   <script>
     // 🛠 Service Worker Registration
     if ('serviceWorker' in navigator) {
@@ -112,38 +102,62 @@
       }
     });
 
-    // 📘 Fetch Recommended Book from Google Books
-    async function fetchRecommendationDetails(title, author) {
-      const query = `${title} ${author}`;
-      const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}`;
+    // 📘 Load a random recommended book with short description and rating
+    async function loadRandomRecommendation() {
+      const box = document.getElementById("recommendedBook");
+      if (!box) return;
+
+      const keywords = ["fiction", "classic", "bestseller", "history", "science", "mystery", "fantasy", "technology"];
+      const randomKeyword = keywords[Math.floor(Math.random() * keywords.length)];
 
       try {
-        const res = await fetch(url);
+        const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${randomKeyword}&maxResults=40&timestamp=${Date.now()}`);
         const data = await res.json();
+        if (!data.items?.length) throw new Error("No books found");
 
-        if (data.totalItems > 0) {
-          const book = data.items[0].volumeInfo;
+        const random = data.items[Math.floor(Math.random() * data.items.length)];
+        const info = random.volumeInfo;
 
-          document.getElementById("recommendationCover").src = book.imageLinks?.thumbnail || "";
-          document.getElementById("recommendationTitle").textContent = book.title || "N/A";
-          document.getElementById("recommendationAuthor").textContent = book.authors?.join(", ") || "Unknown";
-          document.getElementById("bookRating").textContent = book.averageRating ? `${book.averageRating} ⭐` : "Not rated";
-        } else {
-          document.getElementById("recommendationTitle").textContent = "No recommendation found.";
-        }
-      } catch (error) {
-        console.error("Failed to fetch recommendation:", error);
+        const plainDesc = info.description?.replace(/<\/?[^>]+(>|$)/g, "");
+        const description = plainDesc
+          ? plainDesc.slice(0, 100) + (plainDesc.length > 100 ? "..." : "")
+          : "No description available.";
+
+        const rating = info.averageRating
+          ? `<p><strong>Rating:</strong> ${info.averageRating} ⭐ (${info.ratingsCount || 0} ratings)</p>`
+          : "<p><strong>Rating:</strong> Not rated</p>";
+
+        box.innerHTML = `
+          <h3>📘 Recommended Book</h3>
+          <div class="recommendation-box-content">
+            <img src="${info.imageLinks?.thumbnail || "https://via.placeholder.com/100"}" alt="Cover" />
+            <div class="recommendation-text">
+              <p><strong>Title:</strong> ${info.title}</p>
+              <p><strong>Author:</strong> ${info.authors?.join(", ") || "Unknown Author"}</p>
+              ${rating}
+              <p><strong>Description:</strong> ${description}</p>
+              <p><a href="${info.infoLink}" target="_blank">More Info</a></p>
+            </div>
+          </div>
+        `;
+      } catch (err) {
+        console.error("Recommendation error:", err);
+        box.innerHTML = `
+          <h3>📘 Recommended Book</h3>
+          <p>⚠️ Could not load recommendation.</p>
+        `;
       }
     }
 
-    // Use a well-rated, popular book for legit data
-    fetchRecommendationDetails("To Kill a Mockingbird", "Harper Lee");
+    // 📢 Trigger recommendation on page load
+    loadRandomRecommendation();
 
-    // Placeholder functions
+    // 🔍 Placeholder search
     function searchBooksManual() {
       alert("Search functionality to be implemented.");
     }
 
+    // ⬅️ Placeholder back button
     function goBack() {
       alert("Back function to be implemented.");
     }
