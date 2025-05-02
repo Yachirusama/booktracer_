@@ -48,7 +48,6 @@
             <div class="recommendation-text">
               <p><strong>Title:</strong> <span id="recommendationTitle">Loading...</span></p>
               <p><strong>Author:</strong> <span id="recommendationAuthor">Loading...</span></p>
-              <p><strong>Description:</strong> <span id="recommendationDescription">Loading...</span></p>
               <p><strong>Rating:</strong> <span id="bookRating">Loading...</span></p>
             </div>
           </div>
@@ -128,7 +127,6 @@
           document.getElementById("recommendationCover").src = book.imageLinks?.thumbnail || "";
           document.getElementById("recommendationTitle").textContent = book.title || "N/A";
           document.getElementById("recommendationAuthor").textContent = book.authors?.join(", ") || "Unknown";
-          document.getElementById("recommendationDescription").textContent = book.description || "No description available.";
           document.getElementById("bookRating").textContent = book.averageRating ? `${book.averageRating} ⭐` : "Not rated";
         } else {
           document.getElementById("recommendationTitle").textContent = "No recommendation found.";
@@ -138,10 +136,10 @@
       }
     }
 
-    // Call with your desired recommendation
-    fetchRecommendationDetails("Handbook for Mortals", "Lani Sarem");
+    // Use a well-rated, popular book for legit data
+    fetchRecommendationDetails("To Kill a Mockingbird", "Harper Lee");
 
-    // Dummy placeholder functions
+    // Placeholder functions
     function searchBooksManual() {
       alert("Search functionality to be implemented.");
     }
