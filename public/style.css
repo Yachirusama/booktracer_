@@ -101,7 +101,6 @@ body.dark .search-container input[type="text"] {
   padding: 20px;
   border-radius: 12px;
   margin-bottom: 25px;
-  text-align: center;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 }
 
@@ -113,13 +112,36 @@ body.dark .recommendation-box {
 .recommendation-box h3 {
   font-size: 1.4rem;
   margin-bottom: 15px;
+  text-align: center;
+}
+
+.recommendation-box-content {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 15px;
+  text-align: left;
+  justify-content: start;
 }
 
 .recommendation-box img {
-  max-width: 120px;
-  height: auto;
-  margin-bottom: 10px;
+  max-width: 100px;
+  flex-shrink: 0;
   border-radius: 8px;
+}
+
+.recommendation-text {
+  flex: 1;
+}
+
+.recommendation-text p {
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+body.dark .recommendation-text p {
+  color: #ddd;
 }
 
 /* Book List & Cards */
@@ -225,5 +247,15 @@ body.dark .offline-banner {
 
   .book-card h3 {
     font-size: 1rem;
+  }
+
+  .recommendation-box-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .recommendation-text {
+    text-align: center;
   }
 }
