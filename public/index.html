@@ -11,6 +11,7 @@
   <!-- 🛑 Offline Notification Banner -->
   <div id="offlineBanner" class="offline-banner hidden">
     ⚠️ You are currently offline. Some features may be limited.
+    <span id="closeBanner" style="margin-left: 20px; cursor: pointer;">❌</span>
   </div>
 
   <div class="container">
@@ -50,11 +51,19 @@
         .catch(err => console.error('❌ Service Worker Failed', err));
     }
 
-    // Offline Banner Handling
     const offlineBanner = document.getElementById("offlineBanner");
+    const closeBannerBtn = document.getElementById("closeBanner");
 
+    // Close banner manually
+    closeBannerBtn.addEventListener("click", () => {
+      offlineBanner.classList.add("hidden");
+      sessionStorage.setItem("bannerDismissed", "true");
+    });
+
+    // Handle network status changes
     function updateOnlineStatus() {
-      if (navigator.onLine) {
+      const dismissed = sessionStorage.getItem("bannerDismissed") === "true";
+      if (navigator.onLine || dismissed) {
         offlineBanner.classList.add("hidden");
       } else {
         offlineBanner.classList.remove("hidden");
