@@ -138,7 +138,7 @@ function goBack() {
   if (recBox) recBox.style.display = "block";
 }
 
-// Load a random recommended book
+// Load a random recommended book with description and rating
 async function loadRandomRecommendation() {
   const box = document.getElementById("recommendedBook");
   if (!box) return;
@@ -151,13 +151,26 @@ async function loadRandomRecommendation() {
     const random = data.items[Math.floor(Math.random() * data.items.length)];
     const info = random.volumeInfo;
 
+    const description = info.description
+      ? info.description.slice(0, 300) + (info.description.length > 300 ? "..." : "")
+      : "No description available.";
+
+    const rating = info.averageRating
+      ? `<p><strong>Rating:</strong> ${info.averageRating} ⭐ (${info.ratingsCount || 0} ratings)</p>`
+      : "<p><strong>Rating:</strong> Not available</p>";
+
     box.innerHTML = `
       <h3>📘 Recommended Book</h3>
-      <a href="${info.infoLink}" target="_blank" style="text-decoration: none; color: inherit;">
-        <img src="${info.imageLinks?.thumbnail || "https://via.placeholder.com/100"}" alt="Cover" style="width:100px; border-radius:8px; margin-bottom:10px;" />
-        <p><strong>Title:</strong> ${info.title}</p>
-        <p><strong>Author:</strong> ${info.authors?.join(", ") || "Unknown Author"}</p>
-      </a>
+      <div class="recommendation-box-content">
+        <img src="${info.imageLinks?.thumbnail || "https://via.placeholder.com/100"}" alt="Cover" />
+        <div class="recommendation-text">
+          <p><strong>Title:</strong> ${info.title}</p>
+          <p><strong>Author:</strong> ${info.authors?.join(", ") || "Unknown Author"}</p>
+          ${rating}
+          <p><strong>Description:</strong> ${description}</p>
+          <p><a href="${info.infoLink}" target="_blank">More Info</a></p>
+        </div>
+      </div>
     `;
   } catch (err) {
     console.error("Recommendation error:", err);
