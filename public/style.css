@@ -161,7 +161,7 @@ button:focus, .back-button:focus, input:focus {
   text-shadow: 0 0 10px #ff00ff;
 }
 
-/* Recommendation Box (clickable) */
+/* Recommendation Box */
 .recommendation-box {
   display: block;
   background: rgba(0, 255, 255, 0.05);
@@ -170,7 +170,7 @@ button:focus, .back-button:focus, input:focus {
   padding: 20px;
   margin: 20px auto;
   width: 90%;
-  max-width: 600px;
+  max-width: 700px;
   border-radius: 10px;
   text-align: left;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -191,10 +191,31 @@ button:focus, .back-button:focus, input:focus {
   text-shadow: none;
 }
 
-.recommendation-box p {
+.recommendation-box-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.recommendation-box-content img {
+  width: 120px;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #0ff;
+  object-fit: contain;
+}
+
+.recommendation-text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.recommendation-text p {
   font-size: 16px;
   color: #ccc;
-  line-height: 1.5;
+  margin: 0;
 }
 
 /* Offline Banner */
@@ -251,5 +272,18 @@ button:focus, .back-button:focus, input:focus {
   button, .back-button {
     width: 100%;
     margin-left: 0;
+  }
+
+  .recommendation-box-content {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .recommendation-box-content img {
+    width: 100px;
+  }
+
+  .recommendation-text {
+    text-align: center;
   }
 }
