@@ -9,29 +9,34 @@
 </head>
 <body>
   <div class="container">
+    <!-- Header -->
     <header>
       <h1>Book Tracer</h1>
       <h2>A Place for Book Lovers 📚</h2>
     </header>
 
+    <!-- Main Section -->
     <main>
+      <!-- Search Input and Buttons -->
       <div class="search-container">
         <input type="text" id="searchInput" placeholder="Search for books..." />
         <button onclick="searchBooksManual()">🔍</button>
         <button onclick="goBack()" class="back-button hidden">Back</button>
       </div>
 
-      <!-- 📘 Dynamic Recommended Book Section -->
+      <!-- Recommended Book Box -->
       <div id="recommendedBook" class="recommendation-box">
         <h3>📘 Recommended Book</h3>
         <p><strong>Title:</strong> The Midnight Library</p>
         <p><strong>Author:</strong> Matt Haig</p>
       </div>
 
+      <!-- Search Results Section -->
       <div id="bookResults" class="book-list"></div>
     </main>
   </div>
 
+  <!-- JavaScript -->
   <script src="script.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
