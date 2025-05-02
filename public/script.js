@@ -1,6 +1,11 @@
 let debounceTimer;
 
-// Live search on typing
+// Normalize to handle special/accented characters
+function normalize(str) {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
+
+// Live search with debounce
 document.getElementById("searchInput").addEventListener("input", () => {
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => {
@@ -13,7 +18,7 @@ document.getElementById("searchInput").addEventListener("input", () => {
     }, 500);
 });
 
-// Manual search on Enter key press
+// Manual search with Enter
 document.getElementById("searchInput").addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
         const query = e.target.value.trim();
@@ -25,16 +30,17 @@ document.getElementById("searchInput").addEventListener("keydown", (e) => {
     }
 });
 
-// Fetch and show books from APIs
+// Fetch and display books from multiple APIs
 async function searchBooks(query) {
+    const normalizedQuery = normalize(query);
     const bookResults = document.getElementById("bookResults");
     bookResults.innerHTML = "<p>🔍 Searching for books...</p>";
 
     try {
         const [itbookData, googleData, openLibraryData] = await Promise.all([
-            fetch(`https://api.itbook.store/1.0/search/${query}`).then(res => res.json()),
-            fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}`).then(res => res.json()),
-            fetch(`https://openlibrary.org/search.json?title=${query}`).then(res => res.json())
+            fetch(`https://api.itbook.store/1.0/search/${encodeURIComponent(query)}`).then(res => res.json()),
+            fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}`).then(res => res.json()),
+            fetch(`https://openlibrary.org/search.json?title=${encodeURIComponent(query)}`).then(res => res.json())
         ]);
 
         bookResults.innerHTML = "";
@@ -73,7 +79,7 @@ async function searchBooks(query) {
     }
 }
 
-// Generate book card DOM
+// Book card generator
 function createBookCard(image, title, subtitle, link) {
     const bookCard = document.createElement("div");
     bookCard.classList.add("book-card");
@@ -86,7 +92,7 @@ function createBookCard(image, title, subtitle, link) {
     return bookCard;
 }
 
-// Clear result area and hide back button
+// Clear all results
 function clearResults() {
     document.getElementById("bookResults").innerHTML = "";
     document.querySelector(".back-button").classList.add("hidden");
