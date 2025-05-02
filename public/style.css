@@ -187,6 +187,29 @@ button:focus, .back-button:focus, input:focus {
   line-height: 1.5;
 }
 
+/* Offline Banner */
+.offline-banner {
+  display: none; /* Hidden by default */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #ff004c;
+  color: white;
+  font-weight: bold;
+  padding: 12px;
+  text-align: center;
+  box-shadow: 0 0 20px #ff004c;
+  z-index: 1000;
+  animation: pulseOffline 2s infinite;
+}
+
+@keyframes pulseOffline {
+  0% { box-shadow: 0 0 10px #ff004c; }
+  50% { box-shadow: 0 0 20px #ff004c; }
+  100% { box-shadow: 0 0 10px #ff004c; }
+}
+
 /* Responsive Design */
 @media (max-width: 600px) {
   input {
