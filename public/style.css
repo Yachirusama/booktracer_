@@ -156,25 +156,7 @@ button:hover, .back-button:hover {
     text-shadow: 0 0 10px #ff00ff;
 }
 
-/* Responsive Tweaks */
-@media (max-width: 600px) {
-    input {
-        width: 90%;
-    }
-
-    .search-container {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    button, .back-button {
-        width: 100%;
-        margin-left: 0;
-    }
-}
-/* [EXISTING STYLES OMITTED — NO CHANGE NEEDED] */
-
-/* 📘 Book Recommendation Box */
+/* Recommendation Box */
 .recommendation-box {
     background: rgba(0, 255, 255, 0.05);
     border-left: 4px solid #00ffff;
@@ -191,7 +173,7 @@ button:hover, .back-button:hover {
     margin-top: 0;
     font-size: 20px;
     color: #00ffff;
-    text-shadow: 0 0 6px #00ffff;
+    text-shadow: none; /* Glow removed */
 }
 
 .recommendation-box p {
@@ -200,3 +182,19 @@ button:hover, .back-button:hover {
     line-height: 1.5;
 }
 
+/* Responsive Tweaks */
+@media (max-width: 600px) {
+    input {
+        width: 90%;
+    }
+
+    .search-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    button, .back-button {
+        width: 100%;
+        margin-left: 0;
+    }
+}
