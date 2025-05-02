@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -44,11 +44,12 @@
         <h3>📘 Recommended Book</h3>
         <div id="recommendationContent">
           <div class="recommendation-box-content">
-            <img src="https://covers.openlibrary.org/b/id/8379256-L.jpg" alt="Book Cover" />
+            <img id="recommendationCover" src="" alt="Book Cover" />
             <div class="recommendation-text">
-              <p><strong>Title:</strong> Handbook for Mortals</p>
-              <p><strong>Author:</strong> Lani Sarem</p>
-              <p><strong>Description:</strong> A mysterious young woman arrives in Las Vegas to join a magic show and discovers much more about herself and her powers.</p>
+              <p><strong>Title:</strong> <span id="recommendationTitle">Loading...</span></p>
+              <p><strong>Author:</strong> <span id="recommendationAuthor">Loading...</span></p>
+              <p><strong>Description:</strong> <span id="recommendationDescription">Loading...</span></p>
+              <p><strong>Rating:</strong> <span id="bookRating">Loading...</span></p>
             </div>
           </div>
         </div>
@@ -60,7 +61,6 @@
   </div>
 
   <!-- JavaScript -->
-  <script src="script.js"></script>
   <script>
     // 🛠 Service Worker Registration
     if ('serviceWorker' in navigator) {
@@ -69,6 +69,7 @@
         .catch(err => console.error('❌ Service Worker Failed', err));
     }
 
+    // ⚠️ Offline Banner
     const offlineBanner = document.getElementById("offlineBanner");
     const closeBannerBtn = document.getElementById("closeBanner");
 
@@ -111,6 +112,43 @@
         themeIcon.textContent = "🌞";
       }
     });
+
+    // 📘 Fetch Recommended Book from Google Books
+    async function fetchRecommendationDetails(title, author) {
+      const query = `${title} ${author}`;
+      const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}`;
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data.totalItems > 0) {
+          const book = data.items[0].volumeInfo;
+
+          document.getElementById("recommendationCover").src = book.imageLinks?.thumbnail || "";
+          document.getElementById("recommendationTitle").textContent = book.title || "N/A";
+          document.getElementById("recommendationAuthor").textContent = book.authors?.join(", ") || "Unknown";
+          document.getElementById("recommendationDescription").textContent = book.description || "No description available.";
+          document.getElementById("bookRating").textContent = book.averageRating ? `${book.averageRating} ⭐` : "Not rated";
+        } else {
+          document.getElementById("recommendationTitle").textContent = "No recommendation found.";
+        }
+      } catch (error) {
+        console.error("Failed to fetch recommendation:", error);
+      }
+    }
+
+    // Call with your desired recommendation
+    fetchRecommendationDetails("Handbook for Mortals", "Lani Sarem");
+
+    // Dummy placeholder functions
+    function searchBooksManual() {
+      alert("Search functionality to be implemented.");
+    }
+
+    function goBack() {
+      alert("Back function to be implemented.");
+    }
   </script>
 </body>
 </html>
