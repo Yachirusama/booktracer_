@@ -138,21 +138,22 @@ function goBack() {
   if (recBox) recBox.style.display = "block";
 }
 
-// Load a random recommended book with description and rating
+// Load a random recommended book with short description and rating
 async function loadRandomRecommendation() {
   const box = document.getElementById("recommendedBook");
   if (!box) return;
 
   try {
-    const res = await fetch("https://www.googleapis.com/books/v1/volumes?q=bestseller&maxResults=40");
+    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=bestseller&maxResults=40&timestamp=${Date.now()}`);
     const data = await res.json();
     if (!data.items?.length) throw new Error("No books found");
 
     const random = data.items[Math.floor(Math.random() * data.items.length)];
     const info = random.volumeInfo;
 
-    const description = info.description
-      ? info.description.slice(0, 300) + (info.description.length > 300 ? "..." : "")
+    const plainDesc = info.description?.replace(/<\/?[^>]+(>|$)/g, "");
+    const description = plainDesc
+      ? plainDesc.slice(0, 100) + (plainDesc.length > 100 ? "..." : "")
       : "No description available.";
 
     const rating = info.averageRating
