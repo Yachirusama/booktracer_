@@ -8,6 +8,11 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- 🛑 Offline Notification Banner -->
+  <div id="offlineBanner" class="offline-banner hidden">
+    ⚠️ You are currently offline. Some features may be limited.
+  </div>
+
   <div class="container">
     <!-- Header -->
     <header>
@@ -38,11 +43,27 @@
   <!-- JavaScript -->
   <script src="script.js"></script>
   <script>
+    // Register Service Worker
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js')
         .then(() => console.log('✅ Service Worker Registered'))
         .catch(err => console.error('❌ Service Worker Failed', err));
     }
+
+    // Offline Banner Handling
+    const offlineBanner = document.getElementById("offlineBanner");
+
+    function updateOnlineStatus() {
+      if (navigator.onLine) {
+        offlineBanner.classList.add("hidden");
+      } else {
+        offlineBanner.classList.remove("hidden");
+      }
+    }
+
+    window.addEventListener("online", updateOnlineStatus);
+    window.addEventListener("offline", updateOnlineStatus);
+    updateOnlineStatus();
   </script>
 </body>
 </html>
