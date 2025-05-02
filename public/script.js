@@ -152,12 +152,15 @@ async function loadRandomRecommendation() {
         const title = info.title || "Unknown Title";
         const author = info.authors ? info.authors.join(", ") : "Unknown Author";
         const image = info.imageLinks?.thumbnail || "https://via.placeholder.com/100";
+        const infoLink = info.infoLink || "#";
 
         recommendedBox.innerHTML = `
             <h3>📘 Recommended Book</h3>
-            <img src="${image}" alt="Book Cover" style="width:100px; height:auto; border-radius:8px; margin-bottom:10px;" />
-            <p><strong>Title:</strong> ${title}</p>
-            <p><strong>Author:</strong> ${author}</p>
+            <a href="${infoLink}" target="_blank" style="text-decoration: none; color: inherit;">
+                <img src="${image}" alt="Book Cover" style="width:100px; height:auto; border-radius:8px; margin-bottom:10px;" />
+                <p><strong>Title:</strong> ${title}</p>
+                <p><strong>Author:</strong> ${author}</p>
+            </a>
         `;
     } catch (err) {
         console.error("Recommendation error:", err);
