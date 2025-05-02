@@ -82,6 +82,11 @@ button:hover, .back-button:hover {
   color: #111;
 }
 
+button:focus, .back-button:focus, input:focus {
+  outline: 2px solid #0ff;
+  outline-offset: 4px;
+}
+
 .back-button:disabled {
   opacity: 0.4;
   cursor: not-allowed;
@@ -106,7 +111,7 @@ button:hover, .back-button:hover {
   width: 100%;
   max-width: 250px;
   background: #141414;
-  color: #e0e0e0;
+  color: #eaeaea;
   border-radius: 12px;
   box-shadow: 0 0 12px rgba(0, 255, 255, 0.2);
   text-align: center;
@@ -138,7 +143,7 @@ button:hover, .back-button:hover {
 
 .book-card p {
   font-size: 14px;
-  color: #ccc;
+  color: #ddd;
   margin-bottom: 10px;
 }
 
