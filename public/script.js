@@ -172,39 +172,42 @@ async function loadRandomRecommendation() {
 }
 
 // ===== OFFLINE BANNER HANDLING =====
-function updateOfflineBanner() {
+function createOfflineBanner() {
     let banner = document.getElementById("offlineBanner");
-
     if (!banner) {
         banner = document.createElement("div");
         banner.id = "offlineBanner";
-        banner.textContent = "⚠️ You are offline. Some features may not be available.";
-        banner.style.cssText = `
-            background: #ff0033;
-            color: white;
-            padding: 10px;
-            text-align: center;
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            font-weight: bold;
-            display: none;
-        `;
+        banner.className = "offline-banner";
+
+        const textSpan = document.createElement("span");
+        textSpan.textContent = "⚠️ You are offline. Some features may not be available.";
+
+        const closeBtn = document.createElement("span");
+        closeBtn.id = "closeBanner";
+        closeBtn.innerHTML = "❌";
+        closeBtn.style.marginLeft = "15px";
+        closeBtn.style.cursor = "pointer";
+        closeBtn.onclick = () => {
+            banner.style.display = "none";
+        };
+
+        banner.appendChild(textSpan);
+        banner.appendChild(closeBtn);
         document.body.appendChild(banner);
     }
+}
 
-    if (!navigator.onLine) {
-        banner.style.display = "block";
-    } else {
-        banner.style.display = "none";
-    }
+function updateOfflineBanner() {
+    const banner = document.getElementById("offlineBanner");
+    if (!banner) return;
+    banner.style.display = navigator.onLine ? "none" : "flex";
 }
 
 // Listen to network status changes
 window.addEventListener("online", updateOfflineBanner);
 window.addEventListener("offline", updateOfflineBanner);
 window.addEventListener("DOMContentLoaded", () => {
+    createOfflineBanner();
     updateOfflineBanner();
     loadRandomRecommendation();
 });
