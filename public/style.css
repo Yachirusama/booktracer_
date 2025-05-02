@@ -1,120 +1,12 @@
-/* Reset & Base Styles */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: 'Poppins', sans-serif;
-  background-color: #f7f8fa;
-  color: #333;
-  padding: 20px;
-  min-height: 100vh;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-body.dark {
-  background-color: #121212;
-  color: #e0e0e0;
-}
-
-/* Container */
-.container {
-  max-width: 1100px;
-  margin: 0 auto;
-}
-
-/* Header */
-header {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-header h1 {
-  font-size: 3rem;
-  color: #4b0082;
-}
-
-body.dark header h1 {
-  color: #bb86fc;
-}
-
-header h2 {
-  font-size: 1.3rem;
-  color: #666;
-}
-
-body.dark header h2 {
-  color: #aaa;
-}
-
-/* Theme Toggle */
-.theme-toggle {
-  margin-top: 10px;
-}
-
-#themeIcon {
-  margin-left: 10px;
-  font-size: 1.2rem;
-}
-
-/* Search Bar */
-.search-container {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 25px;
-  flex-wrap: wrap;
-}
-
-.search-container input[type="text"] {
-  flex: 1;
-  min-width: 250px;
-  padding: 10px 14px;
-  font-size: 1rem;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  background-color: #fff;
-  color: #000;
-  outline: none;
-}
-
-body.dark .search-container input[type="text"] {
-  background-color: #1e1e1e;
-  color: #e0e0e0;
-  border-color: #444;
-}
-
-.search-container button {
-  padding: 10px 14px;
-  font-size: 1rem;
-  background-color: #4b0082;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.search-container button:hover {
-  background-color: #360064;
-}
-
-.back-button.hidden {
-  display: none;
-}
-
-/* Recommendation Section */
+/* 📘 Recommendation Box */
 .recommendation-box {
-  background-color: #e9f3ff;
+  background-color: #e3f2fd;
   padding: 20px;
   border-radius: 12px;
-  margin-bottom: 25px;
-  display: flex;
-  gap: 20px;
-  align-items: flex-start;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  margin-bottom: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  max-width: 900px;
+  margin-inline: auto;
 }
 
 body.dark .recommendation-box {
@@ -122,18 +14,31 @@ body.dark .recommendation-box {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
-.recommendation-box img {
-  max-width: 160px;
+/* Flex layout for image + text */
+.recommendation-box-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* Book image */
+.recommendation-box-content img {
+  width: 120px;
   height: auto;
   flex-shrink: 0;
   border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* Text content */
 .recommendation-text {
   flex: 1;
+  min-width: 200px;
   text-align: justify;
 }
 
+/* Headings & paragraphs */
 .recommendation-text h3 {
   font-size: 1.4rem;
   margin-bottom: 15px;
@@ -146,7 +51,8 @@ body.dark .recommendation-text h3 {
 
 .recommendation-text p {
   font-size: 1rem;
-  margin-bottom: 6px;
+  margin: 8px 0;
+  line-height: 1.5;
   color: #333;
 }
 
@@ -154,118 +60,31 @@ body.dark .recommendation-text p {
   color: #ddd;
 }
 
-/* Book Cards */
-.book-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-}
-
-.book-card {
-  background-color: #fff;
-  padding: 15px;
-  border-radius: 12px;
-  text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s ease, background-color 0.3s ease;
-}
-
-body.dark .book-card {
-  background-color: #1e1e1e;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.book-card:hover {
-  transform: translateY(-5px);
-}
-
-.book-card img {
-  max-width: 100px;
-  height: auto;
-  margin-bottom: 10px;
-  border-radius: 8px;
-}
-
-.book-card h3 {
-  font-size: 1.1rem;
-  margin-bottom: 8px;
-}
-
-.book-card p {
-  font-size: 0.9rem;
-  color: #555;
-  margin-bottom: 10px;
-}
-
-body.dark .book-card p {
-  color: #ccc;
-}
-
-.book-card a {
-  font-size: 0.9rem;
-  color: #4b0082;
+/* Link */
+.recommendation-text a {
+  color: #0d47a1;
   text-decoration: underline;
+  font-weight: 500;
 }
 
-body.dark .book-card a {
-  color: #bb86fc;
+.recommendation-text a:hover {
+  text-decoration: none;
 }
 
-/* Offline Banner */
-.offline-banner {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #ffe4e1;
-  color: #a10000;
-  padding: 12px;
-  font-weight: bold;
-  border: 1px solid #ffb3b3;
-  border-radius: 0 0 8px 8px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 999;
+body.dark .recommendation-text a {
+  color: #82b1ff;
 }
 
-body.dark .offline-banner {
-  background-color: #552222;
-  color: #ffb3b3;
-  border-color: #aa4444;
-}
-
-/* Utility */
-.hidden {
-  display: none !important;
-}
-
-/* Responsive Layout */
+/* 📱 Responsive */
 @media (max-width: 700px) {
-  .recommendation-box {
+  .recommendation-box-content {
     flex-direction: column;
     align-items: center;
     text-align: center;
   }
 
   .recommendation-text {
-    text-align: justify;
-  }
-
-  .search-container {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .search-container input[type="text"] {
     width: 100%;
-  }
-
-  .book-card img {
-    max-width: 80px;
-  }
-
-  .book-card h3 {
-    font-size: 1rem;
+    text-align: justify;
   }
 }
