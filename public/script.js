@@ -38,30 +38,44 @@ document.getElementById("searchInput").addEventListener("keydown", (e) => {
     }
 });
 
+// Manual search button handler
+function searchBooksManual() {
+    const query = document.getElementById("searchInput").value.trim();
+    hideRecommendation();
+    if (query) {
+        searchBooks(query);
+    } else {
+        clearResults();
+    }
+}
+
 // Fetch and display books from multiple APIs
 async function searchBooks(query) {
     const normalizedQuery = normalize(query);
     const bookResults = document.getElementById("bookResults");
     bookResults.innerHTML = "<p>🔍 Searching for books...</p>";
+    let resultsFound = false;
 
     try {
         const [itbookData, googleData, openLibraryData] = await Promise.all([
-            fetch(`https://api.itbook.store/1.0/search/${encodeURIComponent(query)}`).then(res => res.json()),
-            fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}`).then(res => res.json()),
-            fetch(`https://openlibrary.org/search.json?title=${encodeURIComponent(query)}`).then(res => res.json())
+            fetch(`https://api.itbook.store/1.0/search/${encodeURIComponent(normalizedQuery)}`).then(res => res.json()),
+            fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(normalizedQuery)}`).then(res => res.json()),
+            fetch(`https://openlibrary.org/search.json?title=${encodeURIComponent(normalizedQuery)}`).then(res => res.json())
         ]);
 
         bookResults.innerHTML = "";
         document.querySelector(".back-button").classList.remove("hidden");
 
-        if (itbookData.books) {
+        if (itbookData.books?.length) {
+            resultsFound = true;
             itbookData.books.forEach(book => {
                 const image = book.image || "https://via.placeholder.com/150";
                 bookResults.appendChild(createBookCard(image, book.title, book.subtitle, book.url));
             });
         }
 
-        if (googleData.items) {
+        if (googleData.items?.length) {
+            resultsFound = true;
             googleData.items.forEach(book => {
                 const info = book.volumeInfo;
                 const image = info.imageLinks?.thumbnail || "https://via.placeholder.com/150";
@@ -70,8 +84,10 @@ async function searchBooks(query) {
             });
         }
 
-        if (openLibraryData.docs) {
-            openLibraryData.docs.slice(0, 10).forEach(book => {
+        if (openLibraryData.docs?.length) {
+            const booksToShow = openLibraryData.docs.slice(0, 10);
+            if (booksToShow.length) resultsFound = true;
+            booksToShow.forEach(book => {
                 const image = book.cover_i
                     ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`
                     : "https://via.placeholder.com/150";
@@ -79,6 +95,10 @@ async function searchBooks(query) {
                 const link = `https://openlibrary.org${book.key}`;
                 bookResults.appendChild(createBookCard(image, book.title, authors, link));
             });
+        }
+
+        if (!resultsFound) {
+            bookResults.innerHTML = "<p>📭 No books found. Try another search.</p>";
         }
 
     } catch (error) {
