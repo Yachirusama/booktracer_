@@ -107,7 +107,7 @@ async function searchBooks(query) {
     }
 }
 
-// Book card generator — includes clickable cover image
+// Book card generator
 function createBookCard(image, title, subtitle, link) {
     const bookCard = document.createElement("div");
     bookCard.classList.add("book-card");
@@ -135,3 +135,37 @@ function goBack() {
     const recBox = document.getElementById("recommendedBook");
     if (recBox) recBox.style.display = "block";
 }
+
+// Load random recommendation from API on page load
+async function loadRandomRecommendation() {
+    const recommendedBox = document.getElementById("recommendedBook");
+    if (!recommendedBox) return;
+
+    try {
+        const res = await fetch("https://www.googleapis.com/books/v1/volumes?q=bestseller&maxResults=40");
+        const data = await res.json();
+        if (!data.items || data.items.length === 0) throw new Error("No books found");
+
+        const randomBook = data.items[Math.floor(Math.random() * data.items.length)];
+        const info = randomBook.volumeInfo;
+
+        const title = info.title || "Unknown Title";
+        const author = info.authors ? info.authors.join(", ") : "Unknown Author";
+        const image = info.imageLinks?.thumbnail || "https://via.placeholder.com/100";
+
+        recommendedBox.innerHTML = `
+            <h3>📘 Recommended Book</h3>
+            <img src="${image}" alt="Book Cover" style="width:100px; height:auto; border-radius:8px; margin-bottom:10px;" />
+            <p><strong>Title:</strong> ${title}</p>
+            <p><strong>Author:</strong> ${author}</p>
+        `;
+    } catch (err) {
+        console.error("Recommendation error:", err);
+        recommendedBox.innerHTML = `
+            <h3>📘 Recommended Book</h3>
+            <p>⚠️ Could not load recommendation.</p>
+        `;
+    }
+}
+
+window.addEventListener("DOMContentLoaded", loadRandomRecommendation);
