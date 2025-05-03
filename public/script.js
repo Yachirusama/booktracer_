@@ -1,3 +1,10 @@
+// ✅ Utility: Safely get thumbnail URL with fallback and HTTPS fix
+function getSafeImageLink(imageLinks) {
+  const raw = imageLinks?.thumbnail || imageLinks?.smallThumbnail || "";
+  if (!raw) return "https://via.placeholder.com/100";
+  return raw.replace(/^http:\/\//i, "https://");
+}
+
 // 📘 Load a random recommended book
 async function loadRandomRecommendation() {
   const box = document.getElementById("recommendedBook");
@@ -26,7 +33,7 @@ async function loadRandomRecommendation() {
     box.innerHTML = `
       <h3>📘 Recommended Book</h3>
       <div class="recommendation-box-content">
-        <img src="${info.imageLinks?.thumbnail || "https://via.placeholder.com/100"}" alt="Book cover" />
+        <img src="${getSafeImageLink(info.imageLinks)}" alt="Book cover" />
         <div class="recommendation-text">
           <p><strong>Title:</strong> ${info.title}</p>
           <p><strong>Author:</strong> ${info.authors?.join(", ") || "Unknown Author"}</p>
@@ -76,7 +83,7 @@ async function searchBooksManual(query = null) {
       const info = item.volumeInfo;
       const title = info.title || "No title";
       const authors = info.authors?.join(", ") || "Unknown author";
-      const thumbnail = info.imageLinks?.thumbnail || "https://via.placeholder.com/100";
+      const thumbnail = getSafeImageLink(info.imageLinks);
       const infoLink = info.infoLink || "#";
       const shortDesc = info.description
         ? info.description.replace(/<\/?[^>]+(>|$)/g, "").slice(0, 100) + "..."
@@ -155,4 +162,3 @@ function setupThemeToggle() {
 window.addEventListener("DOMContentLoaded", () => {
   loadRandomRecommendation();
 });
-
