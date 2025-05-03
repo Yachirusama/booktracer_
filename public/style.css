@@ -7,7 +7,7 @@
 
 /* ===== Fonts & Body ===== */
 body {
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
   background-color: #f9f9f9;
   color: #222;
   transition: background-color 0.3s, color 0.3s;
@@ -57,9 +57,7 @@ body.dark .sidebar {
   text-align: center;
 }
 
-/* ===== Sidebar Book Items ===== */
-#topBooksList,
-#leftSidebar {
+#topBooksList {
   list-style: none;
   padding: 0;
 }
