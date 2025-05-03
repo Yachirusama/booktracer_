@@ -1,10 +1,8 @@
-// ✅ Utility: Get secure image URL or fallback
 function getSafeImageLink(imageLinks) {
   const raw = imageLinks?.thumbnail || imageLinks?.smallThumbnail || "";
   return raw ? raw.replace(/^http:\/\//i, "https://") : "https://via.placeholder.com/100";
 }
 
-// 🌙 Theme Toggle
 function setupThemeToggle() {
   const toggle = document.getElementById("themeToggle");
   const body = document.body;
@@ -22,7 +20,6 @@ function setupThemeToggle() {
   });
 }
 
-// 📘 Load random recommended book
 async function loadRandomRecommendation() {
   const box = document.getElementById("recommendedBook");
   if (!box) return;
@@ -47,7 +44,7 @@ async function loadRandomRecommendation() {
     box.innerHTML = `
       <h3>📘 Recommended Book</h3>
       <div class="recommendation-box-content">
-        <img src="${getSafeImageLink(book.imageLinks)}" alt="Book cover" />
+        <img src="${getSafeImageLink(book.imageLinks)}" alt="Cover of ${book.title}" loading="lazy" />
         <div class="recommendation-text">
           <p><strong>Title:</strong> ${book.title}</p>
           <p><strong>Author:</strong> ${book.authors?.join(", ") || "Unknown Author"}</p>
@@ -63,10 +60,9 @@ async function loadRandomRecommendation() {
   }
 }
 
-// 📚 Load sidebar books (top 5 from "bestsellers")
 async function loadSidebarBooks() {
-  const sidebar = document.getElementById("leftSidebar");
-  if (!sidebar) return;
+  const list = document.getElementById("topBooksList");
+  if (!list) return;
 
   try {
     const res = await fetch("https://www.googleapis.com/books/v1/volumes?q=bestseller&maxResults=5");
@@ -74,22 +70,21 @@ async function loadSidebarBooks() {
     const books = data.items || [];
     if (!books.length) throw new Error("No sidebar books");
 
-    sidebar.innerHTML = books.map(book => {
+    list.innerHTML = books.map(book => {
       const info = book.volumeInfo;
       return `
-        <div class="sidebar-book">
-          <img src="${getSafeImageLink(info.imageLinks)}" alt="Cover">
+        <li>
+          <img src="${getSafeImageLink(info.imageLinks)}" alt="Cover of ${info.title}" loading="lazy">
           <p>${info.title?.slice(0, 25) || "Untitled"}</p>
-        </div>
+        </li>
       `;
     }).join("");
   } catch (err) {
     console.error("Sidebar error:", err);
-    sidebar.innerHTML = "<p>⚠️ Could not load sidebar books.</p>";
+    list.innerHTML = "<li>⚠️ Could not load sidebar books.</li>";
   }
 }
 
-// 🔍 Manual search
 async function searchBooksManual(query = null) {
   query ??= document.getElementById("searchInput").value.trim();
 
@@ -127,7 +122,7 @@ async function searchBooksManual(query = null) {
 
       return `
         <div class="book-card">
-          <img src="${thumbnail}" alt="Book cover">
+          <img src="${thumbnail}" alt="Cover of ${title}" loading="lazy">
           <div class="book-info">
             <h4>${title}</h4>
             <p><strong>Author:</strong> ${authors}</p>
@@ -143,14 +138,12 @@ async function searchBooksManual(query = null) {
   }
 }
 
-// ⬅️ Clear search results
 function goBack() {
   document.getElementById("bookResults").innerHTML = "";
   document.querySelector(".back-button").classList.add("hidden");
   document.getElementById("searchInput").value = "";
 }
 
-// 🔁 Debounced search helper
 function debounce(func, delay) {
   let timeout;
   return (...args) => {
@@ -159,7 +152,6 @@ function debounce(func, delay) {
   };
 }
 
-// 🔍 Setup search input event
 const searchInput = document.getElementById("searchInput");
 const debouncedSearch = debounce(() => {
   const query = searchInput.value.trim();
@@ -172,7 +164,6 @@ const debouncedSearch = debounce(() => {
 
 searchInput.addEventListener("input", debouncedSearch);
 
-// 🚀 Init all on DOM ready
 window.addEventListener("DOMContentLoaded", () => {
   setupThemeToggle();
   loadRandomRecommendation();
