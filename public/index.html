@@ -37,9 +37,13 @@
         <button onclick="searchBooksManual()">Search</button>
       </div>
 
-      <!-- 📘 Recommended Book -->
+      <!-- 📘 Recommended Books -->
       <section id="recommendedBook" class="recommendation-box">
-        <!-- JS will load content here -->
+        <h3>📘 Recommended Books</h3>
+        <div class="recommendation-list" id="recommendationList">
+          <!-- JS will load book cards here -->
+        </div>
+        <button class="refresh-button" onclick="loadRandomRecommendation()">🔄 Refresh Recommendations</button>
       </section>
 
       <!-- ⬅️ Back Button -->
