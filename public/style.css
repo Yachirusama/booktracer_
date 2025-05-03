@@ -1,10 +1,11 @@
-/* ✅ Base Styles */
+/* Base Styles */
 body {
   font-family: 'Poppins', sans-serif;
   margin: 0;
   padding: 0;
   background-color: #fff;
   color: #111;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 body.dark-theme {
@@ -12,13 +13,55 @@ body.dark-theme {
   color: #f5f5f5;
 }
 
-.container {
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  left: -240px;
+  top: 0;
+  width: 220px;
+  height: 100%;
+  background-color: #f3f3f3;
   padding: 20px;
-  max-width: 1000px;
-  margin: auto;
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  transition: left 0.3s ease;
+  z-index: 1000;
 }
 
-/* 🛑 Offline Banner */
+.sidebar:hover {
+  left: 0;
+}
+
+.sidebar h3 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar ul li {
+  margin: 10px 0;
+}
+
+.sidebar ul li a {
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+body.dark-theme .sidebar {
+  background-color: #1f1f1f;
+}
+
+body.dark-theme .sidebar ul li a {
+  color: #ddd;
+}
+
+/* Offline Banner */
 .offline-banner {
   background-color: #ffecb3;
   padding: 10px;
@@ -30,10 +73,11 @@ body.dark-theme {
   display: none;
 }
 
-/* 📚 Header */
+/* Header */
 header {
   text-align: center;
   margin-bottom: 20px;
+  padding-top: 20px;
 }
 
 header h1 {
@@ -42,12 +86,12 @@ header h1 {
 }
 
 header h2 {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-weight: 400;
   margin-bottom: 10px;
 }
 
-/* 🌙 Theme Toggle */
+/* Theme Toggle */
 .theme-toggle {
   margin-top: 10px;
   display: flex;
@@ -98,7 +142,14 @@ input:checked + .slider:before {
   transform: translateX(26px);
 }
 
-/* 🔍 Search Section */
+/* Container */
+.container {
+  padding: 20px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+/* Search Section */
 .search-container {
   display: flex;
   justify-content: center;
@@ -108,20 +159,17 @@ input:checked + .slider:before {
   margin: 20px 0;
 }
 
-.search-container input {
-  padding: 8px 12px;
-  border: 1px solid #aaa;
-  border-radius: 5px;
-  font-size: 1rem;
-}
-
+.search-container input,
 .search-container button {
   padding: 8px 12px;
   font-size: 1rem;
   border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.search-container button {
   cursor: pointer;
   background-color: #e3f2fd;
-  border: 1px solid #ccc;
 }
 
 body.dark-theme .search-container input,
@@ -131,20 +179,18 @@ body.dark-theme .search-container button {
   border: 1px solid #444;
 }
 
-/* 📘 Recommendation Box */
+/* Recommendation Box */
 .recommendation-box {
   background-color: #e3f2fd;
   padding: 20px;
   border-radius: 12px;
   margin-bottom: 30px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  max-width: 900px;
-  margin-inline: auto;
 }
 
 body.dark-theme .recommendation-box {
   background-color: #1f2b3a;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  color: #fff;
 }
 
 .recommendation-box-content {
@@ -157,7 +203,6 @@ body.dark-theme .recommendation-box {
 .recommendation-box-content img {
   width: 120px;
   height: auto;
-  flex-shrink: 0;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
@@ -165,28 +210,10 @@ body.dark-theme .recommendation-box {
 .recommendation-text {
   flex: 1;
   min-width: 200px;
-  text-align: justify;
-}
-
-.recommendation-text h3 {
-  font-size: 1.4rem;
-  margin-bottom: 15px;
-  color: #333;
-}
-
-body.dark-theme .recommendation-text h3 {
-  color: #fff;
 }
 
 .recommendation-text p {
-  font-size: 1rem;
-  margin: 8px 0;
-  line-height: 1.5;
-  color: #333;
-}
-
-body.dark-theme .recommendation-text p {
-  color: #ddd;
+  margin: 5px 0;
 }
 
 .recommendation-text a {
@@ -195,25 +222,39 @@ body.dark-theme .recommendation-text p {
   font-weight: 500;
 }
 
-.recommendation-text a:hover {
-  text-decoration: none;
-}
-
 body.dark-theme .recommendation-text a {
   color: #82b1ff;
 }
 
-/* 📚 Book Results Grid */
+/* Back Button */
+.back-button {
+  display: block;
+  margin: 0 auto 20px;
+  padding: 10px 16px;
+  font-size: 1rem;
+  background-color: #ccc;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.back-button.hidden {
+  display: none;
+}
+
+body.dark-theme .back-button {
+  background-color: #333;
+  color: #fff;
+}
+
+/* Results Grid */
 .results-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 16px;
-  margin: 30px auto;
-  max-width: 1000px;
-  padding: 0 20px;
 }
 
-/* 🃏 Book Card */
+/* Book Card */
 .book-card {
   background-color: #ffffff;
   border-radius: 12px;
@@ -221,7 +262,6 @@ body.dark-theme .recommendation-text a {
   text-align: center;
   padding: 16px;
   transition: transform 0.2s ease-in-out;
-  cursor: pointer;
 }
 
 .book-card:hover {
@@ -231,9 +271,8 @@ body.dark-theme .recommendation-text a {
 .book-card img {
   width: 100px;
   height: auto;
-  margin-bottom: 12px;
   border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 12px;
 }
 
 .book-card h4 {
@@ -251,40 +290,17 @@ body.dark-theme .recommendation-text a {
 body.dark-theme .book-card {
   background-color: #1f2b3a;
   color: #f0f0f0;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
 }
 
 body.dark-theme .book-card h4 {
-  color: #f5f5f5;
+  color: #fff;
 }
 
 body.dark-theme .book-card p {
-  color: #aaa;
+  color: #ccc;
 }
 
-/* ⬅️ Back Button */
-.back-button {
-  display: block;
-  margin: 20px auto 0;
-  padding: 10px 20px;
-  font-size: 1rem;
-  background-color: #f5f5f5;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-body.dark-theme .back-button {
-  background-color: #2b2b2b;
-  color: #fff;
-  border: 1px solid #444;
-}
-
-.back-button.hidden {
-  display: none;
-}
-
-/* 📱 Responsive */
+/* Responsive */
 @media (max-width: 700px) {
   .recommendation-box-content {
     flex-direction: column;
@@ -294,6 +310,9 @@ body.dark-theme .back-button {
 
   .recommendation-text {
     width: 100%;
-    text-align: justify;
+  }
+
+  .sidebar {
+    display: none;
   }
 }
