@@ -2,219 +2,51 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Book Tracer</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="sidebar-trigger-zone"></div>
-  <aside class="sidebar">
-    <h3>Top 5 Books of All Time</h3>
-    <ul>
-      <li><a href="https://www.amazon.com/dp/0451524934" target="_blank">1984 by George Orwell</a></li>
-      <li><a href="https://www.amazon.com/dp/0061120081" target="_blank">To Kill a Mockingbird</a></li>
-      <li><a href="https://www.amazon.com/dp/0743273567" target="_blank">The Great Gatsby</a></li>
-      <li><a href="https://www.amazon.com/dp/0618640150" target="_blank">The Lord of the Rings</a></li>
-      <li><a href="https://www.amazon.com/dp/0141439602" target="_blank">Pride and Prejudice</a></li>
-    </ul>
+  <!-- ⚠️ Offline Banner -->
+  <div class="offline-banner hidden">You are currently offline.</div>
 
-    <h3>Current Bestsellers</h3>
-    <ul>
-      <li><a href="https://www.amazon.com/dp/0593593804" target="_blank">The Covenant of Water</a></li>
-      <li><a href="https://www.amazon.com/dp/038554734X" target="_blank">The Heaven & Earth Grocery Store</a></li>
-      <li><a href="https://www.amazon.com/dp/0593654110" target="_blank">Fourth Wing</a></li>
-      <li><a href="https://www.amazon.com/dp/1250871443" target="_blank">Iron Flame</a></li>
-      <li><a href="https://www.amazon.com/dp/1982185823" target="_blank">Remarkably Bright Creatures</a></li>
-    </ul>
-  </aside>
-
-  <div id="offlineBanner" class="offline-banner hidden">
-    ⚠️ You are currently offline. Some features may be limited.
-    <span id="closeBanner" style="margin-left: 20px; cursor: pointer;">❌</span>
-  </div>
-
+  <!-- 📚 App Container -->
   <div class="container">
+    <!-- 🔥 Header -->
     <header>
       <h1>Book Tracer</h1>
-      <h2>A Place for Book Lovers 📚</h2>
+      <h2>Find and explore books easily</h2>
+
+      <!-- 🌙 Theme Toggle -->
       <div class="theme-toggle">
+        <label for="themeToggle">Dark Mode</label>
         <label class="switch">
-          <input type="checkbox" id="darkModeToggle" />
+          <input type="checkbox" id="themeToggle">
           <span class="slider round"></span>
         </label>
-        <span id="themeIcon">🌞</span>
       </div>
     </header>
 
-    <main>
-      <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Search for books..." />
-        <button onclick="searchBooksManual()">🔍</button>
-        <button onclick="goBack()" class="back-button hidden">Back</button>
-      </div>
+    <!-- 🔍 Search Section -->
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Search for books..." />
+      <button onclick="searchBooksManual()">Search</button>
+    </div>
 
-      <div id="recommendedBook" class="recommendation-box"></div>
-      <div id="bookResults" class="results-grid"></div>
-    </main>
+    <button class="back-button hidden" onclick="goBack()">⬅️ Back</button>
+
+    <!-- 📘 Recommended Book -->
+    <section id="recommendedBook" class="recommendation-box">
+      <!-- JS will populate this -->
+    </section>
+
+    <!-- 📚 Search Results -->
+    <div id="bookResults" class="results-grid">
+      <!-- JS will populate this -->
+    </div>
   </div>
 
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(() => console.log('✅ Service Worker Registered'))
-        .catch(err => console.error('❌ Service Worker Failed', err));
-    }
-
-    const offlineBanner = document.getElementById("offlineBanner");
-    const closeBannerBtn = document.getElementById("closeBanner");
-
-    closeBannerBtn.addEventListener("click", () => {
-      offlineBanner.classList.add("hidden");
-      sessionStorage.setItem("bannerDismissed", "true");
-    });
-
-    function updateOnlineStatus() {
-      const dismissed = sessionStorage.getItem("bannerDismissed") === "true";
-      if (navigator.onLine || dismissed) {
-        offlineBanner.classList.add("hidden");
-      } else {
-        offlineBanner.classList.remove("hidden");
-      }
-    }
-
-    window.addEventListener("online", updateOnlineStatus);
-    window.addEventListener("offline", updateOnlineStatus);
-    updateOnlineStatus();
-
-    const darkToggle = document.getElementById("darkModeToggle");
-    const themeIcon = document.getElementById("themeIcon");
-
-    if (localStorage.getItem("theme") === "dark") {
-      document.body.classList.add("dark");
-      darkToggle.checked = true;
-      themeIcon.textContent = "🌙";
-    }
-
-    darkToggle.addEventListener("change", () => {
-      if (darkToggle.checked) {
-        document.body.classList.add("dark");
-        localStorage.setItem("theme", "dark");
-        themeIcon.textContent = "🌙";
-      } else {
-        document.body.classList.remove("dark");
-        localStorage.setItem("theme", "light");
-        themeIcon.textContent = "🌞";
-      }
-    });
-
-    async function loadRandomRecommendation() {
-      const box = document.getElementById("recommendedBook");
-      if (!box) return;
-
-      const keywords = ["fiction", "classic", "bestseller", "history", "science", "mystery", "fantasy", "technology"];
-      const randomKeyword = keywords[Math.floor(Math.random() * keywords.length)];
-
-      try {
-        const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${randomKeyword}&maxResults=40&timestamp=${Date.now()}`);
-        const data = await res.json();
-        if (!data.items?.length) throw new Error("No books found");
-
-        const random = data.items[Math.floor(Math.random() * data.items.length)];
-        const info = random.volumeInfo;
-
-        const plainDesc = info.description?.replace(/<\/?[^>]+(>|$)/g, "");
-        const description = plainDesc
-          ? plainDesc.slice(0, 100) + (plainDesc.length > 100 ? "..." : "")
-          : "No description available.";
-
-        const rating = info.averageRating
-          ? `<p><strong>Rating:</strong> ${info.averageRating} ⭐ (${info.ratingsCount || 0} ratings)</p>`
-          : "<p><strong>Rating:</strong> Not rated</p>";
-
-        const imageSrc = (info.imageLinks?.thumbnail || info.imageLinks?.smallThumbnail || "https://via.placeholder.com/100").replace(/^http:\/\//i, "https://");
-
-        box.innerHTML = `
-          <h3>📘 Recommended Book</h3>
-          <div class="recommendation-box-content">
-            <img src="${imageSrc}" alt="Cover" />
-            <div class="recommendation-text">
-              <p><strong>Title:</strong> ${info.title}</p>
-              <p><strong>Author:</strong> ${info.authors?.join(", ") || "Unknown Author"}</p>
-              ${rating}
-              <p><strong>Description:</strong> ${description}</p>
-              <p><a href="${info.infoLink}" target="_blank">More Info</a></p>
-            </div>
-          </div>
-        `;
-      } catch (err) {
-        console.error("Recommendation error:", err);
-        box.innerHTML = `
-          <h3>📘 Recommended Book</h3>
-          <p>⚠️ Could not load recommendation.</p>
-        `;
-      }
-    }
-
-    loadRandomRecommendation();
-
-    const searchInput = document.getElementById("searchInput");
-    const bookResults = document.getElementById("bookResults");
-    const backButton = document.querySelector(".back-button");
-
-    searchInput.addEventListener("input", () => {
-      const query = searchInput.value;
-      if (query.trim()) {
-        backButton.classList.remove("hidden");
-        searchBooks(query);
-      } else {
-        bookResults.innerHTML = "";
-        backButton.classList.add("hidden");
-      }
-    });
-
-    async function searchBooks(query) {
-      try {
-        const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=10`);
-        const data = await response.json();
-
-        if (!data.items?.length) {
-          bookResults.innerHTML = "<p>No results found.</p>";
-          return;
-        }
-
-        bookResults.innerHTML = data.items.map(book => {
-          const info = book.volumeInfo;
-          const imageSrc = (info.imageLinks?.thumbnail || info.imageLinks?.smallThumbnail || "https://via.placeholder.com/100").replace(/^http:\/\//i, "https://");
-
-          return `
-            <div class="book-card">
-              <img src="${imageSrc}" alt="Cover" />
-              <div class="book-details">
-                <h4>${info.title}</h4>
-                <p><strong>Author:</strong> ${info.authors?.join(", ") || "Unknown"}</p>
-                <p>${info.description ? info.description.slice(0, 80) + "..." : "No description."}</p>
-                <a href="${info.infoLink}" target="_blank">More Info</a>
-              </div>
-            </div>
-          `;
-        }).join("");
-      } catch (err) {
-        console.error("Search error:", err);
-        bookResults.innerHTML = "<p>⚠️ Failed to fetch results.</p>";
-      }
-    }
-
-    function searchBooksManual() {
-      const query = searchInput.value;
-      searchBooks(query);
-    }
-
-    function goBack() {
-      searchInput.value = "";
-      bookResults.innerHTML = "";
-      backButton.classList.add("hidden");
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
