@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- Sidebar -->
   <div class="sidebar">
     <h3><span style="color:#03a9f4">🟦</span> Top 10 Bestsellers</h3>
     <select id="genre-filter">
@@ -21,6 +22,7 @@
     <div id="sidebar-books"></div>
   </div>
 
+  <!-- Main Content -->
   <div class="main-content">
     <header>
       <h1>Tomo</h1>
@@ -31,14 +33,21 @@
       </form>
     </header>
 
+    <!-- Recommendations -->
     <section>
       <h2>📘 Recommended Books</h2>
       <button id="refresh-btn">🔄 Refresh Recommendations</button>
+      
+      <!-- Loader (initially hidden, toggled by JS) -->
+      <div id="loader" class="loader" style="display: none;"></div>
+      
+      <!-- Book Grid -->
       <div id="recommended-books" class="book-grid"></div>
     </section>
   </div>
 
-  <button id="theme-toggle">
+  <!-- Theme Toggle -->
+  <button id="theme-toggle" aria-label="Toggle Dark Mode">
     <img id="theme-icon" src="icons/moon.svg" alt="Toggle Theme Icon" />
   </button>
 
