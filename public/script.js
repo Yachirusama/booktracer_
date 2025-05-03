@@ -1,109 +1,72 @@
-const API_KEY = 'AIzaSyDbodRnX_CoW0P_2ETDwVH2tkX4pTqKGJM';
+const apiKey = "AIzaSyDbodRnX_CoW0P_2ETDwVH2tkX4pTqKGJM";
 
-// === DOM Elements ===
-const recommendedSection = document.getElementById('recommended');
-const refreshButton = document.getElementById('refreshBtn');
-const searchForm = document.getElementById('searchForm');
-const searchInput = document.getElementById('searchInput');
-const searchResults = document.getElementById('searchResults');
-const backButton = document.getElementById('backButton');
-const genreSelect = document.getElementById('genreSelect');
-const bestsellersList = document.getElementById('bestsellersList');
-
-// === Fetch a Random Recommended Book ===
-async function fetchRecommendedBook() {
-  const query = 'bestseller fiction';
-  const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}&printType=books&maxResults=20&key=${API_KEY}`);
-  const data = await response.json();
-
-  if (data.items && data.items.length > 0) {
-    const randomBook = data.items[Math.floor(Math.random() * data.items.length)];
-    displayRecommendedBook(randomBook);
-  }
-}
-
-function displayRecommendedBook(book) {
-  const volumeInfo = book.volumeInfo;
-  recommendedSection.innerHTML = `
-    <h3>Recommended Book</h3>
-    <img src="${volumeInfo.imageLinks?.thumbnail || 'default-cover.jpg'}" alt="Book Cover">
-    <h4>${volumeInfo.title}</h4>
-    <p>${volumeInfo.description ? volumeInfo.description.slice(0, 200) + '...' : 'No description available.'}</p>
-    <p><strong>Rating:</strong> ${volumeInfo.averageRating || 'N/A'}</p>
-  `;
-}
-
-// === Search Functionality ===
-searchForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const query = searchInput.value.trim();
-  if (!query) return;
-
-  const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&key=${API_KEY}`);
-  const data = await response.json();
-
-  searchResults.innerHTML = '<h3>Search Results</h3>';
-  if (data.items) {
-    data.items.forEach(book => {
-      const info = book.volumeInfo;
-      searchResults.innerHTML += `
-        <div class="book">
-          <img src="${info.imageLinks?.thumbnail || 'default-cover.jpg'}" alt="Book Cover">
-          <h4>${info.title}</h4>
-          <p>${info.description ? info.description.slice(0, 150) + '...' : 'No description available.'}</p>
-          <p><strong>Rating:</strong> ${info.averageRating || 'N/A'}</p>
-        </div>
-      `;
-    });
-  } else {
-    searchResults.innerHTML += '<p>No results found.</p>';
-  }
-
-  backButton.style.display = 'block';
+// -------------------- SEARCH FUNCTION --------------------
+document.querySelector("form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const query = document.querySelector("input[name='search']").value.trim();
+    if (query) {
+        const books = await fetchBooks(query);
+        renderBooks(books);
+    }
 });
 
-// === Back Button Functionality ===
-backButton.addEventListener('click', () => {
-  searchResults.innerHTML = '';
-  backButton.style.display = 'none';
-  searchInput.value = '';
+// -------------------- FETCH BOOKS --------------------
+async function fetchBooks(query) {
+    const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&key=${apiKey}`);
+    const data = await response.json();
+    return data.items || [];
+}
+
+// -------------------- RENDER SEARCH RESULTS --------------------
+function renderBooks(books) {
+    const section = document.getElementById("recommended-books");
+    section.innerHTML = "";
+    books.forEach(book => {
+        const { title, authors, description, imageLinks, averageRating } = book.volumeInfo;
+        section.innerHTML += `
+            <div class="book">
+                <img src="${imageLinks?.thumbnail || ''}" alt="${title}" />
+                <h4>${title}</h4>
+                <p><strong>Author:</strong> ${authors ? authors.join(", ") : "Unknown"}</p>
+                <p>${description ? description.slice(0, 150) + "..." : "No description available"}</p>
+                <p><strong>Rating:</strong> ${averageRating || "N/A"}</p>
+            </div>
+        `;
+    });
+}
+
+// -------------------- RANDOM RECOMMENDATION --------------------
+async function loadRecommendation() {
+    const sampleQueries = ["bestsellers", "fiction", "technology", "history", "science"];
+    const randomQuery = sampleQueries[Math.floor(Math.random() * sampleQueries.length)];
+    const books = await fetchBooks(randomQuery);
+    if (books.length > 0) {
+        renderBooks([books[Math.floor(Math.random() * books.length)]]);
+    }
+}
+
+document.getElementById("refresh-btn").addEventListener("click", loadRecommendation);
+
+// -------------------- SIDEBAR GENRE FILTER --------------------
+document.getElementById("genre-filter").addEventListener("change", async function () {
+    const genre = this.value;
+    const query = genre === "All" ? "bestsellers" : genre;
+    const books = await fetchBooks(query);
+    const sidebar = document.getElementById("sidebar-books");
+    sidebar.innerHTML = "";
+    books.slice(0, 10).forEach(book => {
+        const { title, imageLinks } = book.volumeInfo;
+        sidebar.innerHTML += `
+            <div class="sidebar-book">
+                <img src="${imageLinks?.thumbnail || ''}" alt="${title}" />
+                <p>${title}</p>
+            </div>
+        `;
+    });
 });
 
-// === Refresh Recommendation ===
-refreshButton.addEventListener('click', fetchRecommendedBook);
-
-// === Sidebar Bestsellers with Genre Filter ===
-async function loadGenresAndBestsellers() {
-  const genres = ['Fiction', 'Mystery', 'Science', 'History', 'Romance'];
-  genreSelect.innerHTML = genres.map(g => `<option value="${g}">${g}</option>`).join('');
-
-  genreSelect.addEventListener('change', () => {
-    loadTopBooksByGenre(genreSelect.value);
-  });
-
-  loadTopBooksByGenre(genres[0]);
-}
-
-async function loadTopBooksByGenre(genre) {
-  const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=subject:${genre}&orderBy=relevance&maxResults=10&key=${API_KEY}`);
-  const data = await response.json();
-
-  bestsellersList.innerHTML = '';
-  if (data.items) {
-    data.items.forEach(book => {
-      const info = book.volumeInfo;
-      bestsellersList.innerHTML += `
-        <li>
-          <img src="${info.imageLinks?.thumbnail || 'default-cover.jpg'}" alt="Book">
-          <span>${info.title}</span>
-        </li>
-      `;
-    });
-  }
-}
-
-// === Initialize on Page Load ===
-window.addEventListener('DOMContentLoaded', () => {
-  fetchRecommendedBook();
-  loadGenresAndBestsellers();
+// -------------------- INITIAL LOAD --------------------
+window.addEventListener("load", () => {
+    loadRecommendation();
+    document.getElementById("genre-filter").dispatchEvent(new Event("change"));
 });
