@@ -2,41 +2,54 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tomo - Book Tracer</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tomo Book Tracer</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="sidebar">
-    <h3>📘 Top 10 Bestsellers</h3>
-    <select id="genre-filter">
-      <option value="All">All</option>
-      <option value="Fiction">Fiction</option>
-      <option value="Mystery">Mystery</option>
-      <option value="Romance">Romance</option>
-      <option value="History">History</option>
-    </select>
-    <div id="sidebar-books">Loading books...</div>
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h2>📘 Top 10 Bestsellers</h2>
+      <select id="genre-filter">
+        <option value="All">All</option>
+        <option value="Fiction">Fiction</option>
+        <option value="Nonfiction">Nonfiction</option>
+        <option value="Fantasy">Fantasy</option>
+        <option value="Science">Science</option>
+        <option value="History">History</option>
+      </select>
+      <div id="sidebar-books" class="sidebar-books">
+        <p>No books found.</p>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Header -->
+      <header class="header">
+        <h1 class="logo">📚Tomo</h1>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">🌙</button>
+      </header>
+
+      <p class="tagline">Find and explore books online & offline</p>
+
+      <!-- Search -->
+      <form class="search-form">
+        <input type="text" name="search" placeholder="Search for books..." />
+        <button type="submit">Search</button>
+      </form>
+
+      <!-- Recommendations -->
+      <section class="recommendations">
+        <h2>📘 Recommended Books</h2>
+        <button id="refresh-btn">🔄 Refresh Recommendations</button>
+        <div id="recommended-books" class="book-list">
+          <p>No recommendations available.</p>
+        </div>
+      </section>
+    </main>
   </div>
-
-  <div class="main-content">
-    <h1><span class="logo">📚Tomo</span></h1>
-    <p>Find and explore books online & offline</p>
-
-    <form>
-      <input type="text" name="search" placeholder="Search for books..." />
-      <input type="submit" value="Search" />
-    </form>
-
-    <h2>📘 Recommended Books</h2>
-    <button id="refresh-btn">🔄 Refresh Recommendations</button>
-    <div id="recommended-books">Loading...</div>
-  </div>
-
-  <!-- Theme Toggle Button -->
-  <button id="theme-toggle" aria-label="Toggle Theme">
-    <span id="theme-icon">🌙</span>
-  </button>
 
   <script src="script.js"></script>
 </body>
