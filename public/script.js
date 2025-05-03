@@ -1,193 +1,130 @@
-// ✅ Utility: Get secure image URL or fallback
-function getSafeImageLink(imageLinks) {
-  const raw = imageLinks?.thumbnail || imageLinks?.smallThumbnail || "";
-  return raw ? raw.replace(/^http:\/\//i, "https://") : "https://via.placeholder.com/100x140?text=No+Image";
-}
+// Toggle Dark Mode
+document.getElementById('themeToggle').addEventListener('change', function () {
+  document.body.classList.toggle('dark', this.checked);
+});
 
-// 🌙 Theme Toggle
-function setupThemeToggle() {
-  const toggle = document.getElementById("themeToggle");
-  const body = document.body;
-  const savedTheme = localStorage.getItem("theme");
-
-  if (savedTheme === "dark") {
-    body.classList.add("dark");
-    toggle.checked = true;
-  }
-
-  toggle.addEventListener("change", () => {
-    const isDark = toggle.checked;
-    body.classList.toggle("dark", isDark);
-    localStorage.setItem("theme", isDark ? "dark" : "light");
-  });
-}
-
-// 📘 Load 3 recommended books
-async function loadRecommendations() {
-  const box = document.getElementById("recommendedBook");
-  if (!box) return;
-
-  const keywords = ["fiction", "bestseller", "history", "science", "mystery", "fantasy", "classic"];
-  const keyword = keywords[Math.floor(Math.random() * keywords.length)];
-
-  box.innerHTML = `<h3>📘 Recommended Books</h3><p>Loading...</p>`;
-
+// Fetch Top 10 Bestsellers for Sidebar
+async function loadTopBooks() {
+  const topBooksList = document.getElementById('topBooksList');
+  topBooksList.innerHTML = '<li>Loading...</li>';
   try {
-    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${keyword}&maxResults=40`);
+    const res = await fetch('https://www.googleapis.com/books/v1/volumes?q=bestseller&maxResults=10');
     const data = await res.json();
-    const books = data.items || [];
+    topBooksList.innerHTML = '';
 
-    if (books.length === 0) throw new Error("No books found");
-
-    // Shuffle and get 3 unique books
-    const shuffled = books.sort(() => 0.5 - Math.random()).slice(0, 3);
-
-    const html = shuffled.map(book => {
+    data.items.forEach(book => {
+      const li = document.createElement('li');
       const info = book.volumeInfo;
-      const title = info.title || "Untitled";
-      const authors = info.authors?.join(", ") || "Unknown Author";
-      const rating = info.averageRating
-        ? `⭐ ${info.averageRating} (${info.ratingsCount || 0})`
-        : "Not rated";
-      const desc = info.description
-        ? info.description.replace(/<\/?[^>]+(>|$)/g, "").slice(0, 100) + "..."
-        : "No description available.";
+      const link = document.createElement('a');
+      link.href = info.infoLink;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
 
-      return `
-        <div class="recommended-item">
-          <img src="${getSafeImageLink(info.imageLinks)}" alt="Cover" />
-          <p><strong>${title}</strong></p>
-          <p>by ${authors}</p>
-          <p>${rating}</p>
-          <p>${desc}</p>
-          <a href="${info.infoLink}" target="_blank" rel="noopener noreferrer">More Info</a>
-        </div>
-      `;
-    }).join("");
+      const thumbnail = document.createElement('img');
+      thumbnail.src = info.imageLinks?.thumbnail || '';
+      thumbnail.alt = info.title;
 
-    box.innerHTML = `
-      <h3>📘 Recommended Books</h3>
-      <div class="recommendation-box-content">${html}</div>
-      <button class="refresh-btn" onclick="loadRecommendations()">🔁 Refresh Recommendations</button>
-    `;
+      const title = document.createElement('span');
+      title.textContent = info.title;
+
+      link.appendChild(thumbnail);
+      link.appendChild(title);
+      li.appendChild(link);
+      topBooksList.appendChild(li);
+    });
   } catch (err) {
-    console.error("Recommendation error:", err);
-    box.innerHTML = `<h3>📘 Recommended Books</h3><p>⚠️ Could not load recommendations.</p>`;
+    topBooksList.innerHTML = '<li>Failed to load books</li>';
+    console.error(err);
   }
 }
 
-// 📚 Load top 10 bestseller books for sidebar
-async function loadSidebarBooks() {
-  const sidebar = document.getElementById("leftSidebar");
-  if (!sidebar) return;
+// Load Recommended Books (3 books)
+async function loadRecommendedBooks() {
+  const container = document.getElementById('recommendedBook');
+  container.innerHTML = '<h3>📘 Recommended Books</h3><div class="recommendation-grid" id="recommendGrid"></div><button class="refresh-btn" onclick="loadRecommendedBooks()">🔄 Refresh Recommendations</button>';
+
+  const grid = document.getElementById('recommendGrid');
+  grid.innerHTML = 'Loading...';
 
   try {
-    const res = await fetch("https://www.googleapis.com/books/v1/volumes?q=bestseller&maxResults=10");
+    const res = await fetch('https://www.googleapis.com/books/v1/volumes?q=fantasy&maxResults=40');
     const data = await res.json();
-    const books = data.items || [];
 
-    if (!books.length) throw new Error("No sidebar books");
-
-    sidebar.innerHTML = `<h3>📚 Top 10 Bestsellers</h3>` + books.map(book => {
-      const info = book.volumeInfo;
-      return `
-        <div class="sidebar-book">
-          <img src="${getSafeImageLink(info.imageLinks)}" alt="Cover">
-          <p>${info.title?.slice(0, 25) || "Untitled"}</p>
-        </div>
-      `;
-    }).join("");
-  } catch (err) {
-    console.error("Sidebar error:", err);
-    sidebar.innerHTML = "<p>⚠️ Could not load sidebar books.</p>";
-  }
-}
-
-// 🔍 Manual search
-async function searchBooksManual(query = null) {
-  query ??= document.getElementById("searchInput").value.trim();
-  const results = document.getElementById("bookResults");
-  const backBtn = document.querySelector(".back-button");
-
-  if (!query) {
-    results.innerHTML = "";
-    backBtn.classList.add("hidden");
-    return;
-  }
-
-  backBtn.classList.remove("hidden");
-  results.innerHTML = "<p>🔎 Searching...</p>";
-
-  try {
-    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=20`);
-    const data = await res.json();
-    const books = data.items || [];
-
-    if (!books.length) {
-      results.innerHTML = "<p>❌ No results found.</p>";
-      return;
+    const selected = [];
+    while (selected.length < 3) {
+      const rand = data.items[Math.floor(Math.random() * data.items.length)];
+      if (!selected.includes(rand)) selected.push(rand);
     }
 
-    results.innerHTML = books.map(book => {
+    grid.innerHTML = '';
+    selected.forEach(book => {
       const info = book.volumeInfo;
-      const title = info.title || "No title";
-      const authors = info.authors?.join(", ") || "Unknown author";
-      const thumbnail = getSafeImageLink(info.imageLinks);
-      const infoLink = info.infoLink || "#";
-      const shortDesc = info.description
-        ? info.description.replace(/<\/?[^>]+(>|$)/g, "").slice(0, 100) + "..."
-        : "No description available.";
+      const card = document.createElement('div');
+      card.className = 'recommendation-card';
 
-      return `
-        <div class="book-card">
-          <img src="${thumbnail}" alt="Book cover">
-          <div class="book-info">
-            <h4>${title}</h4>
-            <p><strong>Author:</strong> ${authors}</p>
-            <p>${shortDesc}</p>
-            <a href="${infoLink}" target="_blank" rel="noopener noreferrer">View Book</a>
-          </div>
+      card.innerHTML = `
+        <img src="${info.imageLinks?.thumbnail || ''}" alt="${info.title}" />
+        <h4>${info.title}</h4>
+        <p><em>by ${info.authors?.join(', ') || 'Unknown'}</em></p>
+        <p>${info.averageRating ? `⭐ ${info.averageRating}` : 'Not rated'}</p>
+        <p>${info.description ? info.description.slice(0, 100) + '…' : 'No description available'}</p>
+        <a href="${info.infoLink}" target="_blank">More Info</a>
+      `;
+
+      grid.appendChild(card);
+    });
+  } catch (err) {
+    grid.innerHTML = '<p>Failed to load recommendations.</p>';
+    console.error(err);
+  }
+}
+
+// Manual Search Function
+async function searchBooksManual() {
+  const input = document.getElementById('searchInput').value.trim();
+  const resultsContainer = document.getElementById('bookResults');
+  const backBtn = document.querySelector('.back-button');
+
+  if (!input) return;
+
+  resultsContainer.innerHTML = 'Searching...';
+  backBtn.classList.remove('hidden');
+
+  try {
+    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(input)}&maxResults=20`);
+    const data = await res.json();
+    resultsContainer.innerHTML = '';
+
+    data.items.forEach(book => {
+      const info = book.volumeInfo;
+      const card = document.createElement('div');
+      card.className = 'book-card';
+
+      card.innerHTML = `
+        <img src="${info.imageLinks?.thumbnail || ''}" alt="${info.title}">
+        <div class="book-info">
+          <h4>${info.title}</h4>
+          <p><em>by ${info.authors?.join(', ') || 'Unknown Author'}</em></p>
+          <p>${info.description ? info.description.slice(0, 100) + '…' : 'No description'}</p>
+          <a href="${info.infoLink}" target="_blank">More Info</a>
         </div>
       `;
-    }).join("");
+
+      resultsContainer.appendChild(card);
+    });
   } catch (err) {
-    console.error("Search error:", err);
-    results.innerHTML = "<p>⚠️ An error occurred while searching.</p>";
+    resultsContainer.innerHTML = '<p>Failed to fetch books</p>';
+    console.error(err);
   }
 }
 
-// ⬅️ Clear search results
 function goBack() {
-  document.getElementById("bookResults").innerHTML = "";
-  document.querySelector(".back-button").classList.add("hidden");
-  document.getElementById("searchInput").value = "";
+  document.getElementById('bookResults').innerHTML = '';
+  document.querySelector('.back-button').classList.add('hidden');
 }
 
-// 🔁 Debounced search helper
-function debounce(func, delay) {
-  let timeout;
-  return (...args) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), delay);
-  };
-}
-
-// 🔍 Setup search input event
-const searchInput = document.getElementById("searchInput");
-const debouncedSearch = debounce(() => {
-  const query = searchInput.value.trim();
-  if (query) {
-    searchBooksManual(query);
-  } else {
-    document.getElementById("bookResults").innerHTML = "";
-  }
-}, 400);
-
-searchInput.addEventListener("input", debouncedSearch);
-
-// 🚀 Init all on DOM ready
-window.addEventListener("DOMContentLoaded", () => {
-  setupThemeToggle();
-  loadRecommendations();
-  loadSidebarBooks();
+// Load all on DOM ready
+window.addEventListener('DOMContentLoaded', () => {
+  loadTopBooks();
+  loadRecommendedBooks();
 });
