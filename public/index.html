@@ -80,7 +80,7 @@
         .catch(err => console.error('❌ Service Worker Failed', err));
     }
 
-    // ⚠️ Offline Banner
+    // ⚠️ Offline Banner Logic
     const offlineBanner = document.getElementById("offlineBanner");
     const closeBannerBtn = document.getElementById("closeBanner");
 
@@ -221,7 +221,6 @@
     }
 
     function searchBooksManual() {
-      // Optional fallback/manual trigger
       const query = searchInput.value;
       searchBooks(query);
     }
