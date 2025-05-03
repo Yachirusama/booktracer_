@@ -23,7 +23,7 @@
       <!-- 🌙 Theme Toggle -->
       <div class="theme-toggle">
         <label class="switch">
-          <input type="checkbox" id="darkModeToggle">
+          <input type="checkbox" id="darkModeToggle" />
           <span class="slider round"></span>
         </label>
         <span id="themeIcon">🌞</span>
@@ -45,13 +45,15 @@
       </div>
 
       <!-- Search Results Section -->
-      <div id="bookResults" class="book-list"></div>
+      <div id="bookResults" class="results-grid"></div>
     </main>
   </div>
 
-  <!-- JS Scripts -->
-  <script src="script.js">
-    <script>
+  <!-- External JavaScript File -->
+  <script src="script.js" defer></script>
+
+  <!-- Inline Script for Setup and Book Recommendation -->
+  <script>
     // 🛠 Service Worker Registration
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js')
@@ -103,7 +105,7 @@
       }
     });
 
-    // 📘 Load a random recommended book with short description and rating
+    // 📘 Load a random recommended book
     async function loadRandomRecommendation() {
       const box = document.getElementById("recommendedBook");
       if (!box) return;
@@ -174,7 +176,6 @@
         backButton.classList.add("hidden");
       }
     });
-  </script>
   </script>
 </body>
 </html>
