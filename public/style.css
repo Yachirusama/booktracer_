@@ -1,4 +1,4 @@
-/* Base Styles */
+/* ✅ Base Styles */
 body {
   font-family: 'Poppins', sans-serif;
   margin: 0;
@@ -7,7 +7,7 @@ body {
   color: #111;
 }
 
-body.dark {
+body.dark-theme {
   background-color: #121212;
   color: #f5f5f5;
 }
@@ -30,11 +30,8 @@ body.dark {
   display: none;
 }
 
-/* Header */
+/* 📚 Header */
 header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   text-align: center;
   margin-bottom: 20px;
 }
@@ -54,6 +51,7 @@ header h2 {
 .theme-toggle {
   margin-top: 10px;
   display: flex;
+  justify-content: center;
   align-items: center;
   gap: 10px;
 }
@@ -100,14 +98,6 @@ input:checked + .slider:before {
   transform: translateX(26px);
 }
 
-.slider.round {
-  border-radius: 34px;
-}
-
-.slider.round:before {
-  border-radius: 50%;
-}
-
 /* 🔍 Search Section */
 .search-container {
   display: flex;
@@ -134,8 +124,8 @@ input:checked + .slider:before {
   border: 1px solid #ccc;
 }
 
-body.dark .search-container input,
-body.dark .search-container button {
+body.dark-theme .search-container input,
+body.dark-theme .search-container button {
   background-color: #2b2b2b;
   color: #fff;
   border: 1px solid #444;
@@ -152,7 +142,7 @@ body.dark .search-container button {
   margin-inline: auto;
 }
 
-body.dark .recommendation-box {
+body.dark-theme .recommendation-box {
   background-color: #1f2b3a;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
@@ -184,7 +174,7 @@ body.dark .recommendation-box {
   color: #333;
 }
 
-body.dark .recommendation-text h3 {
+body.dark-theme .recommendation-text h3 {
   color: #fff;
 }
 
@@ -195,7 +185,7 @@ body.dark .recommendation-text h3 {
   color: #333;
 }
 
-body.dark .recommendation-text p {
+body.dark-theme .recommendation-text p {
   color: #ddd;
 }
 
@@ -209,22 +199,8 @@ body.dark .recommendation-text p {
   text-decoration: none;
 }
 
-body.dark .recommendation-text a {
+body.dark-theme .recommendation-text a {
   color: #82b1ff;
-}
-
-/* 📱 Responsive */
-@media (max-width: 700px) {
-  .recommendation-box-content {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .recommendation-text {
-    width: 100%;
-    text-align: justify;
-  }
 }
 
 /* 📚 Book Results Grid */
@@ -237,7 +213,7 @@ body.dark .recommendation-text a {
   padding: 0 20px;
 }
 
-/* 🃏 Individual Book Card */
+/* 🃏 Book Card */
 .book-card {
   background-color: #ffffff;
   border-radius: 12px;
@@ -272,76 +248,52 @@ body.dark .recommendation-text a {
   color: #666;
 }
 
-body.dark .book-card {
+body.dark-theme .book-card {
   background-color: #1f2b3a;
   color: #f0f0f0;
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
 }
 
-body.dark .book-card h4 {
+body.dark-theme .book-card h4 {
   color: #f5f5f5;
 }
 
-body.dark .book-card p {
+body.dark-theme .book-card p {
   color: #aaa;
 }
 
-/* 🧭 Sidebar Styles */
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: -300px;
-  width: 280px;
-  height: 100%;
+/* ⬅️ Back Button */
+.back-button {
+  display: block;
+  margin: 20px auto 0;
+  padding: 10px 20px;
+  font-size: 1rem;
   background-color: #f5f5f5;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  overflow-y: auto;
-  transition: left 0.3s ease;
-  z-index: 999;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
-.sidebar h3 {
-  margin-top: 0;
+body.dark-theme .back-button {
+  background-color: #2b2b2b;
+  color: #fff;
+  border: 1px solid #444;
 }
 
-.sidebar ul {
-  list-style: none;
-  padding: 0;
+.back-button.hidden {
+  display: none;
 }
 
-.sidebar li {
-  margin: 10px 0;
-}
+/* 📱 Responsive */
+@media (max-width: 700px) {
+  .recommendation-box-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
 
-.sidebar a {
-  color: #333;
-  text-decoration: none;
-}
-
-.sidebar a:hover {
-  text-decoration: underline;
-}
-
-body.dark .sidebar {
-  background-color: #1e1e1e;
-  color: #f0f0f0;
-}
-
-body.dark .sidebar a {
-  color: #ccc;
-}
-
-.sidebar-trigger-zone {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 20px;
-  height: 100%;
-  z-index: 998;
-}
-
-.sidebar-trigger-zone:hover + .sidebar,
-.sidebar:hover {
-  left: 0;
+  .recommendation-text {
+    width: 100%;
+    text-align: justify;
+  }
 }
