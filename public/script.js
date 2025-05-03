@@ -1,8 +1,30 @@
-// ✅ Utility: Safely get thumbnail URL with fallback and HTTPS fix
+// ✅ Utility: Get safe image URL
 function getSafeImageLink(imageLinks) {
   const raw = imageLinks?.thumbnail || imageLinks?.smallThumbnail || "";
   if (!raw) return "https://via.placeholder.com/100";
   return raw.replace(/^http:\/\//i, "https://");
+}
+
+// 🌙 Theme Toggle
+function setupThemeToggle() {
+  const toggle = document.getElementById("themeToggle");
+  const body = document.body;
+
+  const savedTheme = localStorage.getItem("theme");
+  if (savedTheme === "dark") {
+    body.classList.add("dark");
+    toggle.checked = true;
+  }
+
+  toggle.addEventListener("change", () => {
+    if (toggle.checked) {
+      body.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      body.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  });
 }
 
 // 📘 Load a random recommended book
@@ -10,13 +32,11 @@ async function loadRandomRecommendation() {
   const box = document.getElementById("recommendedBook");
   if (!box) return;
 
-  const keywords = ["fiction", "classic", "bestseller", "history", "science", "mystery", "fantasy", "technology"];
+  const keywords = ["fiction", "classic", "bestseller", "history", "science", "mystery", "fantasy"];
   const randomKeyword = keywords[Math.floor(Math.random() * keywords.length)];
 
   try {
-    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${randomKeyword}&maxResults=40&timestamp=${Date.now()}`);
-    if (!res.ok) throw new Error("API returned non-200 status");
-
+    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${randomKeyword}&maxResults=40`);
     const data = await res.json();
     if (!data.items?.length) throw new Error("No books found");
 
@@ -41,20 +61,42 @@ async function loadRandomRecommendation() {
           <p><strong>Author:</strong> ${info.authors?.join(", ") || "Unknown Author"}</p>
           ${rating}
           <p><strong>Description:</strong> ${description}</p>
-          <p><a href="${info.infoLink}" target="_blank" rel="noopener noreferrer">More Info</a></p>
+          <p><a href="${info.infoLink}" target="_blank">More Info</a></p>
         </div>
       </div>
     `;
   } catch (err) {
     console.error("Recommendation error:", err);
-    box.innerHTML = `
-      <h3>📘 Recommended Book</h3>
-      <p>⚠️ Could not load recommendation.</p>
-    `;
+    box.innerHTML = `<h3>📘 Recommended Book</h3><p>⚠️ Could not load recommendation.</p>`;
   }
 }
 
-// 🔍 Search books using Google Books API
+// 📚 Load sidebar books (top 5 from "bestsellers")
+async function loadSidebarBooks() {
+  const sidebar = document.getElementById("leftSidebar");
+  if (!sidebar) return;
+
+  try {
+    const res = await fetch("https://www.googleapis.com/books/v1/volumes?q=bestseller&maxResults=5");
+    const data = await res.json();
+    if (!data.items?.length) throw new Error("No sidebar books");
+
+    sidebar.innerHTML = data.items.map(book => {
+      const info = book.volumeInfo;
+      return `
+        <div class="sidebar-book">
+          <img src="${getSafeImageLink(info.imageLinks)}" alt="Cover">
+          <p>${info.title?.slice(0, 25) || "Untitled"}</p>
+        </div>
+      `;
+    }).join("");
+  } catch (err) {
+    console.error("Sidebar error:", err);
+    sidebar.innerHTML = "<p>⚠️ Could not load sidebar books.</p>";
+  }
+}
+
+// 🔍 Manual search
 async function searchBooksManual(query = null) {
   if (!query) {
     query = document.getElementById("searchInput").value.trim();
@@ -74,8 +116,6 @@ async function searchBooksManual(query = null) {
 
   try {
     const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=20`);
-    if (!res.ok) throw new Error("API returned non-200 status");
-
     const data = await res.json();
 
     if (!data.items || data.items.length === 0) {
@@ -100,14 +140,14 @@ async function searchBooksManual(query = null) {
             <h4>${title}</h4>
             <p><strong>Author:</strong> ${authors}</p>
             <p>${shortDesc}</p>
-            <p><a href="${infoLink}" target="_blank" rel="noopener noreferrer">View Book</a></p>
+            <a href="${infoLink}" target="_blank" rel="noopener noreferrer">View Book</a>
           </div>
         </div>
       `;
     }).join("");
   } catch (err) {
     console.error("Search error:", err);
-    resultsContainer.innerHTML = "<p>⚠️ An error occurred while searching. Please try again later.</p>";
+    resultsContainer.innerHTML = "<p>⚠️ An error occurred while searching.</p>";
   }
 }
 
@@ -118,7 +158,7 @@ function goBack() {
   document.getElementById("searchInput").value = "";
 }
 
-// 🕒 Debounce to prevent rapid API calls
+// 👂 Debounced live search
 function debounce(func, delay) {
   let timeout;
   return (...args) => {
@@ -127,7 +167,6 @@ function debounce(func, delay) {
   };
 }
 
-// 👂 Live search as you type
 const searchInputField = document.getElementById("searchInput");
 const debouncedSearch = debounce(() => {
   const query = searchInputField.value.trim();
@@ -140,30 +179,9 @@ const debouncedSearch = debounce(() => {
 
 searchInputField.addEventListener("input", debouncedSearch);
 
-// 🌙 Theme toggle logic
-function setupThemeToggle() {
-  const toggle = document.getElementById("themeToggle");
-  const body = document.body;
-
-  const savedTheme = localStorage.getItem("theme");
-  if (savedTheme === "dark") {
-    body.classList.add("dark");
-    toggle.checked = true;
-  }
-
-  toggle.addEventListener("change", () => {
-    if (toggle.checked) {
-      body.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      body.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  });
-}
-
-// 🚀 Init on load
+// 🚀 Init
 window.addEventListener("DOMContentLoaded", () => {
-  loadRandomRecommendation();
   setupThemeToggle();
+  loadRandomRecommendation();
+  loadSidebarBooks();
 });
