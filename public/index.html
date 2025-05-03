@@ -8,8 +8,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="offline-banner hidden" id="offlineBanner">⚠️ You are offline</div>
-
   <div class="main-wrapper">
     <!-- 📚 Sidebar -->
     <aside class="sidebar" id="leftSidebar">
@@ -20,7 +18,7 @@
     <!-- 🧠 Main Content -->
     <main class="container">
       <header>
-        <h1>📚 Tomo </h1>
+        <h1>📚 Book Tracer</h1>
         <h2>Find and explore books online & offline</h2>
         <div class="theme-toggle">
           <label class="switch">
@@ -39,12 +37,11 @@
 
       <!-- 📘 Recommended Books -->
       <section id="recommendedBook" class="recommendation-box">
-        <h3>📘 Recommended Books</h3>
-        <div class="recommendation-list" id="recommendationList">
-          <!-- JS will load book cards here -->
-        </div>
-        <button class="refresh-button" onclick="loadRandomRecommendation()">🔄 Refresh Recommendations</button>
+        <!-- JS will load multiple recommendations here -->
       </section>
+
+      <!-- 🔄 Refresh Button -->
+      <button class="refresh-btn" onclick="loadRandomRecommendation()">🔄 Refresh Recommendations</button>
 
       <!-- ⬅️ Back Button -->
       <button class="back-button hidden" onclick="goBack()">← Back to Home</button>
