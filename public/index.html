@@ -2,39 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Book Tracer</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
-  <style>
-    .book-card {
-      display: flex;
-      gap: 12px;
-      border: 1px solid #ccc;
-      padding: 10px;
-      border-radius: 8px;
-      margin-bottom: 10px;
-      background-color: var(--card-bg, #fff);
-    }
-
-    .book-card img {
-      height: 100px;
-      width: auto;
-    }
-
-    .book-details h4 {
-      margin: 0 0 5px;
-    }
-
-    .results-grid {
-      margin-top: 20px;
-    }
-  </style>
 </head>
 <body>
   <div id="offlineBanner" class="offline-banner hidden">
     ⚠️ You are currently offline. Some features may be limited.
     <span id="closeBanner" style="margin-left: 20px; cursor: pointer;">❌</span>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-section">
+      <h3>🏆 Top Rated Books</h3>
+      <ul>
+        <li><a href="https://www.amazon.com/dp/0061120081" target="_blank">To Kill a Mockingbird</a></li>
+        <li><a href="https://www.amazon.com/dp/0743273567" target="_blank">The Great Gatsby</a></li>
+        <li><a href="https://www.amazon.com/dp/0451524934" target="_blank">1984</a></li>
+        <li><a href="https://www.amazon.com/dp/0140449264" target="_blank">Pride and Prejudice</a></li>
+        <li><a href="https://www.amazon.com/dp/0143039431" target="_blank">Moby Dick</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <h3>🔥 Bestsellers</h3>
+      <ul>
+        <li><a href="https://www.amazon.com/dp/0593652886" target="_blank">Fourth Wing</a></li>
+        <li><a href="https://www.amazon.com/dp/1982185821" target="_blank">The Covenant of Water</a></li>
+        <li><a href="https://www.amazon.com/dp/1501171348" target="_blank">It Ends With Us</a></li>
+        <li><a href="https://www.amazon.com/dp/0593230256" target="_blank">Atomic Habits</a></li>
+        <li><a href="https://www.amazon.com/dp/038554734X" target="_blank">The Midnight Library</a></li>
+      </ul>
+    </div>
   </div>
 
   <div class="container">
@@ -62,6 +62,7 @@
     </main>
   </div>
 
+  <!-- Existing script for service worker, search, recommendations etc. -->
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js')
