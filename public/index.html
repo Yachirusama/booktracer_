@@ -1,46 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tomo Book Tracer</title>
+  <title>Book Tracer</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
+    
     <!-- Sidebar -->
     <aside class="sidebar">
       <h2>📘 Top 10 Bestsellers</h2>
       <select id="genre-filter">
-        <option value="All">All</option>
-        <option value="Fiction">Fiction</option>
-        <option value="Nonfiction">Nonfiction</option>
-        <option value="Fantasy">Fantasy</option>
-        <option value="Science">Science</option>
-        <option value="History">History</option>
+        <option value="all">All</option>
       </select>
-      <div id="sidebar-books" class="sidebar-books">
-        <p>No books found.</p>
+      <div id="bestseller-books" class="book-list">
+        <!-- Books will be injected here -->
       </div>
     </aside>
 
     <!-- Main Content -->
     <main class="main-content">
-      <!-- Header -->
       <header class="header">
         <h1 class="logo">📚Tomo</h1>
-        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">🌙</button>
+        <button id="theme-toggle" aria-label="Toggle Theme">🌙</button>
       </header>
 
       <p class="tagline">Find and explore books online & offline</p>
 
-      <!-- Search -->
-      <form class="search-form">
-        <input type="text" name="search" placeholder="Search for books..." />
+      <form id="search-form" class="search-form">
+        <input type="text" id="search-input" placeholder="Search for books..." />
         <button type="submit">Search</button>
       </form>
 
-      <!-- Recommendations -->
       <section class="recommendations">
         <h2>📘 Recommended Books</h2>
         <button id="refresh-btn">🔄 Refresh Recommendations</button>
@@ -49,8 +42,9 @@
         </div>
       </section>
     </main>
+
   </div>
 
-  <script src="script.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
