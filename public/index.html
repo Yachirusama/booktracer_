@@ -6,26 +6,26 @@
   <title>Book Tracer</title>
   <link rel="stylesheet" href="style.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
   <div class="main-wrapper">
     <!-- 📚 Sidebar -->
-    <aside class="sidebar" id="leftSidebar">
+    <aside class="sidebar">
       <h3>📈 Top 10 Bestsellers</h3>
+      <select id="genreFilter" class="genre-filter"></select>
       <ul id="topBooksList"></ul>
     </aside>
 
     <!-- 🧠 Main Content -->
     <main class="container">
       <header>
-        <h1>📚Tomo</h1>
+        <h1>📚 Book Tracer</h1>
         <h2>Find and explore books online & offline</h2>
         <div class="theme-toggle">
-          <label class="switch">
-            <input type="checkbox" id="themeToggle">
-            <span class="slider round"></span>
-          </label>
-          <span>Dark Mode</span>
+          <button id="themeToggle" class="theme-button">
+            <i class="fas fa-sun" id="themeIcon"></i>
+          </button>
         </div>
       </header>
 
@@ -37,11 +37,8 @@
 
       <!-- 📘 Recommended Books -->
       <section id="recommendedBook" class="recommendation-box">
-        <!-- JS will load multiple recommendations here -->
+        <!-- JS will populate multiple recommendations -->
       </section>
-
-      <!-- 🔄 Refresh Button -->
-      <button class="refresh-btn" onclick="loadRandomRecommendation()">🔄 Refresh Recommendations</button>
 
       <!-- ⬅️ Back Button -->
       <button class="back-button hidden" onclick="goBack()">← Back to Home</button>
