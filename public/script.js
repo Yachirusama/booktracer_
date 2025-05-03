@@ -1,67 +1,151 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const genreFilter = document.getElementById("genreFilter");
-  const topBooksList = document.getElementById("topBooksList");
-  const themeToggle = document.getElementById("themeToggle");
-  const themeIcon = document.getElementById("themeIcon");
-  const recommendationTitle = document.getElementById("recommendation-title");
-  const recommendationImage = document.getElementById("recommendation-image");
-  const searchInput = document.getElementById("searchInput");
-  const searchResults = document.getElementById("searchResults");
+// ✅ Safe image link fallback
+function getSafeImageLink(imageLinks) {
+  const raw = imageLinks?.thumbnail || imageLinks?.smallThumbnail || "";
+  return raw ? raw.replace(/^http:\/\//, "https://") : "https://via.placeholder.com/100x150?text=No+Cover";
+}
 
-  const books = [
-    { title: "The Great Adventure", genre: "Adventure" },
-    { title: "Deep in the Galaxy", genre: "Sci-Fi" },
-    { title: "Hearts of Fire", genre: "Romance" },
-    { title: "The Fantasy Realms", genre: "Fantasy" },
-    { title: "Mysteries of the Past", genre: "Mystery" },
-    { title: "Ocean Wonders", genre: "Adventure" },
-    { title: "Legends Untold", genre: "Fantasy" },
-    { title: "Time Machine", genre: "Sci-Fi" },
-    { title: "Loving Shadows", genre: "Romance" },
-    { title: "Historic Wars", genre: "History" }
-  ];
+// 🌍 Load top 10 bestsellers by genre
+async function loadTopBooks(genre = "bestsellers") {
+  const list = document.getElementById("topBooksList");
+  list.innerHTML = "<li>Loading...</li>";
+  try {
+    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${genre}&maxResults=10`);
+    const data = await res.json();
+    const books = data.items || [];
 
-  // Generate genre options dynamically
-  const genres = [...new Set(books.map(book => book.genre))];
-  genreFilter.innerHTML = `<option value="All">All</option>` + genres.map(genre => `<option value="${genre}">${genre}</option>`).join("");
+    if (!books.length) throw new Error("No top books");
 
-  // Display top 10 bestsellers
-  function renderTopBooks(filter = "All") {
-    const filtered = filter === "All" ? books : books.filter(book => book.genre === filter);
-    topBooksList.innerHTML = filtered.map((book, index) => `
-      <li onclick="alert('Clicked: ${book.title}')">
-        <span class="book-rank">${index + 1}</span>
-        <span>${book.title}</span>
-      </li>
-    `).join("");
+    list.innerHTML = books.map((book, i) => {
+      const info = book.volumeInfo;
+      const link = info.infoLink || "#";
+      return `
+        <li>
+          <span class="book-rank">${i + 1}</span>
+          <a href="${link}" target="_blank">
+            <img src="${getSafeImageLink(info.imageLinks)}" alt="Cover" />
+          </a>
+          <a href="${link}" target="_blank">${info.title?.slice(0, 30) || "Untitled"}</a>
+        </li>
+      `;
+    }).join("");
+  } catch (err) {
+    console.error("Top books error:", err);
+    list.innerHTML = "<li>⚠️ Could not load top books.</li>";
   }
+}
 
-  // Handle genre filter change
-  genreFilter.addEventListener("change", () => {
-    renderTopBooks(genreFilter.value);
-  });
+// 📘 Load 3 random recommended books
+async function loadRecommendations() {
+  const section = document.getElementById("recommended-section");
+  section.innerHTML = "<p>Loading recommendations...</p>";
 
-  // Toggle dark mode
-  themeToggle.addEventListener("change", () => {
-    document.body.classList.toggle("dark", themeToggle.checked);
-    themeIcon.className = themeToggle.checked ? "fas fa-moon" : "fas fa-sun";
-  });
+  const keywords = ["fiction", "classic", "history", "science", "mystery", "fantasy"];
+  const keyword = keywords[Math.floor(Math.random() * keywords.length)];
 
-  // Render initial content
-  renderTopBooks();
+  try {
+    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${keyword}&maxResults=20`);
+    const data = await res.json();
+    const books = data.items || [];
 
-  // Show a random book recommendation
-  const randomBook = books[Math.floor(Math.random() * books.length)];
-  recommendationTitle.textContent = randomBook.title;
-  recommendationImage.src = "https://via.placeholder.com/150?text=Book+Cover";
+    if (!books.length) throw new Error("No recommended books");
 
-  // Search function (placeholder)
-  document.getElementById("searchForm").addEventListener("submit", e => {
-    e.preventDefault();
-    const query = searchInput.value.toLowerCase();
-    const results = books.filter(book => book.title.toLowerCase().includes(query));
-    searchResults.innerHTML = results.length > 0
-      ? results.map(book => `<div class="book-item">${book.title}</div>`).join("")
-      : `<p>No books found for "${query}".</p>`;
-  });
+    const selected = books.sort(() => 0.5 - Math.random()).slice(0, 3);
+
+    section.innerHTML = `
+      <h3>📘 Recommended Books</h3>
+      <div class="book-grid">
+        ${selected.map(book => {
+          const info = book.volumeInfo;
+          const rating = info.averageRating
+            ? `<div class="book-rating">⭐ ${info.averageRating} (${info.ratingsCount || 0})</div>`
+            : `<div class="book-rating">Not rated</div>`;
+          return `
+            <div class="book-item">
+              <img src="${getSafeImageLink(info.imageLinks)}" alt="Cover" />
+              <div class="book-title">${info.title || "No Title"}</div>
+              <div class="book-description">${(info.description || "No description").slice(0, 100)}...</div>
+              ${rating}
+              <a href="${info.infoLink}" target="_blank">More Info</a>
+            </div>
+          `;
+        }).join("")}
+      </div>
+      <button id="refreshRecommendations">🔄 Refresh Recommendations</button>
+    `;
+
+    document.getElementById("refreshRecommendations").onclick = loadRecommendations;
+  } catch (err) {
+    console.error("Recommendation error:", err);
+    section.innerHTML = "<p>⚠️ Could not load recommendations.</p>";
+  }
+}
+
+// 🔍 Search books manually
+async function searchBooksManual() {
+  const query = document.getElementById("searchInput").value.trim();
+  const section = document.getElementById("search-results");
+  const backBtn = document.getElementById("backBtn");
+  section.innerHTML = "";
+  backBtn.classList.add("hidden");
+
+  if (!query) return;
+
+  section.innerHTML = "<p>🔎 Searching...</p>";
+  backBtn.classList.remove("hidden");
+
+  try {
+    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=12`);
+    const data = await res.json();
+    const books = data.items || [];
+
+    if (!books.length) {
+      section.innerHTML = "<p>❌ No books found.</p>";
+      return;
+    }
+
+    section.innerHTML = `
+      <h3>📖 Search Results</h3>
+      <div class="book-grid">
+        ${books.map(book => {
+          const info = book.volumeInfo;
+          return `
+            <div class="book-item">
+              <img src="${getSafeImageLink(info.imageLinks)}" alt="Cover" />
+              <div class="book-title">${info.title || "No Title"}</div>
+              <div class="book-description">${(info.description || "No description").slice(0, 100)}...</div>
+              <a href="${info.infoLink}" target="_blank">View Book</a>
+            </div>
+          `;
+        }).join("")}
+      </div>
+    `;
+  } catch (err) {
+    console.error("Search error:", err);
+    section.innerHTML = "<p>⚠️ An error occurred during search.</p>";
+  }
+}
+
+// ⬅️ Go back from search
+function goBack() {
+  document.getElementById("search-results").innerHTML = "";
+  document.getElementById("searchInput").value = "";
+  document.getElementById("backBtn").classList.add("hidden");
+}
+
+// 🎯 Load genre filter options dynamically
+async function loadGenres() {
+  const genres = ["bestsellers", "fiction", "fantasy", "mystery", "romance", "science", "history"];
+  const filter = document.getElementById("genreFilter");
+  filter.innerHTML = genres.map(g => `<option value="${g}">${g[0].toUpperCase() + g.slice(1)}</option>`).join("");
+  filter.addEventListener("change", () => loadTopBooks(filter.value));
+}
+
+// 🚀 Init
+window.addEventListener("DOMContentLoaded", () => {
+  loadGenres();
+  loadTopBooks();
+  loadRecommendations();
+
+  document.getElementById("searchBtn").addEventListener("click", searchBooksManual);
+  document.getElementById("backBtn").addEventListener("click", goBack);
 });
