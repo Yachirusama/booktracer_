@@ -2,52 +2,44 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Book Tracer</title>
-  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
-    <aside class="sidebar">
-      <h2>📘 Top 10 Bestsellers</h2>
-      <select id="genreFilter">
-        <option value="all">All</option>
-      </select>
-      <div id="bestsellerList"></div>
-    </aside>
-
-    <main class="main-content">
-      <header>
-        <div class="logo-title">
-          <img src="/icons/logo.png" alt="Logo" class="logo" />
-          <h1>Tomo</h1>
-        </div>
-        <button id="themeToggle" aria-label="Toggle Theme">
-          <img src="/icons/moon.svg" alt="Toggle Theme Icon" id="themeIcon"/>
-        </button>
-      </header>
-
-      <p>Find and explore books online & offline</p>
-
-      <div class="search-section">
-        <input type="text" id="searchInput" placeholder="Search for books..." />
-        <button id="searchButton">Search</button>
-        <button id="backButton" style="display: none;">Back</button>
-      </div>
-
-      <section id="recommendationSection">
-        <h3>📘 Recommended Books</h3>
-        <div id="recommendations" class="book-grid"></div>
-        <button id="refreshButton">🔄 Refresh Recommendations</button>
-      </section>
-
-      <section id="searchResults" style="display: none;">
-        <h3>🔍 Search Results</h3>
-        <div id="resultsGrid" class="book-grid"></div>
-      </section>
-    </main>
+  <div class="sidebar">
+    <h3>📘 Top 10 Bestsellers</h3>
+    <select id="genreSelect">
+      <option value="all">All</option>
+    </select>
+    <ul id="topBooksList"></ul>
   </div>
 
-  <script src="/script.js"></script>
+  <div class="main">
+    <header>
+      <h1>Tomo</h1>
+      <button id="themeToggle">
+        <img id="themeIcon" src="icons/sun.svg" alt="Toggle Theme Icon" height="24" />
+      </button>
+    </header>
+
+    <p>Find and explore books online & offline</p>
+
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search for books..." />
+      <button onclick="searchBooksManual()">Search</button>
+      <button class="back-button hidden" onclick="goBack()">← Back</button>
+    </div>
+
+    <h3>📘 Recommended Books</h3>
+    <button onclick="loadRecommendations()">
+      🔄 Refresh Recommendations
+    </button>
+    <div id="recommendedBook" class="book-container"></div>
+
+    <div id="bookResults" class="book-container"></div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
