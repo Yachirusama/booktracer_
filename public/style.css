@@ -18,7 +18,6 @@ body.dark {
   background-color: #121212;
   color: #f1f1f1;
 }
-
 body.dark a {
   color: #90caf9;
 }
@@ -28,7 +27,8 @@ body.dark a {
   max-width: 800px;
   margin: auto;
   padding: 2rem;
-  padding-left: 250px; /* space for sidebar */
+  padding-left: 60px; /* Less padding to allow sidebar animation */
+  transition: padding-left 0.3s ease;
 }
 
 /* ===== Header ===== */
@@ -48,7 +48,6 @@ h1 {
   justify-content: center;
   margin-bottom: 1.5rem;
 }
-
 .theme-toggle input[type="checkbox"] {
   width: 40px;
   height: 20px;
@@ -60,7 +59,6 @@ h1 {
   cursor: pointer;
   transition: background 0.3s;
 }
-
 .theme-toggle input[type="checkbox"]::before {
   content: '';
   position: absolute;
@@ -72,61 +70,55 @@ h1 {
   left: 1px;
   transition: transform 0.3s;
 }
-
 .theme-toggle input[type="checkbox"]:checked {
   background: #333;
 }
-
 .theme-toggle input[type="checkbox"]:checked::before {
   transform: translateX(20px);
 }
-
 .theme-toggle label {
   margin-left: 10px;
 }
 
-/* ===== Sidebar ===== */
+/* ===== Sidebar (Hoverable) ===== */
 .sidebar {
   position: fixed;
   top: 0;
-  left: 0;
+  left: -180px; /* Hidden initially */
   width: 220px;
   height: 100%;
   background: #eeeeee;
   padding: 1rem;
   overflow-y: auto;
   border-right: 1px solid #ccc;
-  transition: background 0.3s;
+  transition: left 0.3s ease;
+  z-index: 1000;
 }
-
+.sidebar:hover {
+  left: 0;
+}
 body.dark .sidebar {
   background: #1e1e1e;
   border-color: #444;
 }
-
-.sidebar h2 {
+.sidebar h3 {
   font-size: 1.2rem;
   margin-bottom: 1rem;
 }
-
-.sidebar-book {
+.sidebar ul {
+  list-style: none;
+}
+.sidebar li {
   display: flex;
-  flex-direction: column;
   align-items: center;
+  gap: 10px;
   margin-bottom: 1rem;
 }
-
-.sidebar-book img {
-  width: 100px;
-  height: 140px;
+.sidebar li img {
+  width: 30px;
+  height: 45px;
   object-fit: cover;
   border-radius: 4px;
-  margin-bottom: 0.5rem;
-}
-
-.sidebar-book p {
-  text-align: center;
-  font-size: 0.9rem;
 }
 
 /* ===== Recommendation Box ===== */
@@ -137,43 +129,51 @@ body.dark .sidebar {
   margin-bottom: 2rem;
   transition: background 0.3s;
 }
-
 body.dark .recommendation-box {
   background: #2a2a2a;
 }
-
 .recommendation-box-content {
   display: flex;
   gap: 1rem;
 }
-
 .recommendation-box img {
   width: 100px;
   height: 140px;
   object-fit: cover;
   border-radius: 5px;
 }
-
 .recommendation-text p {
   margin-bottom: 0.5rem;
 }
 
-/* ===== Search ===== */
-.search-bar {
+/* ===== Search Bar ===== */
+.search-container {
   margin-bottom: 1.5rem;
   display: flex;
-  align-items: center;
   gap: 1rem;
+  justify-content: center;
 }
-
-.search-bar input[type="text"] {
+.search-container input[type="text"] {
   flex: 1;
+  max-width: 300px;
   padding: 0.5rem;
   font-size: 1rem;
   border-radius: 6px;
   border: 1px solid #ccc;
 }
+.search-container button {
+  padding: 0.5rem 1rem;
+  background: #444;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+body.dark .search-container button {
+  background-color: #777;
+}
 
+/* ===== Back Button ===== */
 .back-button {
   padding: 0.5rem 1rem;
   border: none;
@@ -182,11 +182,9 @@ body.dark .recommendation-box {
   border-radius: 6px;
   cursor: pointer;
 }
-
 .back-button.hidden {
   display: none;
 }
-
 body.dark .back-button {
   background-color: #777;
 }
@@ -197,7 +195,6 @@ body.dark .back-button {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1.5rem;
 }
-
 .book-card {
   background: #fff;
   border-radius: 8px;
@@ -205,11 +202,9 @@ body.dark .back-button {
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   transition: background 0.3s;
 }
-
 body.dark .book-card {
   background: #292929;
 }
-
 .book-card img {
   width: 100%;
   height: 200px;
@@ -217,23 +212,20 @@ body.dark .book-card {
   border-radius: 5px;
   margin-bottom: 0.5rem;
 }
-
 .book-info h4 {
   font-size: 1rem;
   margin-bottom: 0.3rem;
 }
-
 .book-info p {
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
 }
-
 .book-info a {
   color: #007acc;
   font-weight: bold;
 }
 
-/* ===== Scrollbar (Optional) ===== */
+/* ===== Scrollbar ===== */
 .sidebar::-webkit-scrollbar {
   width: 6px;
 }
