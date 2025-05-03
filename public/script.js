@@ -46,13 +46,17 @@ async function loadRandomRecommendation() {
 }
 
 // 🔍 Search books using Google Books API
-async function searchBooksManual() {
-  const query = document.getElementById("searchInput").value.trim();
+async function searchBooksManual(query = null) {
+  if (!query) {
+    query = document.getElementById("searchInput").value.trim();
+  }
+
   const resultsContainer = document.getElementById("bookResults");
   const backButton = document.querySelector(".back-button");
 
   if (!query) {
-    alert("Please enter a search term.");
+    resultsContainer.innerHTML = "";
+    backButton.classList.add("hidden");
     return;
   }
 
@@ -103,12 +107,33 @@ function goBack() {
   document.getElementById("searchInput").value = "";
 }
 
-// 🌙 Theme toggle logic
+// 🕒 Debounce to prevent rapid API calls
+function debounce(func, delay) {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), delay);
+  };
+}
+
+// 👂 Live search as you type
+const searchInputField = document.getElementById("searchInput");
+const debouncedSearch = debounce(() => {
+  const query = searchInputField.value.trim();
+  if (query.length > 0) {
+    searchBooksManual(query);
+  } else {
+    document.getElementById("bookResults").innerHTML = "";
+  }
+}, 400);
+
+searchInputField.addEventListener("input", debouncedSearch);
+
+// 🌙 Theme toggle logic (if applicable, but not used here since handled in HTML)
 function setupThemeToggle() {
   const toggle = document.getElementById("themeToggle");
   const body = document.body;
 
-  // Load saved theme
   const savedTheme = localStorage.getItem("theme");
   if (savedTheme === "dark") {
     body.classList.add("dark-theme");
@@ -129,5 +154,5 @@ function setupThemeToggle() {
 // 🚀 Init on load
 window.addEventListener("DOMContentLoaded", () => {
   loadRandomRecommendation();
-  setupThemeToggle();
 });
+
