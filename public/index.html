@@ -51,6 +51,33 @@
     <img id="theme-icon" src="icons/moon.svg" alt="Toggle Theme Icon" />
   </button>
 
-  <script src="script.js"></script>
+  <script src="script.js">
+    <script>// ---------- BOOK CARD POPOVER ----------
+document.addEventListener("mouseover", (e) => {
+  const card = e.target.closest(".book-card");
+  if (!card || !card.dataset.description) return;
+
+  const popover = document.createElement("div");
+  popover.className = "popover";
+  popover.textContent = card.dataset.description;
+
+  document.body.appendChild(popover);
+
+  const movePopover = (evt) => {
+    popover.style.top = `${evt.pageY + 10}px`;
+    popover.style.left = `${evt.pageX + 10}px`;
+  };
+
+  movePopover(e);
+
+  card.addEventListener("mousemove", movePopover);
+
+  card.addEventListener("mouseleave", () => {
+    popover.remove();
+    card.removeEventListener("mousemove", movePopover);
+  }, { once: true });
+});
+</script>
+  </script>
 </body>
 </html>
