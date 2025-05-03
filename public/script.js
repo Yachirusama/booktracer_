@@ -15,6 +15,8 @@ async function loadRandomRecommendation() {
 
   try {
     const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${randomKeyword}&maxResults=40&timestamp=${Date.now()}`);
+    if (!res.ok) throw new Error("API returned non-200 status");
+
     const data = await res.json();
     if (!data.items?.length) throw new Error("No books found");
 
@@ -72,6 +74,8 @@ async function searchBooksManual(query = null) {
 
   try {
     const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=20`);
+    if (!res.ok) throw new Error("API returned non-200 status");
+
     const data = await res.json();
 
     if (!data.items || data.items.length === 0) {
@@ -96,7 +100,7 @@ async function searchBooksManual(query = null) {
             <h4>${title}</h4>
             <p><strong>Author:</strong> ${authors}</p>
             <p>${shortDesc}</p>
-            <a href="${infoLink}" target="_blank" rel="noopener noreferrer">View Book</a>
+            <p><a href="${infoLink}" target="_blank" rel="noopener noreferrer">View Book</a></p>
           </div>
         </div>
       `;
@@ -136,23 +140,23 @@ const debouncedSearch = debounce(() => {
 
 searchInputField.addEventListener("input", debouncedSearch);
 
-// 🌙 Theme toggle logic (if applicable, but not used here since handled in HTML)
+// 🌙 Theme toggle logic
 function setupThemeToggle() {
   const toggle = document.getElementById("themeToggle");
   const body = document.body;
 
   const savedTheme = localStorage.getItem("theme");
   if (savedTheme === "dark") {
-    body.classList.add("dark-theme");
+    body.classList.add("dark");
     toggle.checked = true;
   }
 
   toggle.addEventListener("change", () => {
     if (toggle.checked) {
-      body.classList.add("dark-theme");
+      body.classList.add("dark");
       localStorage.setItem("theme", "dark");
     } else {
-      body.classList.remove("dark-theme");
+      body.classList.remove("dark");
       localStorage.setItem("theme", "light");
     }
   });
@@ -161,4 +165,5 @@ function setupThemeToggle() {
 // 🚀 Init on load
 window.addEventListener("DOMContentLoaded", () => {
   loadRandomRecommendation();
+  setupThemeToggle();
 });
