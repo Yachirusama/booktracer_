@@ -2,52 +2,52 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Book Tracer</title>
-  <link rel="stylesheet" href="style.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
 </head>
 <body>
   <div class="main-wrapper">
-    <!-- 📚 Sidebar -->
-    <aside class="sidebar">
-      <h3>📈 Top 10 Bestsellers</h3>
-      <select id="genreFilter" class="genre-filter"></select>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="leftSidebar">
+      <h3>📖 Top 10 Bestsellers</h3>
+      <select id="genreSelect"></select>
       <ul id="topBooksList"></ul>
     </aside>
 
-    <!-- 🧠 Main Content -->
+    <!-- Main Content -->
     <main class="container">
       <header>
-        <h1>📚 Book Tracer</h1>
+        <h1>📚Tomo</h1>
         <h2>Find and explore books online & offline</h2>
         <div class="theme-toggle">
-          <button id="themeToggle" class="theme-button">
-            <i class="fas fa-sun" id="themeIcon"></i>
-          </button>
+          <label class="switch">
+            <input type="checkbox" id="themeToggle">
+            <span class="slider round">
+              <span class="icon" id="themeIcon">🌞</span>
+            </span>
+          </label>
         </div>
       </header>
 
-      <!-- 🔍 Search Box -->
+      <!-- Search -->
       <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Search for books..."/>
+        <input type="text" id="searchInput" placeholder="Search for books..." />
         <button onclick="searchBooksManual()">Search</button>
       </div>
 
-      <!-- 📘 Recommended Books -->
-      <section id="recommendedBook" class="recommendation-box">
-        <!-- JS will populate multiple recommendations -->
-      </section>
+      <!-- Recommendations -->
+      <section id="recommendedBook" class="recommendation-box"></section>
 
-      <!-- ⬅️ Back Button -->
+      <!-- Back Button -->
       <button class="back-button hidden" onclick="goBack()">← Back to Home</button>
 
-      <!-- 📚 Book Results -->
+      <!-- Results -->
       <div id="bookResults" class="results-grid"></div>
     </main>
   </div>
 
-  <script src="script.js"></script>
+  <script src="/script.js"></script>
 </body>
 </html>
