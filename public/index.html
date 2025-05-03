@@ -2,82 +2,42 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Book Tracer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tomo - Book Tracer</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Sidebar -->
   <div class="sidebar">
-    <h3><span style="color:#03a9f4">🟦</span> Top 10 Bestsellers</h3>
+    <h3>📘 Top 10 Bestsellers</h3>
     <select id="genre-filter">
       <option value="All">All</option>
       <option value="Fiction">Fiction</option>
-      <option value="Technology">Technology</option>
-      <option value="Science">Science</option>
-      <option value="History">History</option>
-      <option value="Romance">Romance</option>
       <option value="Mystery">Mystery</option>
+      <option value="Romance">Romance</option>
+      <option value="History">History</option>
     </select>
-    <div id="sidebar-books"></div>
+    <div id="sidebar-books">Loading books...</div>
   </div>
 
-  <!-- Main Content -->
   <div class="main-content">
-    <header>
-      <h1>Tomo</h1>
-      <p>Find and explore books online & offline</p>
-      <form>
-        <input type="text" name="search" placeholder="Search for books..." />
-        <button type="submit">Search</button>
-      </form>
-    </header>
+    <h1><span class="logo">📚Tomo</span></h1>
+    <p>Find and explore books online & offline</p>
 
-    <!-- Recommendations -->
-    <section>
-      <h2>📘 Recommended Books</h2>
-      <button id="refresh-btn">🔄 Refresh Recommendations</button>
-      
-      <!-- Loader (initially hidden, toggled by JS) -->
-      <div id="loader" class="loader" style="display: none;"></div>
-      
-      <!-- Book Grid -->
-      <div id="recommended-books" class="book-grid"></div>
-    </section>
+    <form>
+      <input type="text" name="search" placeholder="Search for books..." />
+      <input type="submit" value="Search" />
+    </form>
+
+    <h2>📘 Recommended Books</h2>
+    <button id="refresh-btn">🔄 Refresh Recommendations</button>
+    <div id="recommended-books">Loading...</div>
   </div>
 
-  <!-- Theme Toggle -->
-  <button id="theme-toggle" aria-label="Toggle Dark Mode">
-    <img id="theme-icon" src="icons/moon.svg" alt="Toggle Theme Icon" />
+  <!-- Theme Toggle Button -->
+  <button id="theme-toggle" aria-label="Toggle Theme">
+    <span id="theme-icon">🌙</span>
   </button>
 
-  <script src="script.js">
-    <script>// ---------- BOOK CARD POPOVER ----------
-document.addEventListener("mouseover", (e) => {
-  const card = e.target.closest(".book-card");
-  if (!card || !card.dataset.description) return;
-
-  const popover = document.createElement("div");
-  popover.className = "popover";
-  popover.textContent = card.dataset.description;
-
-  document.body.appendChild(popover);
-
-  const movePopover = (evt) => {
-    popover.style.top = `${evt.pageY + 10}px`;
-    popover.style.left = `${evt.pageX + 10}px`;
-  };
-
-  movePopover(e);
-
-  card.addEventListener("mousemove", movePopover);
-
-  card.addEventListener("mouseleave", () => {
-    popover.remove();
-    card.removeEventListener("mousemove", movePopover);
-  }, { once: true });
-});
-</script>
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
