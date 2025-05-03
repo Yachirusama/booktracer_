@@ -10,43 +10,44 @@
 <body>
   <div class="offline-banner hidden" id="offlineBanner">⚠️ You are offline</div>
 
-  <!-- 📚 Sidebar -->
-  <div class="sidebar" id="sidebar">
-    <h3>📈 Top Books</h3>
-    <ul id="topBooksList">
-      <!-- JS will populate with book covers + titles -->
-    </ul>
-  </div>
+  <div class="main-wrapper">
+    <!-- 📚 Sidebar -->
+    <aside class="sidebar" id="leftSidebar">
+      <h3>📈 Top Books</h3>
+      <!-- JS will populate this sidebar -->
+    </aside>
 
-  <!-- 🧠 Main Content -->
-  <div class="container">
-    <header>
-      <h1>📚 Book Tracer</h1>
-      <h2>Find and explore books online & offline</h2>
-      <div class="theme-toggle">
-        <label>
-          <input type="checkbox" id="themeToggle">
+    <!-- 🧠 Main Content -->
+    <main class="container">
+      <header>
+        <h1>📚 Book Tracer</h1>
+        <h2>Find and explore books online & offline</h2>
+        <div class="theme-toggle">
+          <label class="switch">
+            <input type="checkbox" id="themeToggle">
+            <span class="slider round"></span>
+          </label>
           <span>Dark Mode</span>
-        </label>
+        </div>
+      </header>
+
+      <!-- 🔍 Search Box -->
+      <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search for books..."/>
+        <button onclick="searchBooksManual()">Search</button>
       </div>
-    </header>
 
-    <!-- 🔍 Search Box -->
-    <div class="search-container">
-      <input type="text" id="searchInput" placeholder="Search for books..."/>
-      <button onclick="searchBooksManual()">Search</button>
-    </div>
+      <!-- 📘 Recommended Book -->
+      <section id="recommendedBook" class="recommendation-box">
+        <!-- JS will load content here -->
+      </section>
 
-    <!-- 📘 Recommended Book -->
-    <section id="recommendedBook" class="recommendation-box">
-      <!-- JS will load content here -->
-    </section>
+      <!-- ⬅️ Back Button -->
+      <button class="back-button hidden" onclick="goBack()">← Back to Home</button>
 
-    <!-- ⬅️ Back Button -->
-    <button class="back-button hidden" onclick="goBack()">← Back to Home</button>
-
-    <!-- 📚 Book Results -->
-    <div id="bookResults" class="results-grid"></div>
+      <!-- 📚 Book Results -->
+      <div id="bookResults" class="results-grid"></div>
+    </main>
   </div>
 
   <script src="script.js"></script>
