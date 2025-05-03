@@ -4,40 +4,50 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Book Tracer</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <div class="sidebar" id="sidebar">
-    <h3>📘 Top 10 Bestsellers</h3>
-    <select id="genreFilter"></select>
-    <div id="bestsellerList"></div>
+  <div class="container">
+    <aside class="sidebar">
+      <h2>📘 Top 10 Bestsellers</h2>
+      <select id="genreFilter">
+        <option value="all">All</option>
+      </select>
+      <div id="bestsellerList"></div>
+    </aside>
+
+    <main class="main-content">
+      <header>
+        <div class="logo-title">
+          <img src="/icons/logo.png" alt="Logo" class="logo" />
+          <h1>Tomo</h1>
+        </div>
+        <button id="themeToggle" aria-label="Toggle Theme">
+          <img src="/icons/moon.svg" alt="Toggle Theme Icon" id="themeIcon"/>
+        </button>
+      </header>
+
+      <p>Find and explore books online & offline</p>
+
+      <div class="search-section">
+        <input type="text" id="searchInput" placeholder="Search for books..." />
+        <button id="searchButton">Search</button>
+        <button id="backButton" style="display: none;">Back</button>
+      </div>
+
+      <section id="recommendationSection">
+        <h3>📘 Recommended Books</h3>
+        <div id="recommendations" class="book-grid"></div>
+        <button id="refreshButton">🔄 Refresh Recommendations</button>
+      </section>
+
+      <section id="searchResults" style="display: none;">
+        <h3>🔍 Search Results</h3>
+        <div id="resultsGrid" class="book-grid"></div>
+      </section>
+    </main>
   </div>
 
-  <div class="main-content">
-    <header>
-      <div class="title-logo">
-        <h1>📚Tomo</h1>
-      </div>
-      <div class="theme-toggle" id="themeToggle" title="Toggle theme">
-        <img id="themeIcon" src="moon-icon.png" alt="Toggle Theme" />
-      </div>
-    </header>
-
-    <p>Find and explore books online & offline</p>
-
-    <div class="search-container">
-      <input type="text" id="searchInput" placeholder="Search for books..." />
-      <button id="searchBtn">Search</button>
-      <button id="backBtn" style="display: none;">← Back to Home</button>
-    </div>
-
-    <section id="recommendations">
-      <h3>📘 Recommended Books</h3>
-      <div id="recommendedBooks" class="book-grid"></div>
-      <button id="refreshBtn">🔄 Refresh Recommendations</button>
-    </section>
-  </div>
-
-  <script src="script.js"></script>
+  <script src="/script.js"></script>
 </body>
 </html>
