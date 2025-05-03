@@ -4,49 +4,42 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Book Tracer</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet"/>
 </head>
 <body>
-  <!-- ⚠️ Offline Banner -->
-  <div class="offline-banner hidden">You are currently offline.</div>
 
-  <!-- 📚 App Container -->
-  <div class="container">
-    <!-- 🔥 Header -->
-    <header>
-      <h1>Book Tracer</h1>
-      <h2>Find and explore books easily</h2>
-
-      <!-- 🌙 Theme Toggle -->
-      <div class="theme-toggle">
-        <label for="themeToggle">Dark Mode</label>
-        <label class="switch">
-          <input type="checkbox" id="themeToggle">
-          <span class="slider round"></span>
-        </label>
-      </div>
-    </header>
-
-    <!-- 🔍 Search Section -->
-    <div class="search-container">
-      <input type="text" id="searchInput" placeholder="Search for books..." />
-      <button onclick="searchBooksManual()">Search</button>
-    </div>
-
-    <button class="back-button hidden" onclick="goBack()">⬅️ Back</button>
-
-    <!-- 📘 Recommended Book -->
-    <section id="recommendedBook" class="recommendation-box">
-      <!-- JS will populate this -->
-    </section>
-
-    <!-- 📚 Search Results -->
-    <div id="bookResults" class="results-grid">
-      <!-- JS will populate this -->
-    </div>
+  <!-- 📚 Sidebar -->
+  <div class="sidebar" id="bookSidebar">
+    <h3>📈 Top Picks</h3>
+    <ul>
+      <li><a href="#">📖 Best Seller 1</a></li>
+      <li><a href="#">📖 Best Seller 2</a></li>
+      <li><a href="#">📖 Top Rated 1</a></li>
+      <li><a href="#">📖 Top Rated 2</a></li>
+    </ul>
   </div>
 
-  <script src="script.js"></script>
-</body>
-</html>
+  <!-- 🛑 Offline Banner -->
+  <div id="offlineBanner" class="offline-banner hidden">⚠️ You are offline</div>
+
+  <header>
+    <h1>📚 Book Tracer</h1>
+    <h2>Find and explore books online & offline</h2>
+
+    <!-- 🌙 Theme Toggle -->
+    <div class="theme-toggle">
+      <label class="switch">
+        <input type="checkbox" id="themeToggle" />
+        <span class="slider round"></span>
+      </label>
+      <span>Dark Mode</span>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- 🔍 Search Section -->
+    <section class="search-container">
