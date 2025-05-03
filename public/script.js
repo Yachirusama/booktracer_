@@ -1,8 +1,10 @@
+// ✅ Utility: Get secure image URL or fallback
 function getSafeImageLink(imageLinks) {
   const raw = imageLinks?.thumbnail || imageLinks?.smallThumbnail || "";
-  return raw ? raw.replace(/^http:\/\//i, "https://") : "https://via.placeholder.com/100";
+  return raw ? raw.replace(/^http:\/\//i, "https://") : "https://via.placeholder.com/100x140";
 }
 
+// 🌙 Theme Toggle
 function setupThemeToggle() {
   const toggle = document.getElementById("themeToggle");
   const body = document.body;
@@ -20,6 +22,7 @@ function setupThemeToggle() {
   });
 }
 
+// 📘 Load random recommended book
 async function loadRandomRecommendation() {
   const box = document.getElementById("recommendedBook");
   if (!box) return;
@@ -44,7 +47,7 @@ async function loadRandomRecommendation() {
     box.innerHTML = `
       <h3>📘 Recommended Book</h3>
       <div class="recommendation-box-content">
-        <img src="${getSafeImageLink(book.imageLinks)}" alt="Cover of ${book.title}" loading="lazy" />
+        <img src="${getSafeImageLink(book.imageLinks)}" alt="Book cover" />
         <div class="recommendation-text">
           <p><strong>Title:</strong> ${book.title}</p>
           <p><strong>Author:</strong> ${book.authors?.join(", ") || "Unknown Author"}</p>
@@ -60,31 +63,34 @@ async function loadRandomRecommendation() {
   }
 }
 
+// 📚 Load top 10 sidebar books (bestsellers)
 async function loadSidebarBooks() {
-  const list = document.getElementById("topBooksList");
-  if (!list) return;
+  const sidebarList = document.getElementById("topBooksList");
+  if (!sidebarList) return;
 
   try {
-    const res = await fetch("https://www.googleapis.com/books/v1/volumes?q=bestseller&maxResults=5");
+    const res = await fetch("https://www.googleapis.com/books/v1/volumes?q=bestseller&maxResults=10");
     const data = await res.json();
     const books = data.items || [];
     if (!books.length) throw new Error("No sidebar books");
 
-    list.innerHTML = books.map(book => {
+    sidebarList.innerHTML = books.map(book => {
       const info = book.volumeInfo;
+      const title = info.title?.slice(0, 30) || "Untitled";
       return `
         <li>
-          <img src="${getSafeImageLink(info.imageLinks)}" alt="Cover of ${info.title}" loading="lazy">
-          <p>${info.title?.slice(0, 25) || "Untitled"}</p>
+          <img src="${getSafeImageLink(info.imageLinks)}" alt="Cover">
+          <p>${title}</p>
         </li>
       `;
     }).join("");
   } catch (err) {
     console.error("Sidebar error:", err);
-    list.innerHTML = "<li>⚠️ Could not load sidebar books.</li>";
+    sidebarList.innerHTML = "<li><p>⚠️ Could not load sidebar books.</p></li>";
   }
 }
 
+// 🔍 Manual search
 async function searchBooksManual(query = null) {
   query ??= document.getElementById("searchInput").value.trim();
 
@@ -122,7 +128,7 @@ async function searchBooksManual(query = null) {
 
       return `
         <div class="book-card">
-          <img src="${thumbnail}" alt="Cover of ${title}" loading="lazy">
+          <img src="${thumbnail}" alt="Book cover">
           <div class="book-info">
             <h4>${title}</h4>
             <p><strong>Author:</strong> ${authors}</p>
@@ -138,12 +144,14 @@ async function searchBooksManual(query = null) {
   }
 }
 
+// ⬅️ Clear search results
 function goBack() {
   document.getElementById("bookResults").innerHTML = "";
   document.querySelector(".back-button").classList.add("hidden");
   document.getElementById("searchInput").value = "";
 }
 
+// 🔁 Debounced search helper
 function debounce(func, delay) {
   let timeout;
   return (...args) => {
@@ -152,6 +160,7 @@ function debounce(func, delay) {
   };
 }
 
+// 🔍 Setup search input event
 const searchInput = document.getElementById("searchInput");
 const debouncedSearch = debounce(() => {
   const query = searchInput.value.trim();
@@ -164,6 +173,7 @@ const debouncedSearch = debounce(() => {
 
 searchInput.addEventListener("input", debouncedSearch);
 
+// 🚀 Init all on DOM ready
 window.addEventListener("DOMContentLoaded", () => {
   setupThemeToggle();
   loadRandomRecommendation();
