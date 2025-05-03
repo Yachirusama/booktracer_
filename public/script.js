@@ -1,78 +1,67 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const themeToggle = document.getElementById("themeToggle");
   const genreFilter = document.getElementById("genreFilter");
   const topBooksList = document.getElementById("topBooksList");
+  const themeToggle = document.getElementById("themeToggle");
+  const themeIcon = document.getElementById("themeIcon");
+  const recommendationTitle = document.getElementById("recommendation-title");
+  const recommendationImage = document.getElementById("recommendation-image");
+  const searchInput = document.getElementById("searchInput");
+  const searchResults = document.getElementById("searchResults");
 
-  // 🌙 Theme toggle handler
-  themeToggle.addEventListener("change", () => {
-    document.body.classList.toggle("dark", themeToggle.checked);
-  });
+  const books = [
+    { title: "The Great Adventure", genre: "Adventure" },
+    { title: "Deep in the Galaxy", genre: "Sci-Fi" },
+    { title: "Hearts of Fire", genre: "Romance" },
+    { title: "The Fantasy Realms", genre: "Fantasy" },
+    { title: "Mysteries of the Past", genre: "Mystery" },
+    { title: "Ocean Wonders", genre: "Adventure" },
+    { title: "Legends Untold", genre: "Fantasy" },
+    { title: "Time Machine", genre: "Sci-Fi" },
+    { title: "Loving Shadows", genre: "Romance" },
+    { title: "Historic Wars", genre: "History" }
+  ];
 
-  // 📚 Dummy genre list (can be replaced with API call)
-  const genres = ["All", "Fiction", "Fantasy", "Science", "Romance", "History"];
-  genres.forEach(genre => {
-    const option = document.createElement("option");
-    option.value = genre;
-    option.textContent = genre;
-    genreFilter.appendChild(option);
-  });
+  // Generate genre options dynamically
+  const genres = [...new Set(books.map(book => book.genre))];
+  genreFilter.innerHTML = `<option value="All">All</option>` + genres.map(genre => `<option value="${genre}">${genre}</option>`).join("");
 
-  genreFilter.addEventListener("change", () => {
-    const selectedGenre = genreFilter.value;
-    loadTopBooks(selectedGenre);
-  });
-
-  // 🧠 Simulate fetching top 10 books by genre
-  function loadTopBooks(genre) {
-    // Dummy data
-    const allBooks = [
-      { title: "The Great Adventure", genre: "Fiction", link: "#" },
-      { title: "Deep in the Galaxy", genre: "Science", link: "#" },
-      { title: "Hearts of Fire", genre: "Romance", link: "#" },
-      { title: "The Fantasy Realms", genre: "Fantasy", link: "#" },
-      { title: "Mysteries of the Past", genre: "History", link: "#" },
-      { title: "Ocean Wonders", genre: "Science", link: "#" },
-      { title: "Legends Untold", genre: "Fantasy", link: "#" },
-      { title: "Time Machine", genre: "Fiction", link: "#" },
-      { title: "Loving Shadows", genre: "Romance", link: "#" },
-      { title: "Historic Wars", genre: "History", link: "#" },
-      { title: "Galactic Peace", genre: "Science", link: "#" }
-    ];
-
-    const filtered = genre === "All"
-      ? allBooks.slice(0, 10)
-      : allBooks.filter(book => book.genre === genre).slice(0, 10);
-
-    topBooksList.innerHTML = "";
-    filtered.forEach((book, index) => {
-      const li = document.createElement("li");
-      const link = document.createElement("a");
-      link.href = book.link;
-      link.textContent = book.title;
-      link.style.textDecoration = "none";
-      link.style.color = "inherit";
-
-      const rankSpan = document.createElement("span");
-      rankSpan.className = "rank";
-      rankSpan.textContent = index + 1;
-
-      li.appendChild(rankSpan);
-      li.appendChild(link);
-      topBooksList.appendChild(li);
-    });
+  // Display top 10 bestsellers
+  function renderTopBooks(filter = "All") {
+    const filtered = filter === "All" ? books : books.filter(book => book.genre === filter);
+    topBooksList.innerHTML = filtered.map((book, index) => `
+      <li onclick="alert('Clicked: ${book.title}')">
+        <span class="book-rank">${index + 1}</span>
+        <span>${book.title}</span>
+      </li>
+    `).join("");
   }
 
-  // Initial load
-  loadTopBooks("All");
+  // Handle genre filter change
+  genreFilter.addEventListener("change", () => {
+    renderTopBooks(genreFilter.value);
+  });
+
+  // Toggle dark mode
+  themeToggle.addEventListener("change", () => {
+    document.body.classList.toggle("dark", themeToggle.checked);
+    themeIcon.className = themeToggle.checked ? "fas fa-moon" : "fas fa-sun";
+  });
+
+  // Render initial content
+  renderTopBooks();
+
+  // Show a random book recommendation
+  const randomBook = books[Math.floor(Math.random() * books.length)];
+  recommendationTitle.textContent = randomBook.title;
+  recommendationImage.src = "https://via.placeholder.com/150?text=Book+Cover";
+
+  // Search function (placeholder)
+  document.getElementById("searchForm").addEventListener("submit", e => {
+    e.preventDefault();
+    const query = searchInput.value.toLowerCase();
+    const results = books.filter(book => book.title.toLowerCase().includes(query));
+    searchResults.innerHTML = results.length > 0
+      ? results.map(book => `<div class="book-item">${book.title}</div>`).join("")
+      : `<p>No books found for "${query}".</p>`;
+  });
 });
-
-// 🔍 Example search function
-function searchBooksManual() {
-  const input = document.getElementById("searchInput").value;
-  alert(`Searching for: ${input}`);
-}
-
-// ⬅️ Back button
-function goBack() {
-  location.reload();
-}
