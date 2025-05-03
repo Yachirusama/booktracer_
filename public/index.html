@@ -1,50 +1,42 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Book Tracer</title>
+  <title>Tomo Book Tracer</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    
-    <!-- Sidebar -->
     <aside class="sidebar">
       <h2>📘 Top 10 Bestsellers</h2>
-      <select id="genre-filter">
+      <select id="genreFilter">
         <option value="all">All</option>
       </select>
-      <div id="bestseller-books" class="book-list">
-        <!-- Books will be injected here -->
-      </div>
+      <ul id="bestsellerList"></ul>
     </aside>
 
-    <!-- Main Content -->
-    <main class="main-content">
-      <header class="header">
-        <h1 class="logo">📚Tomo</h1>
-        <button id="theme-toggle" aria-label="Toggle Theme">🌙</button>
+    <main>
+      <header>
+        <h1>📚 <span class="logo-text">Tomo</span></h1>
+        <p class="subtitle">Find and explore books online & offline</p>
+        <div class="search-bar">
+          <input type="text" id="searchInput" placeholder="Search for books..." />
+          <button id="searchButton">Search</button>
+        </div>
+        <button id="backButton" class="hidden">← Back</button>
       </header>
-
-      <p class="tagline">Find and explore books online & offline</p>
-
-      <form id="search-form" class="search-form">
-        <input type="text" id="search-input" placeholder="Search for books..." />
-        <button type="submit">Search</button>
-      </form>
 
       <section class="recommendations">
         <h2>📘 Recommended Books</h2>
-        <button id="refresh-btn">🔄 Refresh Recommendations</button>
-        <div id="recommended-books" class="book-list">
-          <p>No recommendations available.</p>
-        </div>
+        <button id="refreshBtn">🔄 Refresh Recommendations</button>
+        <ul id="recommendationList" class="book-list"></ul>
       </section>
     </main>
 
+    <button id="themeToggle" aria-label="Toggle Theme">🌙</button>
   </div>
 
-  <script src="app.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
