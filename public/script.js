@@ -26,13 +26,13 @@ async function loadRandomRecommendation() {
     box.innerHTML = `
       <h3>📘 Recommended Book</h3>
       <div class="recommendation-box-content">
-        <img src="${info.imageLinks?.thumbnail || "https://via.placeholder.com/100"}" alt="Cover" />
+        <img src="${info.imageLinks?.thumbnail || "https://via.placeholder.com/100"}" alt="Book cover" />
         <div class="recommendation-text">
           <p><strong>Title:</strong> ${info.title}</p>
           <p><strong>Author:</strong> ${info.authors?.join(", ") || "Unknown Author"}</p>
           ${rating}
           <p><strong>Description:</strong> ${description}</p>
-          <p><a href="${info.infoLink}" target="_blank">More Info</a></p>
+          <p><a href="${info.infoLink}" target="_blank" rel="noopener noreferrer">More Info</a></p>
         </div>
       </div>
     `;
@@ -57,9 +57,9 @@ async function searchBooksManual() {
   }
 
   backButton.classList.remove("hidden");
+  resultsContainer.innerHTML = "<p>🔎 Searching...</p>";
 
   try {
-    resultsContainer.innerHTML = "<p>🔎 Searching...</p>";
     const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=20`);
     const data = await res.json();
 
@@ -74,6 +74,9 @@ async function searchBooksManual() {
       const authors = info.authors?.join(", ") || "Unknown author";
       const thumbnail = info.imageLinks?.thumbnail || "https://via.placeholder.com/100";
       const infoLink = info.infoLink || "#";
+      const shortDesc = info.description
+        ? info.description.replace(/<\/?[^>]+(>|$)/g, "").slice(0, 100) + "..."
+        : "No description available.";
 
       return `
         <div class="book-card">
@@ -81,7 +84,8 @@ async function searchBooksManual() {
           <div class="book-info">
             <h4>${title}</h4>
             <p><strong>Author:</strong> ${authors}</p>
-            <a href="${infoLink}" target="_blank">View Book</a>
+            <p>${shortDesc}</p>
+            <a href="${infoLink}" target="_blank" rel="noopener noreferrer">View Book</a>
           </div>
         </div>
       `;
@@ -99,5 +103,5 @@ function goBack() {
   document.getElementById("searchInput").value = "";
 }
 
-// 🔁 On page load, fetch a recommendation
-loadRandomRecommendation();
+// 🔁 On page load
+window.addEventListener("DOMContentLoaded", loadRandomRecommendation);
