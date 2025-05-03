@@ -1,7 +1,7 @@
 // ✅ Utility: Get secure image URL or fallback
 function getSafeImageLink(imageLinks) {
   const raw = imageLinks?.thumbnail || imageLinks?.smallThumbnail || "";
-  return raw ? raw.replace(/^http:\/\//i, "https://") : "https://via.placeholder.com/100x140";
+  return raw ? raw.replace(/^http:\/\//i, "https://") : "https://via.placeholder.com/100x140?text=No+Image";
 }
 
 // 🌙 Theme Toggle
@@ -22,78 +22,90 @@ function setupThemeToggle() {
   });
 }
 
-// 📘 Load random recommended book
-async function loadRandomRecommendation() {
+// 📘 Load 3 recommended books
+async function loadRecommendations() {
   const box = document.getElementById("recommendedBook");
   if (!box) return;
 
-  const keywords = ["fiction", "classic", "bestseller", "history", "science", "mystery", "fantasy"];
+  const keywords = ["fiction", "bestseller", "history", "science", "mystery", "fantasy", "classic"];
   const keyword = keywords[Math.floor(Math.random() * keywords.length)];
+
+  box.innerHTML = `<h3>📘 Recommended Books</h3><p>Loading...</p>`;
 
   try {
     const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${keyword}&maxResults=40`);
     const data = await res.json();
     const books = data.items || [];
-    if (!books.length) throw new Error("No books found");
 
-    const book = books[Math.floor(Math.random() * books.length)].volumeInfo;
-    const description = book.description
-      ? book.description.replace(/<\/?[^>]+(>|$)/g, "").slice(0, 100) + "..."
-      : "No description available.";
-    const rating = book.averageRating
-      ? `<p><strong>Rating:</strong> ${book.averageRating} ⭐ (${book.ratingsCount || 0} ratings)</p>`
-      : "<p><strong>Rating:</strong> Not rated</p>";
+    if (books.length === 0) throw new Error("No books found");
+
+    // Shuffle and get 3 unique books
+    const shuffled = books.sort(() => 0.5 - Math.random()).slice(0, 3);
+
+    const html = shuffled.map(book => {
+      const info = book.volumeInfo;
+      const title = info.title || "Untitled";
+      const authors = info.authors?.join(", ") || "Unknown Author";
+      const rating = info.averageRating
+        ? `⭐ ${info.averageRating} (${info.ratingsCount || 0})`
+        : "Not rated";
+      const desc = info.description
+        ? info.description.replace(/<\/?[^>]+(>|$)/g, "").slice(0, 100) + "..."
+        : "No description available.";
+
+      return `
+        <div class="recommended-item">
+          <img src="${getSafeImageLink(info.imageLinks)}" alt="Cover" />
+          <p><strong>${title}</strong></p>
+          <p>by ${authors}</p>
+          <p>${rating}</p>
+          <p>${desc}</p>
+          <a href="${info.infoLink}" target="_blank" rel="noopener noreferrer">More Info</a>
+        </div>
+      `;
+    }).join("");
 
     box.innerHTML = `
-      <h3>📘 Recommended Book</h3>
-      <div class="recommendation-box-content">
-        <img src="${getSafeImageLink(book.imageLinks)}" alt="Book cover" />
-        <div class="recommendation-text">
-          <p><strong>Title:</strong> ${book.title}</p>
-          <p><strong>Author:</strong> ${book.authors?.join(", ") || "Unknown Author"}</p>
-          ${rating}
-          <p><strong>Description:</strong> ${description}</p>
-          <p><a href="${book.infoLink}" target="_blank" rel="noopener noreferrer">More Info</a></p>
-        </div>
-      </div>
+      <h3>📘 Recommended Books</h3>
+      <div class="recommendation-box-content">${html}</div>
+      <button class="refresh-btn" onclick="loadRecommendations()">🔁 Refresh Recommendations</button>
     `;
   } catch (err) {
     console.error("Recommendation error:", err);
-    box.innerHTML = `<h3>📘 Recommended Book</h3><p>⚠️ Could not load recommendation.</p>`;
+    box.innerHTML = `<h3>📘 Recommended Books</h3><p>⚠️ Could not load recommendations.</p>`;
   }
 }
 
-// 📚 Load top 10 sidebar books (bestsellers)
+// 📚 Load top 10 bestseller books for sidebar
 async function loadSidebarBooks() {
-  const sidebarList = document.getElementById("topBooksList");
-  if (!sidebarList) return;
+  const sidebar = document.getElementById("leftSidebar");
+  if (!sidebar) return;
 
   try {
     const res = await fetch("https://www.googleapis.com/books/v1/volumes?q=bestseller&maxResults=10");
     const data = await res.json();
     const books = data.items || [];
+
     if (!books.length) throw new Error("No sidebar books");
 
-    sidebarList.innerHTML = books.map(book => {
+    sidebar.innerHTML = `<h3>📚 Top 10 Bestsellers</h3>` + books.map(book => {
       const info = book.volumeInfo;
-      const title = info.title?.slice(0, 30) || "Untitled";
       return `
-        <li>
+        <div class="sidebar-book">
           <img src="${getSafeImageLink(info.imageLinks)}" alt="Cover">
-          <p>${title}</p>
-        </li>
+          <p>${info.title?.slice(0, 25) || "Untitled"}</p>
+        </div>
       `;
     }).join("");
   } catch (err) {
     console.error("Sidebar error:", err);
-    sidebarList.innerHTML = "<li><p>⚠️ Could not load sidebar books.</p></li>";
+    sidebar.innerHTML = "<p>⚠️ Could not load sidebar books.</p>";
   }
 }
 
 // 🔍 Manual search
 async function searchBooksManual(query = null) {
   query ??= document.getElementById("searchInput").value.trim();
-
   const results = document.getElementById("bookResults");
   const backBtn = document.querySelector(".back-button");
 
@@ -176,6 +188,6 @@ searchInput.addEventListener("input", debouncedSearch);
 // 🚀 Init all on DOM ready
 window.addEventListener("DOMContentLoaded", () => {
   setupThemeToggle();
-  loadRandomRecommendation();
+  loadRecommendations();
   loadSidebarBooks();
 });
