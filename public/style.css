@@ -22,13 +22,75 @@ body.dark a {
   color: #90caf9;
 }
 
-/* ===== Container ===== */
+/* ===== Main Layout ===== */
+.main-wrapper {
+  display: flex;
+}
+
+/* ===== Sidebar ===== */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -200px;
+  width: 200px;
+  height: 100%;
+  background: #eeeeee;
+  padding: 1rem;
+  overflow-y: auto;
+  border-right: 1px solid #ccc;
+  transition: left 0.3s ease;
+  z-index: 10;
+}
+
+.sidebar:hover {
+  left: 0;
+}
+
+body.dark .sidebar {
+  background: #1e1e1e;
+  border-color: #444;
+}
+
+.sidebar h3 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* ===== Sidebar Book Items ===== */
+#topBooksList,
+#leftSidebar {
+  list-style: none;
+  padding: 0;
+}
+
+#topBooksList li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+#topBooksList img {
+  width: 100px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 0.3rem;
+}
+
+#topBooksList p {
+  font-size: 0.85rem;
+  text-align: center;
+  color: inherit;
+}
+
+/* ===== Container (Main Content) ===== */
 .container {
-  max-width: 800px;
-  margin: auto;
+  flex: 1;
+  margin-left: 0;
   padding: 2rem;
   transition: margin-left 0.3s ease;
-  margin-left: 0;
 }
 
 .sidebar:hover ~ .container {
@@ -89,63 +151,6 @@ h1 {
   margin-left: 10px;
 }
 
-/* ===== Sidebar Slide-In ===== */
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: -200px;
-  width: 200px;
-  height: 100%;
-  background: #eeeeee;
-  padding: 1rem;
-  overflow-y: auto;
-  border-right: 1px solid #ccc;
-  transition: left 0.3s ease;
-  z-index: 10;
-}
-
-.sidebar:hover {
-  left: 0;
-}
-
-body.dark .sidebar {
-  background: #1e1e1e;
-  border-color: #444;
-}
-
-.sidebar h3 {
-  font-size: 1.1rem;
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
-/* ===== Sidebar Book Items ===== */
-#topBooksList {
-  list-style: none;
-  padding: 0;
-}
-
-#topBooksList li {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-#topBooksList img {
-  width: 100px;
-  height: 140px;
-  object-fit: cover;
-  border-radius: 4px;
-  margin-bottom: 0.3rem;
-}
-
-#topBooksList p {
-  font-size: 0.85rem;
-  text-align: center;
-  color: inherit;
-}
-
 /* ===== Recommendation Box ===== */
 .recommendation-box {
   background: #f0f0f0;
@@ -191,6 +196,7 @@ body.dark .recommendation-box {
   border: 1px solid #ccc;
 }
 
+/* ===== Back Button ===== */
 .back-button {
   padding: 0.5rem 1rem;
   border: none;
