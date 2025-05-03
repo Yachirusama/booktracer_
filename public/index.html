@@ -4,54 +4,36 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Book Tracer</title>
-  <link rel="stylesheet" href="style.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
-  <div class="main-wrapper">
-    <!-- 📚 Sidebar -->
-    <aside class="sidebar" id="leftSidebar">
-      <h3><i class="fas fa-chart-line"></i> Top 10 Bestsellers</h3>
-      <select id="genreFilter"></select>
-      <ul id="topBooksList"></ul>
-    </aside>
+  <div id="sidebar">
+    <h2>📖 Top 10 Bestsellers</h2>
+    <select id="genreFilter"></select>
+    <ul id="topBooksList"></ul>
+  </div>
 
-    <!-- 🧠 Main Content -->
-    <main class="container">
-      <header class="header">
-        <div class="branding">
-          <h1><img src="https://img.icons8.com/color/48/book.png" alt="Logo"> Book Tracer</h1>
-          <h2>Find and explore books online & offline</h2>
-        </div>
-        <div class="theme-toggle">
-          <label class="switch">
-            <input type="checkbox" id="themeToggle">
-            <span class="slider round">
-              <i class="fas fa-sun"></i>
-              <i class="fas fa-moon"></i>
-            </span>
-          </label>
-        </div>
-      </header>
-
-      <!-- 🔍 Search -->
-      <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Search for books..."/>
-        <button onclick="searchBooksManual()">Search</button>
+  <div id="main-content">
+    <header>
+      <h1><img src="logo.png" alt="Logo" class="logo" /> Book Tracer</h1>
+      <p>Find and explore books online & offline</p>
+      <div id="search-section">
+        <input type="text" id="searchInput" placeholder="Search for books..." />
+        <button id="searchBtn">Search</button>
+        <button id="backBtn" style="display: none;">← Back to Home</button>
       </div>
+    </header>
 
-      <!-- 📘 Recommendation -->
-      <section id="recommendedBook" class="recommendation-box">
-        <!-- JS will populate this -->
-      </section>
+    <section id="recommended-section">
+      <h2>📘 Recommended Books</h2>
+      <div id="recommendedBooks" class="book-grid"></div>
+      <button id="refreshRecommendations">🔄 Refresh Recommendations</button>
+    </section>
 
-      <!-- ⬅️ Back Button -->
-      <button class="back-button hidden" onclick="goBack()">← Back to Home</button>
-
-      <!-- 📚 Search Results -->
-      <div id="bookResults" class="results-grid"></div>
-    </main>
+    <section id="search-results" style="display: none;">
+      <h2>Search Results</h2>
+      <div id="searchResults" class="book-grid"></div>
+    </section>
   </div>
 
   <script src="script.js"></script>
