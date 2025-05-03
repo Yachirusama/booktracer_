@@ -6,6 +6,30 @@
   <title>Book Tracer</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .book-card {
+      display: flex;
+      gap: 12px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      background-color: var(--card-bg, #fff);
+    }
+
+    .book-card img {
+      height: 100px;
+      width: auto;
+    }
+
+    .book-details h4 {
+      margin: 0 0 5px;
+    }
+
+    .results-grid {
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
   <!-- 🛑 Offline Notification Banner -->
@@ -40,19 +64,14 @@
       </div>
 
       <!-- 📘 Recommended Book Section -->
-      <div id="recommendedBook" class="recommendation-box">
-        <!-- Content will be injected by JavaScript -->
-      </div>
+      <div id="recommendedBook" class="recommendation-box"></div>
 
       <!-- Search Results Section -->
       <div id="bookResults" class="results-grid"></div>
     </main>
   </div>
 
-  <!-- External JavaScript File -->
-  <script src="script.js" defer></script>
-
-  <!-- Inline Script for Setup and Book Recommendation -->
+  <!-- Script -->
   <script>
     // 🛠 Service Worker Registration
     if ('serviceWorker' in navigator) {
@@ -152,30 +171,66 @@
       }
     }
 
-    // 📢 Trigger recommendation on page load
+    // 📢 Load recommendation on page load
     loadRandomRecommendation();
 
-    // 🔍 Placeholder search
-    function searchBooksManual() {
-      alert("Search functionality to be implemented.");
-    }
-
-    // ⬅️ Placeholder back button
-    function goBack() {
-      alert("Back function to be implemented.");
-    }
-
-    // 👀 Show back button when user types in the search bar
+    // 🔍 Live Search Books
     const searchInput = document.getElementById("searchInput");
+    const bookResults = document.getElementById("bookResults");
     const backButton = document.querySelector(".back-button");
 
     searchInput.addEventListener("input", () => {
-      if (searchInput.value.trim()) {
+      const query = searchInput.value;
+      if (query.trim()) {
         backButton.classList.remove("hidden");
+        searchBooks(query);
       } else {
+        bookResults.innerHTML = "";
         backButton.classList.add("hidden");
       }
     });
+
+    async function searchBooks(query) {
+      try {
+        const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=10`);
+        const data = await response.json();
+
+        if (!data.items?.length) {
+          bookResults.innerHTML = "<p>No results found.</p>";
+          return;
+        }
+
+        bookResults.innerHTML = data.items.map(book => {
+          const info = book.volumeInfo;
+          return `
+            <div class="book-card">
+              <img src="${info.imageLinks?.thumbnail || "https://via.placeholder.com/100"}" alt="Cover" />
+              <div class="book-details">
+                <h4>${info.title}</h4>
+                <p><strong>Author:</strong> ${info.authors?.join(", ") || "Unknown"}</p>
+                <p>${info.description ? info.description.slice(0, 80) + "..." : "No description."}</p>
+                <a href="${info.infoLink}" target="_blank">More Info</a>
+              </div>
+            </div>
+          `;
+        }).join("");
+      } catch (err) {
+        console.error("Search error:", err);
+        bookResults.innerHTML = "<p>⚠️ Failed to fetch results.</p>";
+      }
+    }
+
+    function searchBooksManual() {
+      // Optional fallback/manual trigger
+      const query = searchInput.value;
+      searchBooks(query);
+    }
+
+    function goBack() {
+      searchInput.value = "";
+      bookResults.innerHTML = "";
+      backButton.classList.add("hidden");
+    }
   </script>
 </body>
 </html>
