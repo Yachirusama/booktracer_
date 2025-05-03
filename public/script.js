@@ -1,127 +1,107 @@
-const apiKey = "AIzaSyDbodRnX_CoW0P_2ETDwVH2tkX4pTqKGJM";
+// DOM Elements
+const themeToggleBtn = document.getElementById('theme-toggle');
+const body = document.body;
+const bookList = document.getElementById('book-list');
+const genreFilter = document.getElementById('genre-filter');
+const recommendationContainer = document.getElementById('recommendation-container');
+const refreshBtn = document.getElementById('refresh-btn');
 
-// Elements
-const recommendedContainer = document.getElementById("recommended-books");
-const refreshBtn = document.getElementById("refresh-btn");
-const genreFilter = document.getElementById("genre-filter");
-const sidebarBooks = document.getElementById("sidebar-books");
-const searchForm = document.querySelector("form");
-const themeToggle = document.getElementById("theme-toggle");
+// Set default theme from localStorage
+document.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  setTheme(savedTheme);
+  loadBestsellers();
+  loadRecommendations();
+});
 
-// ---------- RECOMMENDATION ----------
-async function fetchRandomBook() {
-  try {
-    const subject = "fiction";
-    const startIndex = Math.floor(Math.random() * 30);
-    const url = `https://www.googleapis.com/books/v1/volumes?q=subject:${subject}&startIndex=${startIndex}&maxResults=1&key=${apiKey}`;
-    const res = await fetch(url);
-    const data = await res.json();
-    const book = data.items?.[0];
+// Theme Toggle Handler
+themeToggleBtn.addEventListener('click', () => {
+  const newTheme = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  setTheme(newTheme);
+});
 
-    if (book) {
-      const { title, authors, description, averageRating, imageLinks } = book.volumeInfo;
-      recommendedContainer.innerHTML = `
-        <div class="book-card">
-          <img src="${imageLinks?.thumbnail || ''}" alt="Cover" />
-          <div>
-            <h3>${title}</h3>
-            <p><strong>Author:</strong> ${authors?.join(", ") || "N/A"}</p>
-            <p>${description?.substring(0, 200) || "No description available."}</p>
-            <p><strong>Rating:</strong> ${averageRating || "Not rated"}</p>
-          </div>
-        </div>
-      `;
-    } else {
-      recommendedContainer.innerHTML = "<p>No recommendations available.</p>";
-    }
-  } catch (err) {
-    console.error("Recommendation fetch failed:", err);
-    recommendedContainer.innerHTML = "<p>Failed to load recommendation.</p>";
-  }
+function setTheme(theme) {
+  body.setAttribute('data-theme', theme);
+  localStorage.setItem('theme', theme);
+  themeToggleBtn.textContent = theme === 'dark' ? '🌞' : '🌙';
 }
 
-refreshBtn.addEventListener("click", fetchRandomBook);
-window.addEventListener("load", fetchRandomBook);
+// Load Bestseller Books (Dummy Data)
+function loadBestsellers(genre = 'All') {
+  bookList.innerHTML = '';
 
-// ---------- SIDEBAR BESTSELLERS ----------
-async function fetchSidebarBooks(genre = "All") {
-  try {
-    let query = "bestseller";
-    if (genre !== "All") query += `+subject:${genre}`;
+  // Example dummy data
+  const books = [
+    { title: 'Masterclass: Write a Bestseller', author: 'Jacq Burns', cover: 'https://covers.openlibrary.org/b/id/9355607-L.jpg', genre: 'Writing' },
+    { title: 'The Making of a Bestseller', author: 'Arthur T. Vanderbilt', cover: 'https://covers.openlibrary.org/b/id/8228691-L.jpg', genre: 'Publishing' },
+    { title: 'The Bestseller Code', author: 'Jodie Archer', cover: 'https://covers.openlibrary.org/b/id/8079701-L.jpg', genre: 'Analytics' },
+    { title: 'Space, Place, and Bestsellers', author: 'Lisa Fletcher', cover: 'https://covers.openlibrary.org/b/id/8098832-L.jpg', genre: 'Academic' }
+  ];
 
-    const url = `https://www.googleapis.com/books/v1/volumes?q=${query}&maxResults=10&key=${apiKey}`;
-    const res = await fetch(url);
-    const data = await res.json();
+  const filteredBooks = genre === 'All' ? books : books.filter(book => book.genre === genre);
 
-    if (data.items?.length) {
-      sidebarBooks.innerHTML = data.items.map((book) => {
-        const info = book.volumeInfo;
-        return `
-          <div class="sidebar-book">
-            <img src="${info.imageLinks?.thumbnail || ''}" alt="Cover" />
-            <div>
-              <h4>${info.title}</h4>
-              <p>${info.authors?.[0] || "Unknown"}</p>
-            </div>
-          </div>
-        `;
-      }).join("");
-    } else {
-      sidebarBooks.innerHTML = "<p>No books found.</p>";
-    }
-  } catch (err) {
-    console.error("Sidebar fetch failed:", err);
-    sidebarBooks.innerHTML = "<p>Error loading books.</p>";
+  if (filteredBooks.length === 0) {
+    bookList.innerHTML = '<p>No books found.</p>';
+    return;
   }
+
+  filteredBooks.forEach(book => {
+    const card = document.createElement('div');
+    card.className = 'book-card';
+    card.innerHTML = `
+      <img src="${book.cover}" alt="${book.title}">
+      <div>
+        <strong>${book.title}</strong><br>
+        <span>${book.author}</span>
+      </div>
+    `;
+    bookList.appendChild(card);
+  });
 }
 
-genreFilter.addEventListener("change", () => {
-  fetchSidebarBooks(genreFilter.value);
+// Genre Filter Change
+genreFilter.addEventListener('change', (e) => {
+  const genre = e.target.value;
+  loadBestsellers(genre);
 });
 
-window.addEventListener("load", () => fetchSidebarBooks());
+// Load Recommendations (Dummy)
+function loadRecommendations() {
+  recommendationContainer.innerHTML = '';
 
-// ---------- SEARCH ----------
-searchForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const query = e.target.search.value.trim();
-  if (!query) return;
-
-  try {
-    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}&maxResults=5&key=${apiKey}`);
-    const data = await res.json();
-
-    if (data.items?.length) {
-      recommendedContainer.innerHTML = data.items.map((book) => {
-        const info = book.volumeInfo;
-        return `
-          <div class="book-card">
-            <img src="${info.imageLinks?.thumbnail || ''}" alt="Cover" />
-            <div>
-              <h3>${info.title}</h3>
-              <p><strong>Author:</strong> ${info.authors?.join(", ") || "N/A"}</p>
-              <p>${info.description?.substring(0, 200) || "No description."}</p>
-              <p><strong>Rating:</strong> ${info.averageRating || "Not rated"}</p>
-            </div>
-          </div>
-        `;
-      }).join("");
-    } else {
-      recommendedContainer.innerHTML = "<p>No results found.</p>";
+  // Dummy data
+  const recs = [
+    {
+      title: "On Writing",
+      author: "Stephen King",
+      description: "A memoir of the craft from one of the most prolific authors of our time.",
+      cover: "https://covers.openlibrary.org/b/id/8231996-L.jpg",
+      rating: 4.8
     }
-  } catch (err) {
-    console.error("Search failed:", err);
-    recommendedContainer.innerHTML = "<p>Search error occurred.</p>";
+  ];
+
+  if (recs.length === 0) {
+    recommendationContainer.innerHTML = '<p>No recommendations available.</p>';
+    return;
   }
-});
 
-// ---------- THEME TOGGLE ----------
-themeToggle.addEventListener("click", () => {
-  document.body.classList.toggle("dark-mode");
-  themeToggle.textContent = document.body.classList.contains("dark-mode") ? "☀️" : "🌙";
-});
+  recs.forEach(book => {
+    const rec = document.createElement('div');
+    rec.className = 'book-card';
+    rec.innerHTML = `
+      <img src="${book.cover}" alt="${book.title}">
+      <div>
+        <strong>${book.title}</strong><br>
+        <span>${book.author}</span><br>
+        <small>${book.description}</small><br>
+        <em>⭐ ${book.rating}</em>
+      </div>
+    `;
+    recommendationContainer.appendChild(rec);
+  });
+}
 
-// Set initial icon based on current mode
-window.addEventListener("DOMContentLoaded", () => {
-  themeToggle.textContent = document.body.classList.contains("dark-mode") ? "☀️" : "🌙";
+// Refresh Recommendations
+refreshBtn.addEventListener('click', () => {
+  loadRecommendations(); // In real case, fetch new data
 });
