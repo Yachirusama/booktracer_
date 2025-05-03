@@ -2,43 +2,45 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Book Tracer</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="sidebar">
-    <h3>📘 Top 10 Bestsellers</h3>
-    <select id="genreSelect">
-      <option value="all">All</option>
+    <h3><span style="color:#03a9f4">🟦</span> Top 10 Bestsellers</h3>
+    <select id="genre-filter">
+      <option value="All">All</option>
+      <option value="Fiction">Fiction</option>
+      <option value="Technology">Technology</option>
+      <option value="Science">Science</option>
+      <option value="History">History</option>
+      <option value="Romance">Romance</option>
+      <option value="Mystery">Mystery</option>
     </select>
-    <ul id="topBooksList"></ul>
+    <div id="sidebar-books"></div>
   </div>
 
-  <div class="main">
+  <div class="main-content">
     <header>
       <h1>Tomo</h1>
-      <button id="themeToggle">
-        <img id="themeIcon" src="icons/sun.svg" alt="Toggle Theme Icon" height="24" />
-      </button>
+      <p>Find and explore books online & offline</p>
+      <form>
+        <input type="text" name="search" placeholder="Search for books..." />
+        <button type="submit">Search</button>
+      </form>
     </header>
 
-    <p>Find and explore books online & offline</p>
-
-    <div class="search-bar">
-      <input type="text" id="searchInput" placeholder="Search for books..." />
-      <button onclick="searchBooksManual()">Search</button>
-      <button class="back-button hidden" onclick="goBack()">← Back</button>
-    </div>
-
-    <h3>📘 Recommended Books</h3>
-    <button onclick="loadRecommendations()">
-      🔄 Refresh Recommendations
-    </button>
-    <div id="recommendedBook" class="book-container"></div>
-
-    <div id="bookResults" class="book-container"></div>
+    <section>
+      <h2>📘 Recommended Books</h2>
+      <button id="refresh-btn">🔄 Refresh Recommendations</button>
+      <div id="recommended-books" class="book-grid"></div>
+    </section>
   </div>
+
+  <button id="theme-toggle">
+    <img id="theme-icon" src="icons/moon.svg" alt="Toggle Theme Icon" />
+  </button>
 
   <script src="script.js"></script>
 </body>
