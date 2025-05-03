@@ -32,19 +32,15 @@
   </style>
 </head>
 <body>
-  <!-- 🛑 Offline Notification Banner -->
   <div id="offlineBanner" class="offline-banner hidden">
     ⚠️ You are currently offline. Some features may be limited.
     <span id="closeBanner" style="margin-left: 20px; cursor: pointer;">❌</span>
   </div>
 
   <div class="container">
-    <!-- Header -->
     <header>
       <h1>Book Tracer</h1>
       <h2>A Place for Book Lovers 📚</h2>
-
-      <!-- 🌙 Theme Toggle -->
       <div class="theme-toggle">
         <label class="switch">
           <input type="checkbox" id="darkModeToggle" />
@@ -54,33 +50,25 @@
       </div>
     </header>
 
-    <!-- Main Section -->
     <main>
-      <!-- Search Input and Buttons -->
       <div class="search-container">
         <input type="text" id="searchInput" placeholder="Search for books..." />
         <button onclick="searchBooksManual()">🔍</button>
         <button onclick="goBack()" class="back-button hidden">Back</button>
       </div>
 
-      <!-- 📘 Recommended Book Section -->
       <div id="recommendedBook" class="recommendation-box"></div>
-
-      <!-- Search Results Section -->
       <div id="bookResults" class="results-grid"></div>
     </main>
   </div>
 
-  <!-- Script -->
   <script>
-    // 🛠 Service Worker Registration
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js')
         .then(() => console.log('✅ Service Worker Registered'))
         .catch(err => console.error('❌ Service Worker Failed', err));
     }
 
-    // ⚠️ Offline Banner Logic
     const offlineBanner = document.getElementById("offlineBanner");
     const closeBannerBtn = document.getElementById("closeBanner");
 
@@ -102,7 +90,6 @@
     window.addEventListener("offline", updateOnlineStatus);
     updateOnlineStatus();
 
-    // 🌗 Dark Mode Toggle
     const darkToggle = document.getElementById("darkModeToggle");
     const themeIcon = document.getElementById("themeIcon");
 
@@ -124,7 +111,6 @@
       }
     });
 
-    // 📘 Load a random recommended book
     async function loadRandomRecommendation() {
       const box = document.getElementById("recommendedBook");
       if (!box) return;
@@ -149,10 +135,12 @@
           ? `<p><strong>Rating:</strong> ${info.averageRating} ⭐ (${info.ratingsCount || 0} ratings)</p>`
           : "<p><strong>Rating:</strong> Not rated</p>";
 
+        const imageSrc = (info.imageLinks?.thumbnail || info.imageLinks?.smallThumbnail || "https://via.placeholder.com/100").replace(/^http:\/\//i, "https://");
+
         box.innerHTML = `
           <h3>📘 Recommended Book</h3>
           <div class="recommendation-box-content">
-            <img src="${info.imageLinks?.thumbnail || "https://via.placeholder.com/100"}" alt="Cover" />
+            <img src="${imageSrc}" alt="Cover" />
             <div class="recommendation-text">
               <p><strong>Title:</strong> ${info.title}</p>
               <p><strong>Author:</strong> ${info.authors?.join(", ") || "Unknown Author"}</p>
@@ -171,10 +159,8 @@
       }
     }
 
-    // 📢 Load recommendation on page load
     loadRandomRecommendation();
 
-    // 🔍 Live Search Books
     const searchInput = document.getElementById("searchInput");
     const bookResults = document.getElementById("bookResults");
     const backButton = document.querySelector(".back-button");
@@ -202,9 +188,11 @@
 
         bookResults.innerHTML = data.items.map(book => {
           const info = book.volumeInfo;
+          const imageSrc = (info.imageLinks?.thumbnail || info.imageLinks?.smallThumbnail || "https://via.placeholder.com/100").replace(/^http:\/\//i, "https://");
+
           return `
             <div class="book-card">
-              <img src="${info.imageLinks?.thumbnail || "https://via.placeholder.com/100"}" alt="Cover" />
+              <img src="${imageSrc}" alt="Cover" />
               <div class="book-details">
                 <h4>${info.title}</h4>
                 <p><strong>Author:</strong> ${info.authors?.join(", ") || "Unknown"}</p>
