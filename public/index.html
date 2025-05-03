@@ -19,9 +19,11 @@
 
     <!-- 🧠 Main Content -->
     <main class="container">
-      <header>
-        <h1><img src="https://img.icons8.com/color/48/book.png" alt="Logo" style="vertical-align: middle;"> Book Tracer</h1>
-        <h2>Find and explore books online & offline</h2>
+      <header class="header">
+        <div class="branding">
+          <h1><img src="https://img.icons8.com/color/48/book.png" alt="Logo"> Book Tracer</h1>
+          <h2>Find and explore books online & offline</h2>
+        </div>
         <div class="theme-toggle">
           <label class="switch">
             <input type="checkbox" id="themeToggle">
@@ -33,21 +35,21 @@
         </div>
       </header>
 
-      <!-- 🔍 Search Box -->
+      <!-- 🔍 Search -->
       <div class="search-container">
         <input type="text" id="searchInput" placeholder="Search for books..."/>
         <button onclick="searchBooksManual()">Search</button>
       </div>
 
-      <!-- 📘 Recommended Book -->
+      <!-- 📘 Recommendation -->
       <section id="recommendedBook" class="recommendation-box">
-        <!-- JS will load content here -->
+        <!-- JS will populate this -->
       </section>
 
       <!-- ⬅️ Back Button -->
       <button class="back-button hidden" onclick="goBack()">← Back to Home</button>
 
-      <!-- 📚 Book Results -->
+      <!-- 📚 Search Results -->
       <div id="bookResults" class="results-grid"></div>
     </main>
   </div>
