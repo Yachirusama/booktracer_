@@ -1,212 +1,215 @@
-/* Reset & Fonts */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: 'Segoe UI', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  transition: background 0.5s ease, color 0.5s ease;
-  min-height: 100vh;
-}
-
-/* Theme variables */
 :root {
-  --bg: #fff;
-  --text: #111;
-  --card-bg: #f3f3f3;
-  --neon-bg: linear-gradient(270deg, #ff9a9e, #fad0c4, #fbc2eb, #a1c4fd);
+  --light-bg: linear-gradient(135deg, #e0f7fa, #e1bee7, #ffccbc);
+  --dark-bg: #121212;
+  --light-card: #ffffff;
+  --dark-card: #1e1e1e;
+  --accent: #7c4dff;
+  --text-light: #000;
+  --text-dark: #fff;
 }
 
-body.dark-theme {
-  --bg: #121212;
-  --text: #eee;
-  --card-bg: #1e1e1e;
-  background: var(--bg);
-}
-
-/* Neon gradient background in light mode */
-body:not(.dark-theme) {
-  background: var(--neon-bg);
+html[data-theme='light'] body {
+  background: var(--light-bg);
   background-size: 400% 400%;
-  animation: gradientFlow 15s ease infinite;
+  animation: neonShift 10s ease infinite;
+  color: var(--text-light);
 }
 
-@keyframes gradientFlow {
+html[data-theme='dark'] body {
+  background: var(--dark-bg);
+  color: var(--text-dark);
+}
+
+@keyframes neonShift {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
 
-/* Header */
-header.top-bar {
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  transition: background 0.5s, color 0.5s;
+}
+
+header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: var(--card-bg);
-  padding: 12px 20px;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
+  padding: 1rem;
+  background: transparent;
+  position: relative;
 }
 
-.brand {
-  font-size: 24px;
+.logo {
+  font-size: 1.8rem;
   font-weight: bold;
 }
 
-.search-controls {
+.search-bar {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
-.search-controls input {
-  padding: 8px;
-  font-size: 14px;
-  border: none;
-  border-radius: 4px;
-  outline: none;
+.search-bar input {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
-.search-controls button {
+.search-bar button {
   background: none;
   border: none;
-  font-size: 16px;
   cursor: pointer;
-  padding: 4px 8px;
-  transition: transform 0.2s ease;
+  font-size: 1.2rem;
+  transition: transform 0.2s;
 }
 
-.search-controls button:hover {
-  transform: scale(1.15);
+.search-bar button:hover {
+  transform: scale(1.2);
 }
 
-/* Sidebar */
-.sidebar {
+.content {
+  display: flex;
+  flex: 1;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+aside#sidebar {
   width: 250px;
-  padding: 16px;
-  background: var(--card-bg);
-  border-radius: 8px;
-  position: fixed;
-  top: 64px;
-  left: 0;
-  bottom: 0;
-  overflow-y: auto;
+  min-width: 180px;
+  padding: 1rem;
+  border-right: 2px solid #ccc;
+  transition: background 0.3s;
 }
 
-.sidebar h2 {
-  margin-bottom: 8px;
-}
-
-.sidebar select {
+#genreFilter {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  font-size: 1rem;
   width: 100%;
-  padding: 6px;
-  margin-bottom: 12px;
-  font-size: 14px;
-  border-radius: 4px;
-  border: 1px solid #aaa;
 }
 
 #bestsellerList {
-  list-style: none;
-  padding: 0;
+  margin-top: 1rem;
 }
 
-#bestsellerList li {
+#bestsellerList .book {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 #bestsellerList img {
   width: 40px;
-  height: 60px;
+  height: auto;
   object-fit: cover;
-  border-radius: 4px;
 }
 
-/* Main Content */
-.content {
-  margin-left: 270px;
-  padding: 16px;
+section {
+  flex: 1;
+  padding: 1rem;
 }
 
 .book-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 16px;
-  margin-top: 16px;
+  display: flex;
+  overflow-x: auto;
+  gap: 1rem;
+  flex-wrap: nowrap;
+  padding: 1rem 0;
 }
 
-.book {
-  background: var(--card-bg);
-  padding: 8px;
-  border-radius: 8px;
-  text-align: center;
-  transition: transform 0.3s ease;
-  cursor: pointer;
+.book-card {
+  flex: 0 0 auto;
+  background: var(--light-card);
+  padding: 0.8rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 160px;
+  transition: transform 0.3s, background 0.3s;
 }
 
-.book:hover {
+html[data-theme='dark'] .book-card {
+  background: var(--dark-card);
+  color: var(--text-dark);
+}
+
+.book-card:hover {
   transform: scale(1.05);
 }
 
-.book img {
+.book-card img {
   width: 100%;
-  height: 160px;
-  object-fit: cover;
-  border-radius: 4px;
+  height: auto;
+  border-radius: 5px;
 }
 
-.book h3 {
-  font-size: 14px;
-  margin-top: 6px;
+.book-card h3 {
+  font-size: 1rem;
+  margin: 0.5rem 0 0.3rem;
 }
 
-.book p {
-  font-size: 12px;
-  color: var(--text);
+.book-card p {
+  font-size: 0.85rem;
+  margin: 0;
 }
 
-/* Loading Spinner */
+footer {
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.9rem;
+  background: transparent;
+}
+
 .loading-spinner {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  border: 4px solid #ccc;
+  border-top: 4px solid var(--accent);
+  border-radius: 50%;
   width: 40px;
   height: 40px;
-  border: 5px solid #ccc;
-  border-top: 5px solid #111;
-  border-radius: 50%;
   animation: spin 1s linear infinite;
-  margin: 20px auto;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
-/* Responsive */
 @media (max-width: 768px) {
-  .sidebar {
-    position: static;
-    width: 100%;
-    margin-bottom: 16px;
-  }
-
   .content {
-    margin-left: 0;
+    flex-direction: column;
   }
 
-  header.top-bar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
+  aside#sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 2px solid #ccc;
   }
 
   .book-grid {
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .book-card {
+    width: 45%;
+  }
+
+  .search-bar {
+    flex-wrap: wrap;
+    justify-content: center;
   }
 }
