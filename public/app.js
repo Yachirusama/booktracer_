@@ -1,184 +1,140 @@
-const searchInput = document.getElementById("search-input");
-const resultsContainer = document.getElementById("search-results");
-const backButton = document.getElementById("back-button");
-const recommendationList = document.getElementById("recommendation-list");
-const spinner = document.getElementById("spinner");
-const themeToggle = document.getElementById("theme-toggle");
-const genreFilter = document.getElementById("genre-filter");
-const bestsellerList = document.getElementById("bestseller-list");
-const offlineGame = document.getElementById("offline-game");
+document.addEventListener('DOMContentLoaded', () => {
+  const searchInput = document.getElementById('searchInput');
+  const searchResults = document.getElementById('searchResults');
+  const backBtn = document.getElementById('backBtn');
+  const recommendationContainer = document.getElementById('recommendationContainer');
+  const refreshBtn = document.getElementById('refreshBtn');
+  const genreFilter = document.getElementById('genreFilter');
+  const bestsellerList = document.getElementById('bestsellerList');
 
-let isOffline = !navigator.onLine;
-
-function setLoading(loading) {
-  spinner.classList.toggle("hidden", !loading);
-}
-
-function displayBooks(books, container) {
-  container.innerHTML = "";
-  books.forEach(book => {
-    const div = document.createElement("div");
-    div.className = "book";
-    div.innerHTML = `
-      <img src="${book.image}" alt="${book.title}" />
-      <h4>${book.title}</h4>
-      <div class="rating">★ ${book.rating}</div>
-    `;
-    container.appendChild(div);
-  });
-}
-
-async function fetchBooksFromAPIs(query) {
-  const googleBooks = fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}`)
-    .then(res => res.json())
-    .then(data => (data.items || []).map(item => ({
-      title: item.volumeInfo.title,
-      image: item.volumeInfo.imageLinks?.thumbnail || "",
-      rating: item.volumeInfo.averageRating || "N/A"
-    })));
-
-  const openLibrary = fetch(`https://openlibrary.org/search.json?q=${query}`)
-    .then(res => res.json())
-    .then(data => (data.docs || []).map(item => ({
-      title: item.title,
-      image: item.cover_i ? `https://covers.openlibrary.org/b/id/${item.cover_i}-M.jpg` : "",
-      rating: "N/A"
-    })));
-
-  const itbook = fetch(`https://api.itbook.store/1.0/search/${query}`)
-    .then(res => res.json())
-    .then(data => (data.books || []).map(item => ({
-      title: item.title,
-      image: item.image,
-      rating: "N/A"
-    })));
-
-  const all = await Promise.all([googleBooks, openLibrary, itbook]);
-  return all.flat().filter(book => book.image);
-}
-
-async function searchBooks() {
-  const query = searchInput.value.trim();
-  if (!query) return;
-  setLoading(true);
-  resultsContainer.innerHTML = "";
-  backButton.classList.remove("hidden");
-
-  try {
-    const books = await fetchBooksFromAPIs(query);
-    displayBooks(books, resultsContainer);
-  } catch (e) {
-    resultsContainer.innerHTML = "<p>Error loading results. Try again later.</p>";
-  }
-
-  setLoading(false);
-}
-
-async function loadRecommendations() {
-  setLoading(true);
-  try {
-    const books = await fetchBooksFromAPIs("fiction");
-    const limited = books.slice(0, 10);
-    displayBooks(limited, recommendationList);
-  } catch (e) {
-    recommendationList.innerHTML = "<p>Unable to load recommendations.</p>";
-  }
-  setLoading(false);
-}
-
-async function loadGenres() {
-  try {
-    const response = await fetch("https://www.googleapis.com/books/v1/volumes?q=subject");
-    const data = await response.json();
-    const genres = [...new Set((data.items || []).flatMap(item => item.volumeInfo.categories || []))].sort();
-    genreFilter.innerHTML = `<option value="">All Genres</option>` + genres.map(g => `<option value="${g}">${g}</option>`).join("");
-  } catch (e) {
-    genreFilter.innerHTML = `<option>Error loading genres</option>`;
-  }
-}
-
-async function loadBestsellers(genre = "") {
-  bestsellerList.innerHTML = "<li>Loading...</li>";
-  try {
-    const url = genre ? `https://www.googleapis.com/books/v1/volumes?q=subject:${genre}` : `https://www.googleapis.com/books/v1/volumes?q=bestseller`;
-    const res = await fetch(url);
+  async function fetchRecommendedBooks() {
+    recommendationContainer.innerHTML = 'Loading...';
+    const res = await fetch('https://www.googleapis.com/books/v1/volumes?q=bestseller');
     const data = await res.json();
-    const books = (data.items || []).slice(0, 10).map(item => ({
-      title: item.volumeInfo.title,
-      image: item.volumeInfo.imageLinks?.thumbnail || ""
-    }));
-
-    bestsellerList.innerHTML = books.map(book => `
-      <li>
-        <img src="${book.image}" alt="${book.title}" />
-        <span>${book.title}</span>
-      </li>
-    `).join("");
-  } catch (e) {
-    bestsellerList.innerHTML = "<li>Error loading bestsellers.</li>";
+    renderBooks(data.items.slice(0, 5), recommendationContainer);
   }
-}
 
-function toggleTheme() {
-  document.body.classList.toggle("light-theme");
-}
-
-function showOfflineGame() {
-  offlineGame.classList.remove("hidden");
-  offlineGame.innerHTML = `
-    <canvas id="game-canvas" width="300" height="200"></canvas>
-    <p>You're offline. Enjoy a mini-game!</p>
-  `;
-  // You can initialize a canvas game here if needed
-}
-
-function hideOfflineGame() {
-  offlineGame.classList.add("hidden");
-}
-
-window.addEventListener("load", () => {
-  if (isOffline) showOfflineGame();
-  else {
-    hideOfflineGame();
-    loadRecommendations();
-    loadGenres();
-    loadBestsellers();
+  function renderBooks(books, container) {
+    container.innerHTML = '';
+    books.forEach(book => {
+      const info = book.volumeInfo;
+      const div = document.createElement('div');
+      div.className = 'book';
+      div.innerHTML = `
+        <img src="${info.imageLinks?.thumbnail || ''}" alt="${info.title}" />
+        <h4>${info.title}</h4>
+        <p>${info.authors?.join(', ') || ''}</p>
+        <small>⭐ ${info.averageRating || 'N/A'}</small>
+      `;
+      container.appendChild(div);
+    });
   }
-});
 
-window.addEventListener("online", () => {
-  isOffline = false;
-  hideOfflineGame();
-  loadRecommendations();
+  async function searchBooks(query) {
+    searchResults.innerHTML = 'Searching...';
+    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}`);
+    const data = await res.json();
+    renderBooks(data.items || [], searchResults);
+  }
+
+  async function loadGenres() {
+    const genres = ['Fiction', 'Romance', 'Mystery', 'Science', 'History', 'Fantasy'];
+    genres.forEach(g => {
+      const option = document.createElement('option');
+      option.value = g;
+      option.textContent = g;
+      genreFilter.appendChild(option);
+    });
+  }
+
+  async function loadBestsellersByGenre(genre = '') {
+    const q = genre ? `subject:${genre}` : 'bestseller';
+    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${q}`);
+    const data = await res.json();
+    renderBooks(data.items.slice(0, 10), bestsellerList);
+  }
+
+  refreshBtn.addEventListener('click', fetchRecommendedBooks);
+
+  searchInput.addEventListener('input', e => {
+    const val = e.target.value.trim();
+    if (val) {
+      searchBooks(val);
+      backBtn.classList.remove('hidden');
+    }
+  });
+
+  backBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    searchResults.innerHTML = '';
+    backBtn.classList.add('hidden');
+  });
+
+  genreFilter.addEventListener('change', (e) => {
+    loadBestsellersByGenre(e.target.value);
+  });
+
+  document.querySelector('.theme-toggle').addEventListener('click', () => {
+    document.body.classList.toggle('dark');
+    document.body.classList.toggle('light');
+  });
+
+  fetchRecommendedBooks();
   loadGenres();
-  loadBestsellers();
-});
+  loadBestsellersByGenre();
 
-window.addEventListener("offline", () => {
-  isOffline = true;
-  showOfflineGame();
-});
-
-searchInput.addEventListener("input", () => {
-  if (searchInput.value.trim()) {
-    searchBooks();
-  } else {
-    resultsContainer.innerHTML = "";
-    backButton.classList.add("hidden");
+  // Offline Mini Game
+  if (!navigator.onLine) {
+    document.getElementById('offline-game').classList.remove('hidden');
+    startMiniGame();
   }
-});
 
-backButton.addEventListener("click", () => {
-  searchInput.value = "";
-  resultsContainer.innerHTML = "";
-  backButton.classList.add("hidden");
-});
+  function startMiniGame() {
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
 
-themeToggle.addEventListener("click", toggleTheme);
+    let x = 10, y = 120, vy = 0, gravity = 0.5, jumping = false;
+    let obstacleX = 300, speed = 3;
 
-document.getElementById("refresh-button").addEventListener("click", loadRecommendations);
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-genreFilter.addEventListener("change", () => {
-  const selected = genreFilter.value;
-  loadBestsellers(selected);
+      ctx.fillStyle = '#00d9ff';
+      ctx.fillRect(x, y, 20, 20);
+
+      ctx.fillStyle = '#ff4757';
+      ctx.fillRect(obstacleX, 120, 20, 20);
+
+      if (jumping) {
+        vy += gravity;
+        y += vy;
+        if (y >= 120) {
+          y = 120;
+          vy = 0;
+          jumping = false;
+        }
+      }
+
+      obstacleX -= speed;
+      if (obstacleX < -20) {
+        obstacleX = 300 + Math.random() * 100;
+      }
+
+      if (x < obstacleX + 20 && x + 20 > obstacleX && y < 140 && y + 20 > 120) {
+        alert('Game Over!');
+        obstacleX = 300;
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    canvas.addEventListener('click', () => {
+      if (!jumping) {
+        vy = -8;
+        jumping = true;
+      }
+    });
+
+    draw();
+  }
 });
