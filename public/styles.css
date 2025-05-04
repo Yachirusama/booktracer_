@@ -1,190 +1,246 @@
-body {
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-    color: #e0e0e0;
-    background: linear-gradient(-45deg, #1a0033, #002b36, #0a043c, #1f003d);
-    background-size: 400% 400%;
-    animation: neonBackground 15s ease infinite;
-    transition: background 0.5s ease, color 0.5s ease;
+:root {
+  --bg-color: #0d0d1a;
+  --text-color: #ffffff;
+  --accent-color: #00ffe7;
+  --card-bg: #1a1a2e;
+  --input-bg: #222;
+  --shadow: 0 0 15px rgba(0, 255, 231, 0.6);
 }
 
-body[data-theme='light'] {
-    color: #111;
-    background: linear-gradient(-45deg, #f8f9fa, #e9ecef, #dee2e6, #ced4da);
+.light-theme {
+  --bg-color: #f0f0f0;
+  --text-color: #111;
+  --accent-color: #0077cc;
+  --card-bg: #ffffff;
+  --input-bg: #e6e6e6;
+  --shadow: 0 0 12px rgba(0, 119, 204, 0.3);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: var(--bg-color);
+  color: var(--text-color);
+  min-height: 100vh;
+  transition: background 0.3s, color 0.3s;
+  padding-left: 260px;
 }
 
 header {
-    background: rgba(0, 0, 0, 0.7);
-    color: #39ff14;
-    padding: 20px 40px;
-    border-radius: 20px;
-    margin: 30px auto;
-    width: fit-content;
-    box-shadow: 0 0 15px #39ff14;
-    transition: background 0.5s ease, color 0.5s ease, box-shadow 0.5s ease;
+  position: fixed;
+  top: 0;
+  left: 260px;
+  right: 0;
+  background: transparent;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  z-index: 10;
 }
 
-body[data-theme='light'] header {
-    background: rgba(255, 255, 255, 0.8);
-    color: #003366;
-    box-shadow: 0 0 10px #003366;
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--accent-color);
+  text-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.search-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin: 20px auto;
-    max-width: 600px;
+#theme-toggle {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  background-image: url('moon.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  transition: transform 0.3s;
 }
-
-input {
-    flex: 1;
-    min-width: 60%;
-    padding: 12px 20px;
-    border-radius: 30px;
-    border: 1px solid #0ff;
-    background: #111;
-    color: white;
-    box-shadow: inset 0 0 8px #0ff;
-    font-size: 16px;
-    transition: background 0.5s ease, color 0.5s ease, box-shadow 0.5s ease;
-}
-
-body[data-theme='light'] input {
-    background: white;
-    color: #003366;
-    border: 1px solid #003366;
-    box-shadow: inset 0 0 5px #003366;
-}
-
-button, .back-button {
-    padding: 12px 20px;
-    border-radius: 30px;
-    background: #111;
-    border: 1px solid #0ff;
-    color: #0ff;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.3s ease, background 0.5s ease, color 0.5s ease;
-}
-
-button:hover, .back-button:hover {
-    background: #0ff;
-    color: #111;
-}
-
-body[data-theme='light'] button,
-body[data-theme='light'] .back-button {
-    background: white;
-    color: #003366;
-    border: 1px solid #003366;
-    box-shadow: inset 0 0 5px #003366;
-}
-
-body[data-theme='light'] button:hover,
-body[data-theme='light'] .back-button:hover {
-    background: #003366;
-    color: white;
-}
-
-.theme-toggle {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    font-size: 1.5rem;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #0ff;
-    transition: transform 0.3s ease, color 0.5s ease;
-}
-
-body[data-theme='light'] .theme-toggle {
-    color: #003366;
-}
-
-.book-card {
-    background: #141414;
-    border-radius: 15px;
-    box-shadow: 0 0 10px rgba(57, 255, 20, 0.3);
-    padding: 20px;
-    margin: 15px auto;
-    max-width: 500px;
-    transition: 0.3s ease-in-out;
-}
-
-.book-card:hover {
-    box-shadow: 0 0 20px #ff00ff;
-    transform: translateY(-6px);
-}
-
-body[data-theme='light'] .book-card {
-    background: #fff;
-    box-shadow: 0 0 10px rgba(0, 51, 102, 0.3);
-}
-
-body[data-theme='light'] .book-card:hover {
-    box-shadow: 0 0 15px #3399ff;
+.light-theme #theme-toggle {
+  background-image: url('sun.png');
 }
 
 .sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 250px;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #0ff;
-    overflow-y: auto;
-    padding: 20px;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease-in-out;
-    z-index: 100;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 250px;
+  height: 100%;
+  background: var(--card-bg);
+  box-shadow: var(--shadow);
+  padding: 1rem;
+  overflow-y: auto;
+  z-index: 9;
 }
-
-.sidebar:hover {
-    transform: translateX(0);
-}
-
-body[data-theme='light'] .sidebar {
-    background-color: rgba(255, 255, 255, 0.95);
-    color: #003366;
-}
-
 .sidebar h3 {
-    margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+#genre-filter {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  background: var(--input-bg);
+  color: var(--text-color);
+  border: none;
+  border-radius: 4px;
 }
 
-.sidebar ul {
-    list-style: none;
-    padding: 0;
+#bestseller-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+#bestseller-list li {
+  background: var(--input-bg);
+  border-radius: 8px;
+  padding: 0.5rem;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+#bestseller-list img {
+  width: 40px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
 }
 
-.sidebar li {
-    margin: 10px 0;
-    text-align: left;
+main {
+  margin-top: 80px;
+  padding: 1rem 2rem;
 }
 
-.genre-filter {
-    margin-top: 20px;
+.search-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+#search-input {
+  width: 100%;
+  max-width: 500px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  background: var(--input-bg);
+  color: var(--text-color);
+  border: 2px solid var(--accent-color);
+  border-radius: 25px;
+  box-shadow: var(--shadow);
 }
 
-.genre-filter label {
-    display: block;
-    margin-bottom: 10px;
+#recommendations {
+  margin-bottom: 2rem;
+}
+.recommendation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+#recommendation-list {
+  display: flex;
+  overflow-x: auto;
+  gap: 1rem;
+  padding-bottom: 1rem;
+}
+#recommendation-list .book {
+  background: var(--card-bg);
+  padding: 1rem;
+  border-radius: 8px;
+  width: 160px;
+  flex-shrink: 0;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+.book img {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+.book h4 {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+}
+.book .rating {
+  color: gold;
 }
 
+#search-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+}
+#search-results .book {
+  background: var(--card-bg);
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+#back-button {
+  display: block;
+  margin: 2rem auto;
+  padding: 0.5rem 1rem;
+  background: var(--accent-color);
+  color: #000;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  margin: 2rem auto;
+  border: 6px solid var(--input-bg);
+  border-top: 6px solid var(--accent-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
 .hidden {
-    display: none;
+  display: none !important;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-@keyframes neonBackground {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+#offline-game {
+  text-align: center;
+  margin-top: 2rem;
+}
+#offline-game canvas {
+  background: var(--input-bg);
+  border: 2px solid var(--accent-color);
+  margin-bottom: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  body {
+    padding-left: 0;
+  }
+  .sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+    box-shadow: none;
+    margin-bottom: 1rem;
+  }
+  header {
+    left: 0;
+    padding: 1rem;
+  }
 }
