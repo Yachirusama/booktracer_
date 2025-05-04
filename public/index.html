@@ -28,9 +28,19 @@
       </header>
 
       <section class="recommendations">
-        <h2>📘 Recommended Books</h2>
+        <div class="recommend-header">
+          <h2>📘 Recommended Books</h2>
+          <select id="recommendGenre"></select>
+        </div>
         <button id="refreshBtn">🔄 Refresh Recommendations</button>
-        <ul id="recommendationList" class="book-list"></ul>
+        <div class="loader" id="loader"></div>
+        <ul id="recommendationList" class="book-list horizontal"></ul>
+      </section>
+
+      <section id="miniGame" class="hidden">
+        <h2>🌐 You are offline! Play a mini-game:</h2>
+        <canvas id="gameCanvas" width="500" height="200"></canvas>
+        <p>Press Space to Jump</p>
       </section>
     </main>
 
