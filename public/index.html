@@ -3,22 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>📚Tomo - Book Tracer</title>
-  <link rel="stylesheet" href="styles.css"/>
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <script src="https://kit.fontawesome.com/a2d9a56c80.js" crossorigin="anonymous"></script>
+  <title>Tomo Book Tracer</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header>
-    <div class="brand">Tomo</div>
+    <div class="brand">📚Tomo</div>
     <div class="search-container">
-      <input type="text" id="searchInput" placeholder="Search for books..." />
-      <button id="searchBtn"><i class="fas fa-search"></i></button>
-      <button id="refreshBtn"><i class="fas fa-sync-alt"></i></button>
-      <button id="backBtn" style="display:none;"><i class="fas fa-arrow-left"></i></button>
-      <button id="themeToggle"><i id="themeIcon" class="fas fa-moon"></i></button>
-      <div id="loading" style="display:none;">⏳</div>
+      <input id="searchInput" type="text" placeholder="Search for books..." />
+      <button id="searchBtn">🔍</button>
+      <button id="refreshBtn">🔄</button>
+      <button id="backBtn" style="display:none;">🔙</button>
+      <button id="themeToggle">🌙</button>
     </div>
   </header>
 
@@ -26,11 +22,7 @@
     <aside class="sidebar">
       <h2>Top 10 Bestsellers</h2>
       <select id="genreFilter">
-        <option value="">All Genres</option>
-        <option value="fiction">Fiction</option>
-        <option value="nonfiction">Non-fiction</option>
-        <option value="fantasy">Fantasy</option>
-        <option value="science">Science</option>
+        <option value="all">All Genres</option>
       </select>
       <ul id="bestsellerList"></ul>
     </aside>
@@ -38,17 +30,10 @@
     <section class="content">
       <div class="recommend-header">
         <h2>Recommended Books</h2>
-        <button id="recRefreshBtn"><i class="fas fa-redo"></i></button>
-        <select id="genreDropdown">
-          <option value="">All Genres</option>
-          <option value="fiction">Fiction</option>
-          <option value="mystery">Mystery</option>
-          <option value="history">History</option>
-          <option value="romance">Romance</option>
-        </select>
       </div>
       <div id="recommendedBooks" class="book-grid"></div>
-      <div id="searchResults" class="book-grid" style="display: none;"></div>
+      <div id="searchResults" class="book-grid"></div>
+      <div id="loading">Loading...</div>
     </section>
   </main>
 
