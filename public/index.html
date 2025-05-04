@@ -6,38 +6,32 @@
   <title>Tomo Book Tracer</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body class="light">
+<body>
   <header>
     <h1>📚Tomo</h1>
-    <div class="theme-toggle">
-      <img src="sun-icon.svg" alt="Light Mode" class="icon sun" />
-      <img src="moon-icon.svg" alt="Dark Mode" class="icon moon" />
-    </div>
+    <button id="theme-toggle" aria-label="Toggle theme">🌓</button>
   </header>
+
+  <aside id="bestseller-sidebar">
+    <h2>Top 10 Bestsellers</h2>
+    <select id="genreFilter">
+      <option value="all">All Genres</option>
+    </select>
+    <div id="bestseller-books"></div>
+  </aside>
 
   <main>
     <section id="recommendations">
       <h2>Recommended Books</h2>
-      <div class="recommendation-container" id="recommendationContainer"></div>
-      <button id="refreshBtn">🔄 Refresh</button>
+      <div class="horizontal-scroll" id="recommended-books"></div>
+      <button id="refresh">🔄 Refresh</button>
     </section>
 
-    <section id="search-section">
+    <section id="search">
       <input type="text" id="searchInput" placeholder="Search books..." />
-      <button id="backBtn" class="hidden">🔙 Back</button>
-      <div class="grid" id="searchResults"></div>
-    </section>
-
-    <aside id="sidebar">
-      <h3>Top 10 Bestsellers</h3>
-      <select id="genreFilter">
-        <option value="">All Genres</option>
-      </select>
-      <div id="bestsellerList"></div>
-    </aside>
-
-    <section id="offline-game" class="hidden">
-      <canvas id="gameCanvas" width="300" height="150"></canvas>
+      <div id="autocomplete-results" class="autocomplete"></div>
+      <button id="backBtn">🔙 Back</button>
+      <div id="searchResults" class="grid-results"></div>
     </section>
   </main>
 
