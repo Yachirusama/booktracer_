@@ -1,24 +1,41 @@
-const CACHE_NAME = "book-tracer-cache-v1";
-const urlsToCache = [
-    "/",
-    "/index.html",
-    "/style.css",
-    "/script.js",
-    "https://via.placeholder.com/150"
+const CACHE_NAME = 'tomo-cache-v1';
+const ASSETS_TO_CACHE = [
+  '/',
+  '/index.html',
+  '/styles.css',
+  '/app.js',
+  '/manifest.json',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png'
 ];
 
-self.addEventListener("install", event => {
-    event.waitUntil(
-        caches.open(CACHE_NAME).then(cache => {
-            return cache.addAll(urlsToCache);
-        })
-    );
+// Install event
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS_TO_CACHE))
+  );
+  self.skipWaiting();
 });
 
-self.addEventListener("fetch", event => {
-    event.respondWith(
-        fetch(event.request).catch(() =>
-            caches.match(event.request).then(response => response || fetch(event.request))
-        )
-    );
+// Activate event
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.map(key => {
+        if (key !== CACHE_NAME) return caches.delete(key);
+      }))
+    )
+  );
+  self.clients.claim();
+});
+
+// Fetch event
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request).then(response =>
+      response || fetch(event.request).catch(() =>
+        caches.match('/offline.html') || new Response('You are offline.')
+      )
+    )
+  );
 });
