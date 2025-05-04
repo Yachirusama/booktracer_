@@ -1,155 +1,149 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const searchInput = document.getElementById("search-input");
-  const searchButton = document.getElementById("search-button");
-  const refreshButton = document.getElementById("refresh-button");
-  const backButton = document.getElementById("back-button");
-  const genreSelect = document.getElementById("genre-select");
-  const recommendedSection = document.getElementById("recommended");
-  const resultsGrid = document.getElementById("results");
-  const bestsellersList = document.getElementById("bestsellers-list");
-  const themeToggle = document.getElementById("theme-toggle");
-  const body = document.body;
+const searchInput = document.getElementById("searchInput");
+const searchButton = document.getElementById("searchButton");
+const refreshButton = document.getElementById("refreshButton");
+const backButton = document.getElementById("backButton");
+const recommendationsContainer = document.getElementById("recommendations");
+const searchResultsContainer = document.getElementById("searchResults");
+const themeToggle = document.getElementById("themeToggle");
+const themeIcon = document.getElementById("themeIcon");
+const genreDropdown = document.getElementById("genreDropdown");
+const recommendationGenreDropdown = document.getElementById("recommendationGenreDropdown");
+const bestsellerList = document.getElementById("bestsellerList");
 
-  // ----------------- Theme Toggle -----------------
-  themeToggle.addEventListener("click", () => {
-    body.classList.toggle("dark");
-    themeToggle.innerHTML = body.classList.contains("dark")
-      ? '<img src="moon.svg" alt="Dark" class="icon">'
-      : '<img src="sun.svg" alt="Light" class="icon">';
+let isDarkMode = false;
+let currentRecommendations = [];
+
+async function fetchBooks(query, maxResults = 20) {
+  const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=${maxResults}`);
+  const data = await response.json();
+  return data.items || [];
+}
+
+function createBookCard(book) {
+  const info = book.volumeInfo;
+  const link = info.infoLink || "#";
+  const thumbnail = info.imageLinks?.thumbnail || "https://via.placeholder.com/128x200?text=No+Image";
+  const title = info.title || "No Title";
+  const rating = info.averageRating ? `⭐ ${info.averageRating}` : "No Rating";
+
+  const card = document.createElement("a");
+  card.className = "book-card";
+  card.href = link;
+  card.target = "_blank";
+  card.innerHTML = `
+    <img src="${thumbnail}" alt="${title}" />
+    <h3>${title}</h3>
+    <p>${rating}</p>
+  `;
+  return card;
+}
+
+async function displayRecommendations(genre = "all") {
+  recommendationsContainer.innerHTML = "";
+  const query = genre === "all" ? "bestseller" : `subject:${genre}`;
+  const books = await fetchBooks(query);
+  currentRecommendations = books;
+
+  books.slice(0, 8).forEach(book => {
+    const card = createBookCard(book);
+    recommendationsContainer.appendChild(card);
   });
+}
 
-  // ----------------- Search Logic -----------------
-  async function searchBooks(query) {
-    resultsGrid.innerHTML = "";
-    recommendedSection.style.display = "none";
-    backButton.style.display = "inline";
+async function displayBestsellers(genre = "all") {
+  bestsellerList.innerHTML = "";
+  const query = genre === "all" ? "bestseller" : `subject:${genre}`;
+  const books = await fetchBooks(query, 10);
+  books.forEach(book => {
+    const info = book.volumeInfo;
+    const thumbnail = info.imageLinks?.thumbnail || "https://via.placeholder.com/50x75?text=No+Image";
+    const title = info.title || "No Title";
 
-    try {
-      const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=20`);
-      const data = await res.json();
-
-      if (!data.items) {
-        resultsGrid.innerHTML = "<p>No books found.</p>";
-        return;
-      }
-
-      data.items.forEach(item => {
-        const book = item.volumeInfo;
-        const card = createBookCard(book);
-        resultsGrid.appendChild(card);
-      });
-    } catch (err) {
-      console.error("Search failed:", err);
-      resultsGrid.innerHTML = "<p>Failed to load results.</p>";
-    }
-  }
-
-  searchButton.addEventListener("click", () => {
-    const query = searchInput.value.trim();
-    if (query) searchBooks(query);
+    const li = document.createElement("li");
+    li.className = "sidebar-book";
+    li.innerHTML = `
+      <img src="${thumbnail}" alt="${title}" />
+      <span>${title}</span>
+    `;
+    bestsellerList.appendChild(li);
   });
+}
 
-  backButton.addEventListener("click", () => {
-    resultsGrid.innerHTML = "";
+function performSearch(query) {
+  searchResultsContainer.innerHTML = "";
+  if (!query.trim()) return;
+
+  fetchBooks(query).then(books => {
+    searchResultsContainer.style.display = "flex";
+    recommendationsContainer.style.display = "none";
+    backButton.style.display = "inline-block";
+
+    books.forEach(book => {
+      const card = createBookCard(book);
+      searchResultsContainer.appendChild(card);
+    });
+  });
+}
+
+function populateGenreDropdowns() {
+  const genres = [
+    "all", "fiction", "nonfiction", "fantasy", "romance", "science", "technology", "mystery", "history", "biography", "self-help"
+  ];
+
+  genres.forEach(genre => {
+    const option1 = document.createElement("option");
+    const option2 = document.createElement("option");
+    option1.value = option2.value = genre;
+    option1.textContent = option2.textContent = genre.charAt(0).toUpperCase() + genre.slice(1);
+    genreDropdown.appendChild(option1);
+    recommendationGenreDropdown.appendChild(option2);
+  });
+}
+
+// EVENTS
+searchInput.addEventListener("input", (e) => {
+  const query = e.target.value;
+  if (query.trim()) {
+    performSearch(query);
+  } else {
+    searchResultsContainer.style.display = "none";
+    recommendationsContainer.style.display = "flex";
     backButton.style.display = "none";
-    recommendedSection.style.display = "block";
-  });
-
-  // ----------------- Book Card Creator -----------------
-  function createBookCard(book) {
-    const div = document.createElement("div");
-    div.className = "book-card";
-
-    const img = document.createElement("img");
-    img.src = book.imageLinks?.thumbnail || "https://via.placeholder.com/128x195?text=No+Cover";
-    img.alt = book.title;
-
-    const title = document.createElement("div");
-    title.className = "book-title";
-    title.textContent = book.title;
-
-    const rating = document.createElement("div");
-    rating.className = "book-rating";
-    rating.textContent = book.averageRating ? `★ ${book.averageRating}` : "No rating";
-
-    div.appendChild(img);
-    div.appendChild(title);
-    div.appendChild(rating);
-
-    return div;
   }
-
-  // ----------------- Load Recommendations -----------------
-  async function loadRecommendations() {
-    const container = document.getElementById("recommendations");
-    container.innerHTML = "";
-
-    try {
-      const res = await fetch("https://www.googleapis.com/books/v1/volumes?q=fiction&maxResults=5&orderBy=relevance");
-      const data = await res.json();
-
-      data.items.forEach(item => {
-        const card = createBookCard(item.volumeInfo);
-        container.appendChild(card);
-      });
-    } catch (err) {
-      container.innerHTML = "<p>Failed to load recommendations.</p>";
-    }
-  }
-
-  refreshButton.addEventListener("click", loadRecommendations);
-
-  // ----------------- Load Top 10 Bestsellers -----------------
-  async function loadBestsellers(genre = "") {
-    bestsellersList.innerHTML = "";
-
-    const q = genre ? `subject:${genre}` : "bestsellers";
-    try {
-      const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${q}&maxResults=10`);
-      const data = await res.json();
-
-      data.items.forEach(item => {
-        const li = document.createElement("li");
-        li.textContent = item.volumeInfo.title;
-        bestsellersList.appendChild(li);
-      });
-    } catch (err) {
-      bestsellersList.innerHTML = "<li>Failed to load bestsellers.</li>";
-    }
-  }
-
-  genreSelect.addEventListener("change", () => {
-    const selectedGenre = genreSelect.value;
-    loadBestsellers(selectedGenre);
-  });
-
-  // ----------------- Populate Genre Dropdown -----------------
-  async function loadGenres() {
-    try {
-      const res = await fetch("https://www.googleapis.com/books/v1/volumes?q=subject&maxResults=40");
-      const data = await res.json();
-
-      const genreSet = new Set();
-
-      data.items.forEach(item => {
-        const cats = item.volumeInfo.categories || [];
-        cats.forEach(cat => genreSet.add(cat));
-      });
-
-      const sortedGenres = Array.from(genreSet).sort();
-      sortedGenres.forEach(genre => {
-        const option = document.createElement("option");
-        option.value = genre;
-        option.textContent = genre;
-        genreSelect.appendChild(option);
-      });
-    } catch (err) {
-      console.error("Failed to load genres:", err);
-    }
-  }
-
-  // ----------------- Initialize -----------------
-  loadGenres();
-  loadRecommendations();
-  loadBestsellers();
 });
+
+searchButton.addEventListener("click", () => {
+  const query = searchInput.value;
+  performSearch(query);
+});
+
+refreshButton.addEventListener("click", () => {
+  const selectedGenre = recommendationGenreDropdown.value;
+  displayRecommendations(selectedGenre);
+});
+
+backButton.addEventListener("click", () => {
+  searchResultsContainer.style.display = "none";
+  recommendationsContainer.style.display = "flex";
+  backButton.style.display = "none";
+  searchInput.value = "";
+});
+
+themeToggle.addEventListener("click", () => {
+  isDarkMode = !isDarkMode;
+  document.body.classList.toggle("dark-mode", isDarkMode);
+  themeIcon.textContent = isDarkMode ? "☀️" : "🌙";
+});
+
+genreDropdown.addEventListener("change", () => {
+  displayBestsellers(genreDropdown.value);
+});
+
+recommendationGenreDropdown.addEventListener("change", () => {
+  displayRecommendations(recommendationGenreDropdown.value);
+});
+
+// INITIAL LOAD
+populateGenreDropdowns();
+displayRecommendations();
+displayBestsellers();
