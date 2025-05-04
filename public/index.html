@@ -1,41 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tomo App</title>
+  <title>📚Tomo</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="neon-background"></div>
-
-  <header class="top-bar">
-    <div class="brand">📚Tomo</div>
-    <div class="search-controls">
+  <header>
+    <div class="logo">📚Tomo</div>
+    <div class="search-bar">
       <input type="text" id="searchInput" placeholder="Search books..." />
-      <button id="searchBtn">Search</button>
-      <button id="refreshBtn">🔄</button>
-      <button id="backBtn" style="display: none;">⬅️</button>
+      <button id="searchButton">🔍</button>
+      <button id="refreshButton">🔄</button>
+      <button id="backButton" style="display: none;">🔙</button>
       <button id="themeToggle">🌙</button>
     </div>
   </header>
 
-  <aside class="sidebar">
-    <h2>Top 10 Bestsellers</h2>
-    <select id="genreFilter">
-      <option value="all">All Genres</option>
-    </select>
-    <ul id="bestsellerList"></ul>
-  </aside>
-
   <main class="content">
-    <h2>Recommended Books</h2>
-    <div id="loading" class="loading-spinner" style="display: none;"></div>
-    <div id="recommendedBooks" class="book-grid"></div>
+    <aside id="sidebar">
+      <h2>Top 10 Bestsellers</h2>
+      <select id="genreFilter">
+        <option value="">All Genres</option>
+        <!-- Genres loaded dynamically -->
+      </select>
+      <div id="bestsellerList"></div>
+    </aside>
 
-    <div id="searchResults" class="book-grid"></div>
+    <section>
+      <div id="recommendedBooks" class="book-grid">
+        <!-- Recommended books go here -->
+      </div>
+      <div id="searchResults" class="book-grid"></div>
+    </section>
   </main>
 
-  <script src="app.js"></script>
+  <footer>
+    <p>📍 Book Tracer | Stay curious.</p>
+  </footer>
+
+  <div class="loading-spinner" id="loadingSpinner" style="display: none;"></div>
+
+  <script src="script.js"></script>
+  <script src="theme-toggle.js"></script>
+  <script src="bestsellers.js"></script>
+  <script src="recommendations.js"></script>
 </body>
 </html>
