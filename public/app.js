@@ -1,149 +1,162 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const searchInput = document.getElementById('searchInput');
-  const searchBtn = document.getElementById('searchBtn');
-  const refreshBtn = document.getElementById('refreshBtn');
-  const backBtn = document.getElementById('backBtn');
-  const themeToggle = document.getElementById('themeToggle');
-  const themeIcon = document.getElementById('themeIcon');
-  const recommendedBooks = document.getElementById('recommendedBooks');
-  const searchResults = document.getElementById('searchResults');
-  const loadingSpinner = document.getElementById('loading');
-  const genreDropdown = document.getElementById('genreDropdown');
-  const recRefreshBtn = document.getElementById('recRefreshBtn');
-  const genreFilter = document.getElementById('genreFilter');
-  const bestsellerList = document.getElementById('bestsellerList');
+const searchInput = document.getElementById("searchInput");
+const searchBtn = document.getElementById("searchBtn");
+const backBtn = document.getElementById("backBtn");
+const refreshBtn = document.getElementById("refreshBtn");
+const recommendContainer = document.getElementById("recommendedBooks");
+const searchResults = document.getElementById("searchResults");
+const themeToggle = document.getElementById("themeToggle");
+const genreFilter = document.getElementById("genreFilter");
+const bestsellerList = document.getElementById("bestsellerList");
 
-  let currentTheme = localStorage.getItem('theme') || 'light';
+let darkMode = false;
 
-  applyTheme(currentTheme);
+document.addEventListener("DOMContentLoaded", () => {
+  loadRecommendedBooks();
+  loadBestsellers();
+  setupThemeToggle();
+});
 
-  themeToggle.addEventListener('click', () => {
-    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-    applyTheme(currentTheme);
-    localStorage.setItem('theme', currentTheme);
-  });
-
-  function applyTheme(theme) {
-    document.body.classList.toggle('dark-theme', theme === 'dark');
-    themeIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+searchBtn.addEventListener("click", () => {
+  const query = searchInput.value.trim();
+  if (query) {
+    performSearch(query);
+    backBtn.style.display = "inline-block";
   }
+});
 
-  function showLoading(show) {
-    loadingSpinner.style.display = show ? 'block' : 'none';
+backBtn.addEventListener("click", () => {
+  searchResults.innerHTML = "";
+  searchInput.value = "";
+  backBtn.style.display = "none";
+});
+
+refreshBtn.addEventListener("click", () => {
+  loadRecommendedBooks();
+});
+
+genreFilter.addEventListener("change", () => {
+  loadBestsellers(genreFilter.value);
+});
+
+themeToggle.addEventListener("click", () => {
+  darkMode = !darkMode;
+  document.body.classList.toggle("dark", darkMode);
+  themeToggle.textContent = darkMode ? "☀️" : "🌙";
+});
+
+// --------------------- Functions ---------------------
+
+function setupThemeToggle() {
+  const storedTheme = localStorage.getItem("theme");
+  if (storedTheme === "dark") {
+    document.body.classList.add("dark");
+    themeToggle.textContent = "☀️";
+    darkMode = true;
   }
+}
 
-  function fetchRecommendedBooks(genre = '') {
-    showLoading(true);
-    recommendedBooks.innerHTML = '';
-    const url = `https://www.googleapis.com/books/v1/volumes?q=subject:${genre || 'fiction'}&maxResults=5`;
-
-    fetch(url)
-      .then(res => res.json())
-      .then(data => {
-        data.items?.forEach(book => {
-          const div = document.createElement('div');
-          div.className = 'book-card';
-          div.innerHTML = `
-            <img src="${book.volumeInfo.imageLinks?.thumbnail || ''}" alt="Cover"/>
-            <p>${book.volumeInfo.title}</p>
-            <p>⭐ ${book.volumeInfo.averageRating || 'N/A'}</p>
-          `;
-          recommendedBooks.appendChild(div);
-        });
-      })
-      .catch(console.error)
-      .finally(() => showLoading(false));
-  }
-
-  function fetchTopBestsellers(genre = '') {
-    const sampleBooks = [
-      "Tiny Habits", "The Silent Patient", "The Midnight Library",
-      "Wisdom from the Four Agreements", "Summary of Verity by Colleen Hoover",
-      "It Ends with Us", "Summary: The Subtle Art of Not Giving a F*ck",
-      "Greenlights", "The 48 Laws of Power", "Educated"
-    ];
-    bestsellerList.innerHTML = '';
-    sampleBooks.forEach((title, index) => {
-      const li = document.createElement('li');
-      li.innerHTML = `<img src="https://covers.openlibrary.org/b/id/${index + 100}-S.jpg" alt="cover" />
-                      <span>${title}</span>`;
-      bestsellerList.appendChild(li);
+async function loadRecommendedBooks() {
+  recommendContainer.innerHTML = "";
+  const res = await fetch("https://www.googleapis.com/books/v1/volumes?q=bestseller&maxResults=12");
+  const data = await res.json();
+  if (data.items) {
+    data.items.forEach(book => {
+      recommendContainer.appendChild(createBookCard(book));
     });
   }
+}
 
-  function performSearch(query) {
-    if (!query.trim()) return;
-    showLoading(true);
-    searchResults.innerHTML = '';
-    searchResults.style.display = 'grid';
-    recommendedBooks.parentElement.style.display = 'none';
-    backBtn.style.display = 'inline-block';
-
-    const sources = [
-      `https://api.itbook.store/1.0/search/${encodeURIComponent(query)}`,
-      `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}`,
-      `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}`
-    ];
-
-    Promise.all(sources.map(url => fetch(url).then(res => res.json())))
-      .then(([itbook, google, openlib]) => {
-        if (itbook.books) {
-          itbook.books.forEach(book => {
-            addBookToResults(book.title, book.image, book.url);
-          });
-        }
-        if (google.items) {
-          google.items.forEach(book => {
-            const info = book.volumeInfo;
-            addBookToResults(info.title, info.imageLinks?.thumbnail, info.infoLink);
-          });
-        }
-        if (openlib.docs) {
-          openlib.docs.forEach(book => {
-            const img = book.cover_i ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg` : '';
-            addBookToResults(book.title, img, `https://openlibrary.org${book.key}`);
-          });
-        }
-      })
-      .catch(console.error)
-      .finally(() => showLoading(false));
+async function loadBestsellers(genre = "") {
+  bestsellerList.innerHTML = "";
+  let url = `https://www.googleapis.com/books/v1/volumes?q=bestseller&maxResults=20`;
+  if (genre && genre !== "all") {
+    url += `+subject:${genre}`;
   }
+  const res = await fetch(url);
+  const data = await res.json();
+  const genres = new Set();
 
-  function addBookToResults(title, image, link) {
-    const div = document.createElement('div');
-    div.className = 'book-card';
-    div.innerHTML = `
-      <a href="${link}" target="_blank">
-        <img src="${image || ''}" alt="Book Cover">
-        <p>${title}</p>
-      </a>
+  data.items?.slice(0, 10).forEach(book => {
+    const li = document.createElement("li");
+    const link = document.createElement("a");
+    link.href = book.volumeInfo.infoLink;
+    link.target = "_blank";
+    link.innerHTML = `
+      <img src="${getBookImage(book)}" alt="cover">
+      ${book.volumeInfo.title}
     `;
+    li.appendChild(link);
+    bestsellerList.appendChild(li);
+
+    (book.volumeInfo.categories || []).forEach(cat => genres.add(cat));
+  });
+
+  updateGenreFilter(genres);
+}
+
+function updateGenreFilter(genres) {
+  const current = genreFilter.value;
+  genreFilter.innerHTML = '<option value="all">All Genres</option>';
+  [...genres].sort().forEach(g => {
+    const option = document.createElement("option");
+    option.value = g;
+    option.textContent = g;
+    genreFilter.appendChild(option);
+  });
+  genreFilter.value = current;
+}
+
+async function performSearch(query) {
+  searchResults.innerHTML = "Loading...";
+  const urls = [
+    `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=20`,
+    `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}`
+  ];
+
+  const [googleRes, openLibRes] = await Promise.all(urls.map(url => fetch(url).then(res => res.json())));
+  searchResults.innerHTML = "";
+
+  // Google Books
+  googleRes.items?.forEach(book => {
+    searchResults.appendChild(createBookCard(book));
+  });
+
+  // Open Library
+  openLibRes.docs?.slice(0, 10).forEach(book => {
+    const div = document.createElement("div");
+    div.className = "book";
+    const cover = book.cover_i
+      ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`
+      : "https://via.placeholder.com/128x192?text=No+Cover";
+    div.innerHTML = `
+      <img src="${cover}" alt="${book.title}" />
+      <h3>${book.title}</h3>
+      <p>${book.author_name?.[0] || "Unknown Author"}</p>
+    `;
+    div.addEventListener("click", () => {
+      window.open(`https://openlibrary.org${book.key}`, "_blank");
+    });
     searchResults.appendChild(div);
-  }
-
-  // Event Listeners
-  searchBtn.addEventListener('click', () => performSearch(searchInput.value));
-  refreshBtn.addEventListener('click', () => performSearch(searchInput.value));
-  recRefreshBtn.addEventListener('click', () => fetchRecommendedBooks(genreDropdown.value));
-  genreDropdown.addEventListener('change', () => fetchRecommendedBooks(genreDropdown.value));
-  genreFilter.addEventListener('change', () => fetchTopBestsellers(genreFilter.value));
-
-  searchInput.addEventListener('input', () => {
-    if (!searchInput.value.trim()) backBtn.click();
   });
+}
 
-  searchInput.addEventListener('keyup', (e) => {
-    if (e.key === 'Enter') performSearch(searchInput.value);
+function createBookCard(book) {
+  const div = document.createElement("div");
+  div.className = "book";
+  const info = book.volumeInfo;
+  const image = getBookImage(book);
+  div.innerHTML = `
+    <img src="${image}" alt="${info.title}" />
+    <h3>${info.title}</h3>
+    <p>${info.authors?.join(", ") || "Unknown Author"}</p>
+  `;
+  div.addEventListener("click", () => {
+    window.open(info.infoLink, "_blank");
   });
+  return div;
+}
 
-  backBtn.addEventListener('click', () => {
-    searchResults.style.display = 'none';
-    recommendedBooks.parentElement.style.display = 'block';
-    backBtn.style.display = 'none';
-    searchInput.value = '';
-  });
-
-  // Initial Load
-  fetchRecommendedBooks();
-  fetchTopBestsellers();
-});
+function getBookImage(book) {
+  const link = book.volumeInfo?.imageLinks?.thumbnail || "https://via.placeholder.com/128x192?text=No+Cover";
+  return link.replace(/^http:/, "https:");
+}
