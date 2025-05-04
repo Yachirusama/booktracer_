@@ -3,54 +3,55 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>📚Tomo - Book Tracer</title>
+  <title>Tomo Book Tracer</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="favicon.ico" />
 </head>
 <body>
-  <header class="header">
+  <header>
     <div class="logo">📚Tomo</div>
-    <div class="search-bar">
+    <div class="search-container">
       <input type="text" id="searchInput" placeholder="Search books..." />
-      <button id="searchButton">🔍</button>
-      <button id="refreshButton">🔄</button>
-      <button id="backButton" style="display: none;">🔙</button>
-      <button id="themeToggle"><span id="themeIcon">🌙</span></button>
+      <button id="searchBtn">🔍</button>
+      <button id="refreshBtn">🔄</button>
+      <button id="backBtn" class="hidden">🔙</button>
+      <button id="themeToggle">🌞</button>
     </div>
   </header>
 
   <main>
-    <div class="sidebar-container">
-      <div class="sidebar">
-        <h2>Top 10 Bestsellers</h2>
-        <select id="genreDropdown">
-          <option value="all">All Genres</option>
-        </select>
-        <ul id="bestsellerList" class="book-list">
-          <!-- Populated by JS -->
-        </ul>
-      </div>
+    <aside id="sidebar">
+      <h3>Top 10 Bestsellers</h3>
+      <ul id="bestsellerList"></ul>
+      <h4>Filter by Genre</h4>
+      <select id="genreFilterSidebar">
+        <option value="">All Genres</option>
+      </select>
+    </aside>
 
-      <div class="main-content">
-        <div class="recommended-header">
-          <h2>Recommended Books</h2>
-          <select id="recommendationGenreDropdown">
-            <option value="all">All Genres</option>
-          </select>
-        </div>
-        <div id="recommendations" class="book-row">
-          <!-- Recommended books go here -->
-        </div>
-        <div id="searchResults" class="book-grid" style="display: none;">
-          <!-- Search results go here -->
-        </div>
+    <section id="recommendations">
+      <div class="rec-header">
+        <h2>Recommended Books</h2>
+        <select id="genreFilter">
+          <option value="">All Genres</option>
+        </select>
       </div>
-    </div>
+      <div id="recommendationList" class="book-row"></div>
+    </section>
   </main>
 
-  <div id="gameContainer" style="display:none;">
-    <!-- Mini-game for offline use -->
+  <section id="results" class="hidden">
+    <h2>Search Results</h2>
+    <div id="searchResults" class="book-grid"></div>
+  </section>
+
+  <div id="offline-game" class="hidden">
+    <canvas id="gameCanvas" width="300" height="150"></canvas>
+    <p>You're offline. Enjoy this mini-game!</p>
   </div>
 
   <script src="app.js"></script>
+  <script src="service-worker.js"></script>s
 </body>
 </html>
