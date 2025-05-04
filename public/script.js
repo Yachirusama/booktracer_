@@ -2,15 +2,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("searchInput");
   const searchButton = document.getElementById("searchButton");
   const refreshBtn = document.getElementById("refreshBtn");
-  const recommendationsList = document.getElementById("recommendations");
+  const recommendationsList = document.getElementById("recommendationList");
   const backButton = document.getElementById("backButton");
   const themeToggle = document.getElementById("themeToggle");
+  const genreFilter = document.getElementById("genreFilter");
+  const bestsellerList = document.getElementById("bestsellerList");
 
-  // Load initial data
+  // Initial load
+  fetchGenres();
   fetchRecommendations();
   fetchTopBestsellers();
 
-  // Event Listeners
+  // Event listeners
   refreshBtn.addEventListener("click", fetchRecommendations);
   searchInput.addEventListener("input", liveSearch);
   searchButton.addEventListener("click", performSearch);
@@ -19,26 +22,37 @@ document.addEventListener("DOMContentLoaded", () => {
     backButton.classList.add("hidden");
     fetchRecommendations();
   });
-
   themeToggle.addEventListener("click", () => {
     document.body.classList.toggle("dark");
     themeToggle.textContent = document.body.classList.contains("dark") ? "🌞" : "🌙";
   });
+  genreFilter.addEventListener("change", fetchTopBestsellers);
 
-  // Functions
+  // Fetch genres dynamically
+  async function fetchGenres() {
+    const subjects = ["Fiction", "Science", "History", "Romance", "Mystery", "Fantasy", "Biography"];
+    for (const subject of subjects) {
+      const option = document.createElement("option");
+      option.value = subject;
+      option.textContent = subject;
+      genreFilter.appendChild(option);
+    }
+  }
+
   async function fetchRecommendations() {
     const query = "bestseller";
     const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=5`);
     const data = await response.json();
-    displayBooks(data.items);
+    displayBooks(data.items || []);
     backButton.classList.add("hidden");
   }
 
   async function fetchTopBestsellers() {
-    const list = document.getElementById("bestsellerList");
-    const response = await fetch("https://www.googleapis.com/books/v1/volumes?q=subject:bestseller&maxResults=10");
+    const genre = genreFilter.value;
+    const query = genre === "all" ? "subject:bestseller" : `subject:${genre}`;
+    const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=10`);
     const data = await response.json();
-    list.innerHTML = data.items.map(book => {
+    bestsellerList.innerHTML = (data.items || []).map(book => {
       const info = book.volumeInfo;
       return `
         <li>
