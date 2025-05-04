@@ -19,6 +19,7 @@ body, html {
   width: 250px;
   padding: 20px;
   border-right: 1px solid #ccc;
+  transition: background-color 0.3s;
 }
 
 .sidebar h2 {
@@ -47,6 +48,7 @@ body, html {
   gap: 10px;
   align-items: center;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  cursor: pointer;
 }
 
 #bestsellerList img {
@@ -104,8 +106,10 @@ main {
 }
 
 /* Recommendations */
-.recommendations h2 {
-  margin-top: 30px;
+.recommend-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 #refreshBtn {
@@ -117,22 +121,79 @@ main {
 .book-list {
   list-style: none;
   padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+}
+
+.book-list.horizontal {
+  display: flex;
+  overflow-x: auto;
+  gap: 15px;
 }
 
 .book-list li {
   background: #ffffff;
   padding: 10px;
-  margin-bottom: 10px;
   border-left: 4px solid #0077cc;
   border-radius: 4px;
   box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  min-width: 150px;
+  cursor: pointer;
+  transition: transform 0.2s;
 }
 
-/* Rating style */
-.book-list .rating {
+.book-list li:hover {
+  transform: scale(1.03);
+}
+
+.book-list img {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.rating {
   font-size: 14px;
   color: #ffa500;
   margin-top: 5px;
+}
+
+/* Loader */
+.loader {
+  display: none;
+  width: 30px;
+  height: 30px;
+  border: 4px solid #ccc;
+  border-top-color: #0077cc;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 10px auto;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Mini Game */
+#miniGame {
+  background-color: #fff3cd;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  margin-top: 30px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+#gameCanvas {
+  background-color: #f0f0f0;
+  border: 2px solid #888;
+  display: block;
+  margin: 10px auto;
+}
+
+.hidden {
+  display: none;
 }
 
 /* Theme toggle */
@@ -144,6 +205,11 @@ main {
   background: none;
   border: none;
   cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+#themeToggle:hover {
+  transform: rotate(15deg);
 }
 
 /* Dark mode */
