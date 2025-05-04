@@ -1,72 +1,121 @@
-const searchInput = document.getElementById('search');
-const bookResults = document.getElementById('book-results');
-const backBtn = document.getElementById('back');
-const refreshBtn = document.getElementById('refresh');
-const themeToggle = document.getElementById('theme-toggle');
-const genreFilter = document.getElementById('genre-filter');
-const bestsellersContainer = document.getElementById('bestsellers');
+const themeToggle = document.getElementById("themeToggle");
+const searchInput = document.getElementById("searchInput");
+const searchBtn = document.getElementById("searchBtn");
+const recommendationContainer = document.getElementById("recommendation-list");
+const bestsellerList = document.getElementById("bestsellers-list");
+const refreshBtn = document.getElementById("refreshBtn");
+const resultsList = document.getElementById("results-list");
+const genreFilter = document.getElementById("genreFilter");
+let currentTheme = "light";
 
-const API_URL = 'https://www.googleapis.com/books/v1/volumes?q=';
+// Load icons
+const sunIcon = "sun-icon.svg";
+const moonIcon = "moon-icon.svg";
 
-let recommendedBooks = [];
-
-async function fetchBooks(query = 'bestseller') {
-  const response = await fetch(`${API_URL}${encodeURIComponent(query)}`);
-  const data = await response.json();
-  return data.items || [];
+function setTheme(theme) {
+  document.body.classList.remove("light-theme", "dark-theme");
+  document.body.classList.add(`${theme}-theme`);
+  themeToggle.querySelector("img").src = theme === "light" ? moonIcon : sunIcon;
+  currentTheme = theme;
+  localStorage.setItem("theme", theme);
 }
 
-function displayBooks(books, container) {
-  container.innerHTML = '';
-  books.forEach(book => {
-    const info = book.volumeInfo;
-    const card = document.createElement('div');
-    card.className = 'book';
-    card.innerHTML = `
-      <img src="${info.imageLinks?.thumbnail || ''}" alt="cover">
-      <h4>${info.title}</h4>
-      <p>${info.authors?.join(', ') || 'Unknown'}</p>
-      <p>⭐ ${info.averageRating || 'N/A'}</p>
+// Theme toggle logic
+themeToggle.addEventListener("click", () => {
+  const newTheme = currentTheme === "light" ? "dark" : "light";
+  setTheme(newTheme);
+});
+
+// Load stored theme
+const savedTheme = localStorage.getItem("theme") || "light";
+setTheme(savedTheme);
+
+// Fetch bestsellers based on genre
+async function fetchBestsellers(genre = "Fiction") {
+  const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=subject:${genre}&orderBy=relevance&maxResults=10`);
+  const data = await res.json();
+  bestsellerList.innerHTML = "";
+  data.items?.forEach(book => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <div class="book-card" onclick="window.open('${book.volumeInfo.infoLink}', '_blank')">
+        <img src="${book.volumeInfo.imageLinks?.thumbnail || ''}" alt="${book.volumeInfo.title}" />
+        <div class="title">${book.volumeInfo.title}</div>
+      </div>
     `;
-    container.appendChild(card);
+    bestsellerList.appendChild(li);
   });
 }
 
-async function loadInitialBooks() {
-  const books = await fetchBooks('bestseller');
-  recommendedBooks = books;
-  displayBooks(books.slice(0, 10), bookResults);
-  displayBooks(books.slice(10, 20), bestsellersContainer);
+// Fetch genres dynamically
+async function populateGenres() {
+  const genres = ["Fiction", "Science", "Fantasy", "Mystery", "Romance", "Horror", "Biography"];
+  genres.forEach(genre => {
+    const option = document.createElement("option");
+    option.value = genre;
+    option.textContent = genre;
+    genreFilter.appendChild(option);
+  });
 }
 
-searchInput.addEventListener('input', async () => {
-  const query = searchInput.value.trim();
-  if (!query) {
-    displayBooks(recommendedBooks.slice(0, 10), bookResults);
-    backBtn.style.display = 'none';
-    return;
-  }
-  const results = await fetchBooks(query);
-  displayBooks(results.slice(0, 10), bookResults);
-  backBtn.style.display = 'inline-block';
-});
-
-backBtn.addEventListener('click', () => {
-  displayBooks(recommendedBooks.slice(0, 10), bookResults);
-  searchInput.value = '';
-  backBtn.style.display = 'none';
-});
-
-refreshBtn.addEventListener('click', loadInitialBooks);
-
-themeToggle.addEventListener('click', () => {
-  document.body.classList.toggle('dark');
-  document.body.classList.toggle('light');
-});
-
-async function init() {
-  document.body.classList.add('light');
-  await loadInitialBooks();
+// Refresh recommendations
+async function fetchRecommendations() {
+  const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=best+books&orderBy=newest&maxResults=5`);
+  const data = await res.json();
+  recommendationContainer.innerHTML = "";
+  data.items?.forEach(book => {
+    const card = document.createElement("div");
+    card.className = "book-card";
+    card.onclick = () => window.open(book.volumeInfo.infoLink, "_blank");
+    card.innerHTML = `
+      <img src="${book.volumeInfo.imageLinks?.thumbnail || ''}" alt="${book.volumeInfo.title}">
+      <div class="title">${book.volumeInfo.title}</div>
+      <div class="rating">⭐ ${book.volumeInfo.averageRating || "N/A"}</div>
+    `;
+    recommendationContainer.appendChild(card);
+  });
 }
 
-init();
+// Search books
+async function searchBooks(query) {
+  const encoded = encodeURIComponent(query);
+  const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encoded}&maxResults=20`);
+  const data = await res.json();
+  resultsList.innerHTML = "";
+  data.items?.forEach(book => {
+    const card = document.createElement("div");
+    card.className = "book-card";
+    card.onclick = () => window.open(book.volumeInfo.infoLink, "_blank");
+    card.innerHTML = `
+      <img src="${book.volumeInfo.imageLinks?.thumbnail || ''}" alt="${book.volumeInfo.title}">
+      <div class="title">${book.volumeInfo.title}</div>
+      <div class="rating">⭐ ${book.volumeInfo.averageRating || "N/A"}</div>
+    `;
+    resultsList.appendChild(card);
+  });
+}
+
+// Predictive input
+searchInput.addEventListener("input", () => {
+  const val = searchInput.value.trim();
+  if (val.length > 2) searchBooks(val);
+});
+
+// Button search
+searchBtn.addEventListener("click", () => {
+  const val = searchInput.value.trim();
+  if (val) searchBooks(val);
+});
+
+// Refresh recommendations
+refreshBtn.addEventListener("click", fetchRecommendations);
+
+// Genre filter change
+genreFilter.addEventListener("change", (e) => {
+  fetchBestsellers(e.target.value);
+});
+
+// Initial setup
+fetchBestsellers();
+fetchRecommendations();
+populateGenres();
