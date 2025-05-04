@@ -3,11 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tomo Book Tracer</title>
+  <title>Tomo - Book Tracer</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <button id="themeToggle" aria-label="Toggle theme">🌙</button>
+
   <div class="container">
+    <!-- Sidebar -->
     <aside class="sidebar">
       <h2>📘 Top 10 Bestsellers</h2>
       <select id="genreFilter">
@@ -16,50 +19,36 @@
       <ul id="bestsellerList"></ul>
     </aside>
 
+    <!-- Main Content -->
     <main>
-      <header>
-        <h1>📚 <span class="logo-text">Tomo</span></h1>
-        <p class="subtitle">Find and explore books online & offline</p>
-        <div class="search-bar">
-          <input type="text" id="searchInput" placeholder="Search for books..." />
-          <button id="searchButton">Search</button>
-        </div>
-        <button id="backButton" class="hidden">← Back</button>
-      </header>
+      <h1 class="logo-text">📚 Tomo</h1>
+      <p class="subtitle">Find and explore books online & offline</p>
 
-      <section class="recommendations">
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search for books..." />
+        <button id="searchButton">Search</button>
+      </div>
+
+      <button id="backButton" class="hidden">⬅ Back</button>
+
+      <section>
         <div class="recommend-header">
           <h2>📘 Recommended Books</h2>
-          <button id="refreshBtn"><span>🔄</span> Refresh Recommendations</button>
+          <button id="refreshBtn">🔄 Refresh Recommendations</button>
         </div>
-        <div id="recommendList" class="book-list"></div>
+        <div class="loader" id="loader"></div>
+        <ul class="book-list horizontal" id="recommendations"></ul>
       </section>
 
-      <section class="search-results hidden">
-        <h2>🔍 Search Results</h2>
-        <div id="searchResults" class="book-list"></div>
-      </section>
-
+      <!-- Offline Mini Game Section -->
       <section id="miniGame" class="hidden">
-        <h2>🎮 Offline Mini-Game</h2>
-        <canvas id="gameCanvas" width="400" height="300"></canvas>
+        <h3>You are offline!</h3>
+        <p>Enjoy this mini game while you're disconnected:</p>
+        <canvas id="gameCanvas" width="300" height="150"></canvas>
       </section>
     </main>
-
-    <button id="themeToggle" aria-label="Toggle Theme">🌙</button>
-    <select id="searchGenreFilter">
-      <option value="all">All</option>
-    </select>
-    <div id="loader" class="hidden"></div>
   </div>
 
-  <script src="script.js"></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js').then(() => {
-        console.log('Service Worker Registered');
-      });
-    }
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>
