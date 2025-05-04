@@ -2,42 +2,47 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Book Tracer</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="header">
-    <div class="logo">
-      <img src="logo.png" alt="Tomo Logo" />
-      <span>Tomo</span>
+  <header>
+    <div class="logo-title">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Book_icon.svg/512px-Book_icon.svg.png" alt="Logo" class="logo" />
+      <h1 class="title">Tomo</h1>
     </div>
-    <div class="header-right">
-      <div class="search-container">
-        <input type="text" id="search-input" placeholder="Search books..." />
-        <button id="search-button">🔍</button>
-        <button id="refresh-button">⟳</button>
-        <button id="back-button" style="display:none;">⬅ Back</button>
-      </div>
-      <button id="theme-toggle" title="Toggle dark mode">
-        <img id="theme-icon" src="sun-icon.svg" alt="Toggle Theme" />
-      </button>
+    <div class="search-area">
+      <input id="search-input" type="text" placeholder="Search books..." />
+      <button id="search-button">🔍</button>
+      <button id="refresh-button">🔄</button>
+      <button id="back-button" style="display: none;">⬅️</button>
     </div>
+    <button id="theme-toggle" class="theme-toggle">
+      <svg id="sun-icon" class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="5" fill="orange" />
+      </svg>
+      <svg id="moon-icon" class="icon" style="display: none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path fill="white" d="M12 2a9.99 9.99 0 0 0 0 20 10 10 0 0 0 0-20z"/>
+      </svg>
+    </button>
   </header>
 
   <main>
-    <aside class="sidebar">
-      <h3>Top 10 Bestsellers</h3>
-      <select id="genre-filter">
-        <option value="all">All Genres</option>
+    <section class="sidebar">
+      <h2>Top 10 Bestsellers</h2>
+      <select id="genre-select">
+        <option value="">All Genres</option>
+        <!-- dynamically added genres -->
       </select>
-      <div id="bestsellers-list"></div>
-    </aside>
+      <ul id="bestsellers-list"></ul>
+    </section>
 
-    <section class="main-content">
+    <section class="content">
       <h2>Recommended Books</h2>
       <div id="recommendations" class="book-row"></div>
-      <div id="search-results" class="book-grid" style="display: none;"></div>
+
+      <div id="search-results" class="grid-container"></div>
     </section>
   </main>
 
