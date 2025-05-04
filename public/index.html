@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>📚Tomo</title>
+  <title>Tomo App</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -23,15 +23,12 @@
       <h2>Top 10 Bestsellers</h2>
       <select id="genreFilter">
         <option value="">All Genres</option>
-        <!-- Genres loaded dynamically -->
       </select>
       <div id="bestsellerList"></div>
     </aside>
 
     <section>
-      <div id="recommendedBooks" class="book-grid">
-        <!-- Recommended books go here -->
-      </div>
+      <div id="recommendedBooks" class="book-grid"></div>
       <div id="searchResults" class="book-grid"></div>
     </section>
   </main>
@@ -42,9 +39,6 @@
 
   <div class="loading-spinner" id="loadingSpinner" style="display: none;"></div>
 
-  <script src="script.js"></script>
-  <script src="theme-toggle.js"></script>
-  <script src="bestsellers.js"></script>
-  <script src="recommendations.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
