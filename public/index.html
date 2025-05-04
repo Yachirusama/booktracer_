@@ -30,36 +30,35 @@
       <section class="recommendations">
         <div class="recommend-header">
           <h2>📘 Recommended Books</h2>
-          <select id="recommendGenre">
-            <option value="all">All</option>
-          </select>
+          <button id="refreshBtn"><span>🔄</span> Refresh Recommendations</button>
         </div>
-        <button id="refreshBtn">🔄 Refresh Recommendations</button>
-        <div class="loader" id="loader"></div>
-        <ul id="recommendationList" class="book-list horizontal"></ul>
+        <div id="recommendList" class="book-list"></div>
       </section>
 
       <section class="search-results hidden">
         <h2>🔍 Search Results</h2>
-        <ul id="bookResults" class="book-list"></ul>
+        <div id="searchResults" class="book-list"></div>
       </section>
 
       <section id="miniGame" class="hidden">
-        <h2>🌐 You are offline! Play a mini-game:</h2>
-        <canvas id="gameCanvas" width="500" height="200"></canvas>
-        <p>Press Space to Jump</p>
+        <h2>🎮 Offline Mini-Game</h2>
+        <canvas id="gameCanvas" width="400" height="300"></canvas>
       </section>
     </main>
 
     <button id="themeToggle" aria-label="Toggle Theme">🌙</button>
+    <select id="searchGenreFilter">
+      <option value="all">All</option>
+    </select>
+    <div id="loader" class="hidden"></div>
   </div>
 
   <script src="script.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(() => console.log('✅ Service Worker Registered'))
-        .catch(err => console.error('❌ Service Worker Failed', err));
+      navigator.serviceWorker.register('service-worker.js').then(() => {
+        console.log('Service Worker Registered');
+      });
     }
   </script>
 </body>
