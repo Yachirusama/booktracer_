@@ -1,171 +1,205 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const searchInput = document.getElementById("searchInput");
-  const searchButton = document.getElementById("searchButton");
-  const refreshBtn = document.getElementById("refreshBtn");
-  const recommendationsList = document.getElementById("recommendationList");
-  const backButton = document.getElementById("backButton");
-  const themeToggle = document.getElementById("themeToggle");
-  const genreFilter = document.getElementById("genreFilter");
-  const bestsellerList = document.getElementById("bestsellerList");
-  const loader = document.getElementById("loader");
-  const miniGame = document.getElementById("miniGame");
+// DOM references
+const searchInput = document.getElementById("searchInput");
+const searchButton = document.getElementById("searchButton");
+const bookResults = document.getElementById("bookResults");
+const backButton = document.getElementById("backButton");
+const refreshBtn = document.getElementById("refreshBtn");
+const themeToggle = document.getElementById("themeToggle");
+const loader = document.querySelector(".loader");
+const genreSelect = document.getElementById("genreSelect");
+const bestsellerList = document.getElementById("bestsellerList");
+const recommendations = document.getElementById("recommendations");
+const miniGame = document.getElementById("miniGame");
 
-  // Initial load
-  fetchGenres();
-  fetchRecommendations();
-  fetchTopBestsellers();
-  handleOffline();
+// Helper to create a book card
+function createBookCard(image, title, subtitle, url) {
+    const li = document.createElement("li");
+    li.innerHTML = `
+        <img src="${image}" alt="Book cover">
+        <div>
+            <strong>${title}</strong><br>
+            <small>${subtitle}</small>
+        </div>
+    `;
+    li.onclick = () => window.open(url, "_blank");
+    return li;
+}
 
-  // Event listeners
-  refreshBtn.addEventListener("click", fetchRecommendations);
-  searchInput.addEventListener("input", liveSearch);
-  searchButton.addEventListener("click", performSearch);
-  backButton.addEventListener("click", () => {
-    searchInput.value = "";
-    backButton.classList.add("hidden");
-    fetchRecommendations();
-  });
-
-  themeToggle.addEventListener("click", () => {
-    document.body.classList.toggle("dark");
-    themeToggle.textContent = document.body.classList.contains("dark") ? "🌞" : "🌙";
-  });
-
-  genreFilter.addEventListener("change", fetchTopBestsellers);
-
-  window.addEventListener("online", handleOffline);
-  window.addEventListener("offline", handleOffline);
-
-  function showLoader() {
+// Search books
+async function searchBooks(query) {
+    bookResults.innerHTML = "";
     loader.style.display = "block";
-  }
+    recommendations.classList.add("hidden");
 
-  function hideLoader() {
-    loader.style.display = "none";
-  }
+    try {
+        const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+        const { itbookData, googleData, openLibraryData } = await res.json();
 
-  function handleOffline() {
-    if (!navigator.onLine) {
-      miniGame.classList.remove("hidden");
-      startGame();
-    } else {
-      miniGame.classList.add("hidden");
-      stopGame();
+        bookResults.innerHTML = "";
+        backButton.classList.remove("hidden");
+
+        if (itbookData?.books) {
+            itbookData.books.forEach(book => {
+                const image = book.image || "https://via.placeholder.com/150";
+                bookResults.appendChild(createBookCard(image, book.title, book.subtitle, book.url));
+            });
+        }
+
+        if (googleData?.items) {
+            googleData.items.forEach(book => {
+                const info = book.volumeInfo;
+                const image = info.imageLinks?.thumbnail || "https://via.placeholder.com/150";
+                const authors = info.authors?.join(", ") || "Unknown Author";
+                bookResults.appendChild(createBookCard(image, info.title, authors, info.infoLink));
+            });
+        }
+
+        if (openLibraryData?.docs) {
+            openLibraryData.docs.slice(0, 10).forEach(book => {
+                const image = book.cover_i
+                    ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`
+                    : "https://via.placeholder.com/150";
+                const authors = book.author_name?.join(", ") || "Unknown Author";
+                const link = `https://openlibrary.org${book.key}`;
+                bookResults.appendChild(createBookCard(image, book.title, authors, link));
+            });
+        }
+    } catch (err) {
+        bookResults.innerHTML = "<p>❌ Failed to load books. Please try again.</p>";
+        console.error(err);
+    } finally {
+        loader.style.display = "none";
     }
-  }
+}
 
-  // Genre list
-  function fetchGenres() {
-    const subjects = ["Fiction", "Science", "History", "Romance", "Mystery", "Fantasy", "Biography"];
-    for (const subject of subjects) {
-      const option = document.createElement("option");
-      option.value = subject;
-      option.textContent = subject;
-      genreFilter.appendChild(option);
+// Load recommendations
+async function loadRecommendations() {
+    const recommendList = document.getElementById("recommendList");
+    recommendList.innerHTML = "";
+    loader.style.display = "block";
+
+    try {
+        const res = await fetch("/api/recommend");
+        const books = await res.json();
+        books.forEach(book => {
+            const li = document.createElement("li");
+            li.innerHTML = `
+                <img src="${book.image}" alt="Cover">
+                <div>
+                    <strong>${book.title}</strong>
+                    <div class="rating">⭐ ${book.rating || "N/A"}</div>
+                </div>
+            `;
+            li.onclick = () => window.open(book.url, "_blank");
+            recommendList.appendChild(li);
+        });
+    } catch (err) {
+        recommendList.innerHTML = "<li>⚠️ Failed to load recommendations.</li>";
+    } finally {
+        loader.style.display = "none";
     }
-  }
+}
 
-  async function fetchRecommendations() {
-    showLoader();
-    const query = "bestseller";
-    const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=5`);
-    const data = await response.json();
-    displayBooks(data.items || []);
-    backButton.classList.add("hidden");
-    hideLoader();
-  }
+// Load top 10 bestsellers
+async function loadTopBooks(genre = "") {
+    bestsellerList.innerHTML = "";
+    loader.style.display = "block";
 
-  async function fetchTopBestsellers() {
-    showLoader();
-    const genre = genreFilter.value;
-    const query = genre === "all" ? "subject:bestseller" : `subject:${genre}`;
-    const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=10`);
-    const data = await response.json();
-    bestsellerList.innerHTML = (data.items || []).map(book => {
-      const info = book.volumeInfo;
-      return `
-        <li>
-          <img src="${info.imageLinks?.thumbnail || ''}" alt="Cover" />
-          <div>
-            <strong>${info.title}</strong><br/>
-            <span>${info.authors ? info.authors.join(", ") : "Unknown Author"}</span>
-          </div>
-        </li>`;
-    }).join("");
-    hideLoader();
-  }
+    try {
+        const res = await fetch(`/api/bestsellers${genre ? `?genre=${genre}` : ""}`);
+        const books = await res.json();
+        books.forEach(book => {
+            const li = document.createElement("li");
+            li.innerHTML = `
+                <img src="${book.image}" alt="Cover">
+                <div><strong>${book.title}</strong></div>
+            `;
+            li.onclick = () => window.open(book.url, "_blank");
+            bestsellerList.appendChild(li);
+        });
+    } catch (err) {
+        bestsellerList.innerHTML = "<li>⚠️ Error loading bestsellers.</li>";
+    } finally {
+        loader.style.display = "none";
+    }
+}
 
-  async function liveSearch() {
+// Load genre options
+async function loadGenres() {
+    try {
+        const res = await fetch("/api/genres");
+        const genres = await res.json();
+        genreSelect.innerHTML = `<option value="">All Genres</option>`;
+        genres.forEach(g => {
+            const option = document.createElement("option");
+            option.value = g;
+            option.textContent = g;
+            genreSelect.appendChild(option);
+        });
+    } catch (err) {
+        console.error("Genre load failed", err);
+    }
+}
+
+// Offline detection
+function handleOffline() {
+    miniGame.classList.remove("hidden");
+    recommendations.classList.add("hidden");
+}
+
+// Online detection
+function handleOnline() {
+    miniGame.classList.add("hidden");
+    recommendations.classList.remove("hidden");
+}
+
+// Event listeners
+searchButton.onclick = () => {
     const query = searchInput.value.trim();
-    if (query === "") {
-      fetchRecommendations();
-      return;
-    }
-    showLoader();
-    const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=5`);
-    const data = await response.json();
-    displayBooks(data.items || []);
-    backButton.classList.remove("hidden");
-    hideLoader();
-  }
+    if (query) searchBooks(query);
+};
 
-  async function performSearch() {
-    const query = searchInput.value.trim();
-    if (!query) return;
-    showLoader();
-    const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=5`);
-    const data = await response.json();
-    displayBooks(data.items || []);
-    backButton.classList.remove("hidden");
-    hideLoader();
-  }
-
-  function displayBooks(books) {
-    if (!books || books.length === 0) {
-      recommendationsList.innerHTML = "<li>No recommendations available.</li>";
-      return;
-    }
-
-    recommendationsList.innerHTML = books.map(book => {
-      const info = book.volumeInfo;
-      const rating = info.averageRating ? `⭐ ${info.averageRating}` : "No rating";
-      const thumbnail = info.imageLinks?.thumbnail || "";
-      return `
-        <li>
-          <img src="${thumbnail}" alt="Cover">
-          <strong>${info.title}</strong><br/>
-          <span class="rating">${rating}</span>
-        </li>`;
-    }).join("");
-  }
-
-  // Mini Game Logic
-  let gameInterval;
-  let positionX = 0;
-  let velocityX = 2;
-
-  function startGame() {
-    const canvas = document.getElementById("gameCanvas");
-    const ctx = canvas.getContext("2d");
-    positionX = 0;
-
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "#0077cc";
-      ctx.fillRect(positionX, canvas.height / 2 - 15, 30, 30);
-      positionX += velocityX;
-      if (positionX > canvas.width - 30 || positionX < 0) velocityX *= -1;
-    }
-
-    if (!gameInterval) {
-      gameInterval = setInterval(draw, 20);
-    }
-  }
-
-  function stopGame() {
-    if (gameInterval) {
-      clearInterval(gameInterval);
-      gameInterval = null;
-    }
-  }
+searchInput.addEventListener("keyup", e => {
+    if (e.key === "Enter") searchButton.click();
 });
+
+backButton.onclick = () => {
+    bookResults.innerHTML = "";
+    backButton.classList.add("hidden");
+    recommendations.classList.remove("hidden");
+};
+
+refreshBtn.onclick = () => {
+    loadRecommendations();
+};
+
+themeToggle.onclick = () => {
+    const isDark = document.body.classList.toggle("dark");
+    themeToggle.innerHTML = isDark ? "🌙" : "☀️";
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+};
+
+genreSelect.onchange = () => {
+    loadTopBooks(genreSelect.value);
+};
+
+// Initial setup
+window.addEventListener("load", () => {
+    // Load saved theme
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+        document.body.classList.add("dark");
+        themeToggle.innerHTML = "🌙";
+    } else {
+        themeToggle.innerHTML = "☀️";
+    }
+
+    loadRecommendations();
+    loadGenres();
+    loadTopBooks();
+
+    if (!navigator.onLine) handleOffline();
+});
+
+window.addEventListener("offline", handleOffline);
+window.addEventListener("online", handleOnline);
