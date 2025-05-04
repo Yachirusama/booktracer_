@@ -2,50 +2,55 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Book Tracer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>📚Tomo - Book Tracer</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header>
-    <div class="logo-title">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Book_icon.svg/512px-Book_icon.svg.png" alt="Logo" class="logo" />
-      <h1 class="title">Tomo</h1>
+  <header class="header">
+    <div class="logo">📚Tomo</div>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search books..." />
+      <button id="searchButton">🔍</button>
+      <button id="refreshButton">🔄</button>
+      <button id="backButton" style="display: none;">🔙</button>
+      <button id="themeToggle"><span id="themeIcon">🌙</span></button>
     </div>
-    <div class="search-area">
-      <input id="search-input" type="text" placeholder="Search books..." />
-      <button id="search-button">🔍</button>
-      <button id="refresh-button">🔄</button>
-      <button id="back-button" style="display: none;">⬅️</button>
-    </div>
-    <button id="theme-toggle" class="theme-toggle">
-      <svg id="sun-icon" class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="5" fill="orange" />
-      </svg>
-      <svg id="moon-icon" class="icon" style="display: none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-        <path fill="white" d="M12 2a9.99 9.99 0 0 0 0 20 10 10 0 0 0 0-20z"/>
-      </svg>
-    </button>
   </header>
 
   <main>
-    <section class="sidebar">
-      <h2>Top 10 Bestsellers</h2>
-      <select id="genre-select">
-        <option value="">All Genres</option>
-        <!-- dynamically added genres -->
-      </select>
-      <ul id="bestsellers-list"></ul>
-    </section>
+    <div class="sidebar-container">
+      <div class="sidebar">
+        <h2>Top 10 Bestsellers</h2>
+        <select id="genreDropdown">
+          <option value="all">All Genres</option>
+        </select>
+        <ul id="bestsellerList" class="book-list">
+          <!-- Populated by JS -->
+        </ul>
+      </div>
 
-    <section class="content">
-      <h2>Recommended Books</h2>
-      <div id="recommendations" class="book-row"></div>
-
-      <div id="search-results" class="grid-container"></div>
-    </section>
+      <div class="main-content">
+        <div class="recommended-header">
+          <h2>Recommended Books</h2>
+          <select id="recommendationGenreDropdown">
+            <option value="all">All Genres</option>
+          </select>
+        </div>
+        <div id="recommendations" class="book-row">
+          <!-- Recommended books go here -->
+        </div>
+        <div id="searchResults" class="book-grid" style="display: none;">
+          <!-- Search results go here -->
+        </div>
+      </div>
+    </div>
   </main>
 
-  <script src="app.js"></script>
+  <div id="gameContainer" style="display:none;">
+    <!-- Mini-game for offline use -->
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
