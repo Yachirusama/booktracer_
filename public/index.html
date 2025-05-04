@@ -2,58 +2,59 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="icons/icon-192.png" />
   <title>Tomo Book Tracer</title>
-  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="header">
-    <h1 class="logo">📚Tomo</h1>
-
-    <div class="header-right">
-      <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="Search for books..." />
-        <button id="searchBtn">🔍</button>
-        <button id="backBtn" style="display:none;">🔙</button>
-        <button id="refreshBtn">🔁</button>
-      </div>
-
-      <!-- Theme toggle button with animated icons -->
-      <button class="toggle-theme-btn" id="themeToggle">
-        <img src="sun-icon.svg" alt="Light mode" class="sun-icon">
-        <img src="moon-icon.svg" alt="Dark mode" class="moon-icon">
+  <header class="app-header">
+    <div class="brand">📚Tomo</div>
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Search for books..." />
+      <button id="searchBtn" title="Search"><i class="fas fa-search"></i></button>
+      <button id="refreshBtn" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+      <button id="backBtn" title="Back" style="display:none;"><i class="fas fa-arrow-left"></i></button>
+      <button id="themeToggle" title="Toggle Theme">
+        <i id="themeIcon" class="fas fa-moon"></i>
       </button>
     </div>
   </header>
 
+  <aside id="sidebar">
+    <h2>Top 10 Bestsellers</h2>
+    <select id="genreFilter">
+      <option value="all">All Genres</option>
+    </select>
+    <ul id="bestsellerList"></ul>
+  </aside>
+
   <main>
-    <!-- Sidebar and Recommendations layout stays the same -->
-    <div class="container">
-      <aside class="sidebar" id="sidebar">
-        <h2>Top 10 Bestsellers</h2>
-        <select id="genreFilterSidebar">
-          <option value="">All Genres</option>
-          <!-- Populated by JS -->
+    <section id="recommendations">
+      <h2>Recommended Books</h2>
+      <div class="recommendation-controls">
+        <select id="genreDropdown">
+          <option value="all">All Genres</option>
         </select>
-        <ul id="bestsellerList"></ul>
-      </aside>
+        <button id="recRefreshBtn" title="Refresh Recommendations">
+          <i class="fas fa-sync-alt"></i>
+        </button>
+      </div>
+      <div id="recommendedBooks" class="book-list"></div>
+    </section>
 
-      <section class="recommendations" id="recommendationsSection">
-        <h2>Recommended Books</h2>
-        <select id="genreFilterRecommendation">
-          <option value="">All Genres</option>
-          <!-- Populated by JS -->
-        </select>
-        <div id="recommendations" class="book-list"></div>
-      </section>
-
-      <section class="search-results" id="searchResultsSection" style="display:none;">
-        <h2>Search Results</h2>
-        <div id="searchResults" class="book-list"></div>
-      </section>
-    </div>
+    <section id="searchResults" class="book-grid" style="display: none;"></section>
+    <div id="loading" class="loading-spinner" style="display: none;"></div>
+    <div id="gameContainer" style="display: none;"></div>
   </main>
 
-  <script src="app.js" defer></script>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+  </script>
 </body>
 </html>
