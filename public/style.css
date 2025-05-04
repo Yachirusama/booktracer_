@@ -34,6 +34,8 @@ body, html {
 #bestsellerList {
   list-style: none;
   padding: 0;
+  max-height: 70vh;
+  overflow-y: auto;
 }
 
 #bestsellerList li {
@@ -85,6 +87,7 @@ main {
 #searchButton {
   padding: 10px 15px;
   font-size: 16px;
+  cursor: pointer;
 }
 
 #backButton {
@@ -157,13 +160,10 @@ body.dark main {
   background-color: #1e1e1e;
 }
 
-body.dark .book-list li {
-  background-color: #2a2a2a;
-  border-left-color: #3399ff;
-}
-
+body.dark .book-list li,
 body.dark #bestsellerList li {
   background-color: #2a2a2a;
+  border-left-color: #3399ff;
 }
 
 body.dark #searchInput,
