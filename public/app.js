@@ -8,9 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const recommendedBooks = document.getElementById('recommendedBooks');
   const searchResults = document.getElementById('searchResults');
   const loadingSpinner = document.getElementById('loading');
-  const genreDropdown = document.getElementById('genreDropdown');
-  const recRefreshBtn = document.getElementById('recRefreshBtn');
   const genreFilter = document.getElementById('genreFilter');
+  const recRefreshBtn = document.getElementById('recRefreshBtn');
   const bestsellerList = document.getElementById('bestsellerList');
 
   let currentTheme = localStorage.getItem('theme') || 'light';
@@ -41,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const div = document.createElement('div');
           div.className = 'book-card';
           div.innerHTML = `
-            <img src="${book.volumeInfo.imageLinks?.thumbnail || ''}" />
+            <img src="${book.volumeInfo.imageLinks?.thumbnail || 'https://via.placeholder.com/128x195?text=No+Cover'}" />
             <p>${book.volumeInfo.title}</p>
             <p>⭐ ${book.volumeInfo.averageRating || 'N/A'}</p>
           `;
@@ -110,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
     div.className = 'book-card';
     div.innerHTML = `
       <a href="${link}" target="_blank">
-        <img src="${image || ''}" alt="Book Cover">
+        <img src="${image || 'https://via.placeholder.com/128x195?text=No+Cover'}" alt="Book Cover">
         <p>${title}</p>
       </a>
     `;
@@ -136,8 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   refreshBtn.addEventListener('click', () => performSearch(searchInput.value));
-  recRefreshBtn.addEventListener('click', () => fetchRecommendedBooks(genreDropdown.value));
-  genreDropdown.addEventListener('change', () => fetchRecommendedBooks(genreDropdown.value));
+  recRefreshBtn.addEventListener('click', () => fetchRecommendedBooks());
   genreFilter.addEventListener('change', () => fetchTopBestsellers(genreFilter.value));
 
   // Initial Load
