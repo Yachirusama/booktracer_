@@ -1,49 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tomo - Book Tracer</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book Tracer</title>
+  <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
-  <button id="themeToggle" aria-label="Toggle theme">🌙</button>
 
-  <div class="container">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <h3>📘 Top 10<br />Bestsellers</h3>
-      <select id="genreDropdown">
-        <option value="fiction">All</option>
+  <header>
+    <h1>📚 Book Tracer</h1>
+    <button id="themeToggle" class="theme-toggle">🌙</button>
+  </header>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h3>Top Genres</h3>
+    <ul id="genreList">
+      <li>Fiction</li>
+      <li>Mystery</li>
+      <li>Science Fiction</li>
+      <li>Romance</li>
+      <li>Fantasy</li>
+    </ul>
+    <div class="genre-filter">
+      <label for="genreSelect">Filter by genre:</label>
+      <select id="genreSelect">
+        <option value="all">All</option>
         <option value="fiction">Fiction</option>
-        <option value="fantasy">Fantasy</option>
         <option value="mystery">Mystery</option>
-        <option value="science">Science</option>
+        <option value="scifi">Sci-Fi</option>
         <option value="romance">Romance</option>
-        <option value="history">History</option>
-        <option value="thriller">Thriller</option>
-        <option value="biography">Biography</option>
+        <option value="fantasy">Fantasy</option>
       </select>
-      <div class="sidebar-books"></div>
-    </aside>
+    </div>
+  </aside>
 
-    <!-- Main Content -->
-    <main>
-      <h1><span class="logo">📚</span> <span class="title">Tomo</span></h1>
-      <p>Find and explore books online & offline</p>
-
-      <div class="search">
-        <input type="text" placeholder="Search for books..." />
-        <button>Search</button>
-      </div>
-
-      <section class="recommendations">
-        <h2>📘 Recommended Books</h2>
-        <button id="refreshBtn">🔄 Refresh Recommendations</button>
-        <div class="recommended-books"></div>
-      </section>
-    </main>
+  <!-- Search -->
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search for books..." />
+    <button onclick="goBack()" class="back-button hidden">Back</button>
   </div>
+
+  <!-- Results -->
+  <div id="bookResults"></div>
 
   <script src="app.js"></script>
 </body>
