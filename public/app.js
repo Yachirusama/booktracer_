@@ -1,121 +1,106 @@
-const themeToggle = document.getElementById("themeToggle");
-const searchInput = document.getElementById("searchInput");
-const searchBtn = document.getElementById("searchBtn");
-const recommendationContainer = document.getElementById("recommendation-list");
-const bestsellerList = document.getElementById("bestsellers-list");
-const refreshBtn = document.getElementById("refreshBtn");
-const resultsList = document.getElementById("results-list");
-const genreFilter = document.getElementById("genreFilter");
-let currentTheme = "light";
+const searchInput = document.getElementById('search-input');
+const resultsGrid = document.getElementById('search-results');
+const recommendationRow = document.getElementById('recommendations');
+const refreshButton = document.getElementById('refresh-button');
+const genreSelect = document.getElementById('genre-select');
+const bestsellersList = document.getElementById('bestsellers-list');
+const backButton = document.getElementById('back-button');
+const themeToggle = document.getElementById('theme-toggle');
+const sunIcon = document.getElementById('sun-icon');
+const moonIcon = document.getElementById('moon-icon');
 
-// Load icons
-const sunIcon = "sun-icon.svg";
-const moonIcon = "moon-icon.svg";
-
-function setTheme(theme) {
-  document.body.classList.remove("light-theme", "dark-theme");
-  document.body.classList.add(`${theme}-theme`);
-  themeToggle.querySelector("img").src = theme === "light" ? moonIcon : sunIcon;
-  currentTheme = theme;
-  localStorage.setItem("theme", theme);
-}
-
-// Theme toggle logic
-themeToggle.addEventListener("click", () => {
-  const newTheme = currentTheme === "light" ? "dark" : "light";
-  setTheme(newTheme);
+// --- Theme Toggle ---
+themeToggle.addEventListener('click', () => {
+  document.body.classList.toggle('dark');
+  sunIcon.style.display = document.body.classList.contains('dark') ? 'none' : 'inline';
+  moonIcon.style.display = document.body.classList.contains('dark') ? 'inline' : 'none';
 });
 
-// Load stored theme
-const savedTheme = localStorage.getItem("theme") || "light";
-setTheme(savedTheme);
+// --- Predictive Search ---
+searchInput.addEventListener('input', async (e) => {
+  const query = e.target.value.trim();
+  if (query.length === 0) {
+    resultsGrid.innerHTML = '';
+    backButton.style.display = 'none';
+    return;
+  }
+  const results = await searchBooks(query);
+  showResults(results);
+  backButton.style.display = 'inline-block';
+});
 
-// Fetch bestsellers based on genre
-async function fetchBestsellers(genre = "Fiction") {
-  const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=subject:${genre}&orderBy=relevance&maxResults=10`);
-  const data = await res.json();
-  bestsellerList.innerHTML = "";
-  data.items?.forEach(book => {
-    const li = document.createElement("li");
-    li.innerHTML = `
-      <div class="book-card" onclick="window.open('${book.volumeInfo.infoLink}', '_blank')">
-        <img src="${book.volumeInfo.imageLinks?.thumbnail || ''}" alt="${book.volumeInfo.title}" />
-        <div class="title">${book.volumeInfo.title}</div>
-      </div>
-    `;
-    bestsellerList.appendChild(li);
-  });
+// --- Manual Search Trigger ---
+document.getElementById('search-button').addEventListener('click', async () => {
+  const query = searchInput.value.trim();
+  if (query) {
+    const results = await searchBooks(query);
+    showResults(results);
+    backButton.style.display = 'inline-block';
+  }
+});
+
+// --- Back Button ---
+backButton.addEventListener('click', () => {
+  searchInput.value = '';
+  resultsGrid.innerHTML = '';
+  backButton.style.display = 'none';
+});
+
+// --- Refresh Recommendations ---
+refreshButton.addEventListener('click', loadRecommendations);
+
+// --- Load Recommendations ---
+async function loadRecommendations() {
+  const books = await searchBooks('fiction');
+  const picks = books.slice(0, 5);
+  recommendationRow.innerHTML = picks.map(bookToCard).join('');
 }
 
-// Fetch genres dynamically
-async function populateGenres() {
-  const genres = ["Fiction", "Science", "Fantasy", "Mystery", "Romance", "Horror", "Biography"];
-  genres.forEach(genre => {
-    const option = document.createElement("option");
-    option.value = genre;
-    option.textContent = genre;
-    genreFilter.appendChild(option);
-  });
-}
-
-// Refresh recommendations
-async function fetchRecommendations() {
-  const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=best+books&orderBy=newest&maxResults=5`);
-  const data = await res.json();
-  recommendationContainer.innerHTML = "";
-  data.items?.forEach(book => {
-    const card = document.createElement("div");
-    card.className = "book-card";
-    card.onclick = () => window.open(book.volumeInfo.infoLink, "_blank");
-    card.innerHTML = `
-      <img src="${book.volumeInfo.imageLinks?.thumbnail || ''}" alt="${book.volumeInfo.title}">
-      <div class="title">${book.volumeInfo.title}</div>
-      <div class="rating">⭐ ${book.volumeInfo.averageRating || "N/A"}</div>
-    `;
-    recommendationContainer.appendChild(card);
-  });
-}
-
-// Search books
+// --- Search Books ---
 async function searchBooks(query) {
-  const encoded = encodeURIComponent(query);
-  const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encoded}&maxResults=20`);
-  const data = await res.json();
-  resultsList.innerHTML = "";
-  data.items?.forEach(book => {
-    const card = document.createElement("div");
-    card.className = "book-card";
-    card.onclick = () => window.open(book.volumeInfo.infoLink, "_blank");
-    card.innerHTML = `
-      <img src="${book.volumeInfo.imageLinks?.thumbnail || ''}" alt="${book.volumeInfo.title}">
-      <div class="title">${book.volumeInfo.title}</div>
-      <div class="rating">⭐ ${book.volumeInfo.averageRating || "N/A"}</div>
-    `;
-    resultsList.appendChild(card);
-  });
+  try {
+    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=20`);
+    const data = await res.json();
+    return (data.items || []).map(item => ({
+      title: item.volumeInfo.title,
+      author: item.volumeInfo.authors?.[0] || 'Unknown',
+      thumbnail: item.volumeInfo.imageLinks?.thumbnail || '',
+      link: item.volumeInfo.infoLink
+    }));
+  } catch (e) {
+    console.error(e);
+    return [];
+  }
 }
 
-// Predictive input
-searchInput.addEventListener("input", () => {
-  const val = searchInput.value.trim();
-  if (val.length > 2) searchBooks(val);
+// --- Show Search Results ---
+function showResults(books) {
+  resultsGrid.innerHTML = books.map(bookToCard).join('');
+}
+
+// --- Book Card Generator ---
+function bookToCard(book) {
+  return `
+    <div class="book-card" onclick="window.open('${book.link}', '_blank')">
+      <img src="${book.thumbnail}" alt="${book.title}">
+      <h4>${book.title}</h4>
+      <p>${book.author}</p>
+    </div>
+  `;
+}
+
+// --- Genre Select Change (Sidebar) ---
+genreSelect.addEventListener('change', async () => {
+  const genre = genreSelect.value || 'bestsellers';
+  const results = await searchBooks(genre);
+  const bestsellers = results.slice(0, 10);
+  bestsellersList.innerHTML = bestsellers.map(bookToCard).join('');
 });
 
-// Button search
-searchBtn.addEventListener("click", () => {
-  const val = searchInput.value.trim();
-  if (val) searchBooks(val);
+// --- Initial Setup ---
+window.addEventListener('load', () => {
+  loadRecommendations();
+  genreSelect.dispatchEvent(new Event('change'));
+  backButton.style.display = 'none';
+  moonIcon.style.display = 'none';
 });
-
-// Refresh recommendations
-refreshBtn.addEventListener("click", fetchRecommendations);
-
-// Genre filter change
-genreFilter.addEventListener("change", (e) => {
-  fetchBestsellers(e.target.value);
-});
-
-// Initial setup
-fetchBestsellers();
-fetchRecommendations();
-populateGenres();
