@@ -2,45 +2,57 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#0f0f0f" />
-  <link rel="manifest" href="manifest.json" />
-  <link rel="icon" href="icons/icon-192x192.png" />
-  <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tomo Book Tracer</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="header">
-    <div class="logo">📚Tomo</div>
-    <div class="search-controls">
-      <input type="text" id="search-input" placeholder="Search books..." />
-      <button id="search-btn">🔍</button>
-      <button id="back-btn" style="display: none;">🔙</button>
-      <button id="refresh-btn">🔁</button>
-      <select id="genre-select">
-        <option value="">All Genres</option>
-      </select>
-      <button id="theme-toggle">
-        <img id="theme-icon" src="assets/sun-icon.svg" alt="Toggle Theme" />
+    <h1 class="logo">📚Tomo</h1>
+
+    <div class="header-right">
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search for books..." />
+        <button id="searchBtn">🔍</button>
+        <button id="backBtn" style="display:none;">🔙</button>
+        <button id="refreshBtn">🔁</button>
+      </div>
+
+      <!-- Theme toggle button with animated icons -->
+      <button class="toggle-theme-btn" id="themeToggle">
+        <img src="sun-icon.svg" alt="Light mode" class="sun-icon">
+        <img src="moon-icon.svg" alt="Dark mode" class="moon-icon">
       </button>
     </div>
   </header>
 
-  <main class="main-content">
-    <aside class="sidebar">
-      <h2>Top 10 Bestsellers</h2>
-      <div id="bestseller-list" class="book-list"></div>
-    </aside>
+  <main>
+    <!-- Sidebar and Recommendations layout stays the same -->
+    <div class="container">
+      <aside class="sidebar" id="sidebar">
+        <h2>Top 10 Bestsellers</h2>
+        <select id="genreFilterSidebar">
+          <option value="">All Genres</option>
+          <!-- Populated by JS -->
+        </select>
+        <ul id="bestsellerList"></ul>
+      </aside>
 
-    <section class="recommendations">
-      <h2>Recommended Books</h2>
-      <div id="recommendation-books" class="book-row"></div>
-    </section>
+      <section class="recommendations" id="recommendationsSection">
+        <h2>Recommended Books</h2>
+        <select id="genreFilterRecommendation">
+          <option value="">All Genres</option>
+          <!-- Populated by JS -->
+        </select>
+        <div id="recommendations" class="book-list"></div>
+      </section>
 
-    <section class="results" id="search-results"></section>
+      <section class="search-results" id="searchResultsSection" style="display:none;">
+        <h2>Search Results</h2>
+        <div id="searchResults" class="book-list"></div>
+      </section>
+    </div>
   </main>
-
-  <div id="offline-game" class="hidden"></div>
 
   <script src="app.js" defer></script>
 </body>
