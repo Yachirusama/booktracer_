@@ -2,49 +2,44 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tomo Book Tracer</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
-  <div class="theme-toggle" id="theme-toggle"></div>
-
-  <div class="app-container">
-    <header class="header">
-      <h1><img src="icon.png" alt="Logo" class="logo" /> 📚Tomo</h1>
-    </header>
-
-    <div class="search-section">
-      <input type="text" id="search-input" placeholder="Search for books..." autocomplete="off" />
-      <button id="back-button" class="hidden">← Back</button>
+<body class="light">
+  <header>
+    <h1>📚Tomo</h1>
+    <div class="theme-toggle">
+      <img src="sun-icon.svg" alt="Light Mode" class="icon sun" />
+      <img src="moon-icon.svg" alt="Dark Mode" class="icon moon" />
     </div>
+  </header>
 
-    <div id="spinner" class="spinner hidden"></div>
+  <main>
+    <section id="recommendations">
+      <h2>Recommended Books</h2>
+      <div class="recommendation-container" id="recommendationContainer"></div>
+      <button id="refreshBtn">🔄 Refresh</button>
+    </section>
 
-    <div id="recommendation-section">
-      <div class="section-header">
-        <h2>Recommended Books</h2>
-        <button id="refresh-button">🔄</button>
-      </div>
-      <div id="recommendation-list" class="book-row"></div>
-    </div>
-
-    <div id="search-results" class="grid-results"></div>
+    <section id="search-section">
+      <input type="text" id="searchInput" placeholder="Search books..." />
+      <button id="backBtn" class="hidden">🔙 Back</button>
+      <div class="grid" id="searchResults"></div>
+    </section>
 
     <aside id="sidebar">
-      <h2>📚 Top 10 Bestsellers</h2>
-      <select id="genre-filter">
+      <h3>Top 10 Bestsellers</h3>
+      <select id="genreFilter">
         <option value="">All Genres</option>
       </select>
-      <ul id="bestseller-list"></ul>
+      <div id="bestsellerList"></div>
     </aside>
 
-    <div id="offline-game" class="hidden">
-      <h2>You’re offline! Play a quick game:</h2>
-      <canvas id="game-canvas" width="320" height="200"></canvas>
-      <button onclick="startGame()">Start Game</button>
-    </div>
-  </div>
+    <section id="offline-game" class="hidden">
+      <canvas id="gameCanvas" width="300" height="150"></canvas>
+    </section>
+  </main>
 
   <script src="app.js"></script>
 </body>
