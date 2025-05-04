@@ -4,36 +4,37 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tomo Book Tracer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header>
-    <h1>📚Tomo</h1>
-    <button id="theme-toggle" aria-label="Toggle theme">🌓</button>
+    <div class="logo">
+      <span class="icon">📚</span>
+      <span class="text">Tomo</span>
+    </div>
+    <button id="theme-toggle" aria-label="Toggle theme"></button>
   </header>
 
-  <aside id="bestseller-sidebar">
-    <h2>Top 10 Bestsellers</h2>
-    <select id="genreFilter">
-      <option value="all">All Genres</option>
-    </select>
-    <div id="bestseller-books"></div>
-  </aside>
+  <div class="container">
+    <aside id="sidebar">
+      <h2>Top 10 Bestsellers</h2>
+      <select id="genre-filter">
+        <option value="">All Genres</option>
+      </select>
+      <div id="bestsellers"></div>
+    </aside>
 
-  <main>
-    <section id="recommendations">
+    <main>
       <h2>Recommended Books</h2>
-      <div class="horizontal-scroll" id="recommended-books"></div>
-      <button id="refresh">🔄 Refresh</button>
-    </section>
-
-    <section id="search">
-      <input type="text" id="searchInput" placeholder="Search books..." />
-      <div id="autocomplete-results" class="autocomplete"></div>
-      <button id="backBtn">🔙 Back</button>
-      <div id="searchResults" class="grid-results"></div>
-    </section>
-  </main>
+      <div class="controls">
+        <button id="refresh">🔁 Refresh</button>
+        <input type="text" id="search" placeholder="Search books..." />
+        <button id="back" style="display: none;">🔙 Back</button>
+      </div>
+      <div id="book-results"></div>
+    </main>
+  </div>
 
   <script src="app.js"></script>
 </body>
