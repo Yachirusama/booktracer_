@@ -1,11 +1,9 @@
 {
-  "name": "Book Tracer",
+  "name": "Tomo Book Tracer",
   "short_name": "Tomo",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#1a1a1a",
-  "theme_color": "#00ffd5",
-  "description": "Track and explore books offline and online with Tomo",
-  "orientation": "portrait-primary",
-  "lang": "en"
+  "background_color": "#ffffff",
+  "theme_color": "#4a90e2",
+  "description": "A multi-source book search and recommendation app."
 }
