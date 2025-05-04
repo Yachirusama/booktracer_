@@ -8,21 +8,25 @@ document.addEventListener('DOMContentLoaded', () => {
   const recommendedBooks = document.getElementById('recommendedBooks');
   const searchResults = document.getElementById('searchResults');
   const loadingSpinner = document.getElementById('loading');
-  const genreFilter = document.getElementById('genreFilter');
+  const genreDropdown = document.getElementById('genreDropdown');
   const recRefreshBtn = document.getElementById('recRefreshBtn');
+  const genreFilter = document.getElementById('genreFilter');
   const bestsellerList = document.getElementById('bestsellerList');
 
   let currentTheme = localStorage.getItem('theme') || 'light';
 
-  document.body.classList.toggle('dark-theme', currentTheme === 'dark');
-  themeIcon.className = currentTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+  applyTheme(currentTheme);
 
   themeToggle.addEventListener('click', () => {
     currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-    document.body.classList.toggle('dark-theme', currentTheme === 'dark');
+    applyTheme(currentTheme);
     localStorage.setItem('theme', currentTheme);
-    themeIcon.className = currentTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
   });
+
+  function applyTheme(theme) {
+    document.body.classList.toggle('dark-theme', theme === 'dark');
+    themeIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+  }
 
   function showLoading(show) {
     loadingSpinner.style.display = show ? 'block' : 'none';
@@ -36,19 +40,19 @@ document.addEventListener('DOMContentLoaded', () => {
     fetch(url)
       .then(res => res.json())
       .then(data => {
-        data.items.forEach(book => {
+        data.items?.forEach(book => {
           const div = document.createElement('div');
           div.className = 'book-card';
           div.innerHTML = `
-            <img src="${book.volumeInfo.imageLinks?.thumbnail || 'https://via.placeholder.com/128x195?text=No+Cover'}" />
+            <img src="${book.volumeInfo.imageLinks?.thumbnail || ''}" alt="Cover"/>
             <p>${book.volumeInfo.title}</p>
             <p>⭐ ${book.volumeInfo.averageRating || 'N/A'}</p>
           `;
           recommendedBooks.appendChild(div);
         });
-        showLoading(false);
       })
-      .catch(() => showLoading(false));
+      .catch(console.error)
+      .finally(() => showLoading(false));
   }
 
   function fetchTopBestsellers(genre = '') {
@@ -68,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function performSearch(query) {
-    if (!query) return;
+    if (!query.trim()) return;
     showLoading(true);
     searchResults.innerHTML = '';
     searchResults.style.display = 'grid';
@@ -101,6 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
           });
         }
       })
+      .catch(console.error)
       .finally(() => showLoading(false));
   }
 
@@ -109,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
     div.className = 'book-card';
     div.innerHTML = `
       <a href="${link}" target="_blank">
-        <img src="${image || 'https://via.placeholder.com/128x195?text=No+Cover'}" alt="Book Cover">
+        <img src="${image || ''}" alt="Book Cover">
         <p>${title}</p>
       </a>
     `;
@@ -118,11 +123,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Event Listeners
   searchBtn.addEventListener('click', () => performSearch(searchInput.value));
+  refreshBtn.addEventListener('click', () => performSearch(searchInput.value));
+  recRefreshBtn.addEventListener('click', () => fetchRecommendedBooks(genreDropdown.value));
+  genreDropdown.addEventListener('change', () => fetchRecommendedBooks(genreDropdown.value));
+  genreFilter.addEventListener('change', () => fetchTopBestsellers(genreFilter.value));
+
   searchInput.addEventListener('input', () => {
-    if (!searchInput.value) {
-      backBtn.click();
-    }
+    if (!searchInput.value.trim()) backBtn.click();
   });
+
   searchInput.addEventListener('keyup', (e) => {
     if (e.key === 'Enter') performSearch(searchInput.value);
   });
@@ -133,10 +142,6 @@ document.addEventListener('DOMContentLoaded', () => {
     backBtn.style.display = 'none';
     searchInput.value = '';
   });
-
-  refreshBtn.addEventListener('click', () => performSearch(searchInput.value));
-  recRefreshBtn.addEventListener('click', () => fetchRecommendedBooks());
-  genreFilter.addEventListener('change', () => fetchTopBestsellers(genreFilter.value));
 
   // Initial Load
   fetchRecommendedBooks();
