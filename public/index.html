@@ -2,38 +2,42 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tomo Book Tracer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book Tracer</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body class="light-theme">
-  <header>
-    <h1 id="tomo-title">📚Tomo</h1>
-    <div id="theme-toggle" class="theme-toggle">
-      <img id="theme-icon" src="sun-icon.svg" alt="Toggle theme" />
+<body>
+  <header class="header">
+    <div class="logo">
+      <img src="logo.png" alt="Tomo Logo" />
+      <span>Tomo</span>
+    </div>
+    <div class="header-right">
+      <div class="search-container">
+        <input type="text" id="search-input" placeholder="Search books..." />
+        <button id="search-button">🔍</button>
+        <button id="refresh-button">⟳</button>
+        <button id="back-button" style="display:none;">⬅ Back</button>
+      </div>
+      <button id="theme-toggle" title="Toggle dark mode">
+        <img id="theme-icon" src="sun-icon.svg" alt="Toggle Theme" />
+      </button>
     </div>
   </header>
 
-  <aside id="sidebar">
-    <h2>Top Sellers</h2>
-    <div id="genre-filter"></div>
-    <ul id="top-sellers"></ul>
-  </aside>
-
   <main>
-    <section id="search-section">
-      <input type="text" id="search-input" placeholder="Search for books..." />
-      <button id="search-button">Search</button>
-    </section>
+    <aside class="sidebar">
+      <h3>Top 10 Bestsellers</h3>
+      <select id="genre-filter">
+        <option value="all">All Genres</option>
+      </select>
+      <div id="bestsellers-list"></div>
+    </aside>
 
-    <section id="recommendations">
-      <h2>Recommended Books <button id="refresh-button">⟳</button></h2>
-      <div id="recommended-books"></div>
-    </section>
-
-    <section id="search-results">
-      <h2>Search Results</h2>
-      <div id="results-grid"></div>
+    <section class="main-content">
+      <h2>Recommended Books</h2>
+      <div id="recommendations" class="book-row"></div>
+      <div id="search-results" class="book-grid" style="display: none;"></div>
     </section>
   </main>
 
