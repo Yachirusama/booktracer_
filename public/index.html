@@ -1,50 +1,54 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Book Tracer</title>
-  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="favicon.ico" />
 </head>
 <body>
-
   <header>
-    <h1>📚 Book Tracer</h1>
-    <button id="themeToggle" class="theme-toggle">🌙</button>
+    <div class="logo">📚 <span>Book Tracer</span></div>
+    <button id="theme-toggle" aria-label="Toggle Theme"></button>
   </header>
 
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <h3>Top Genres</h3>
-    <ul id="genreList">
-      <li>Fiction</li>
-      <li>Mystery</li>
-      <li>Science Fiction</li>
-      <li>Romance</li>
-      <li>Fantasy</li>
-    </ul>
-    <div class="genre-filter">
-      <label for="genreSelect">Filter by genre:</label>
-      <select id="genreSelect">
-        <option value="all">All</option>
-        <option value="fiction">Fiction</option>
-        <option value="mystery">Mystery</option>
-        <option value="scifi">Sci-Fi</option>
-        <option value="romance">Romance</option>
-        <option value="fantasy">Fantasy</option>
-      </select>
-    </div>
+  <aside class="sidebar" id="sidebar">
+    <h3>Top 10 Bestsellers</h3>
+    <select id="genre-filter"></select>
+    <ul id="bestseller-list"></ul>
   </aside>
 
-  <!-- Search -->
-  <div class="search-container">
-    <input type="text" id="searchInput" placeholder="Search for books..." />
-    <button onclick="goBack()" class="back-button hidden">Back</button>
-  </div>
+  <main>
+    <div class="search-container">
+      <input id="search-input" type="text" placeholder="Search for books..." />
+    </div>
 
-  <!-- Results -->
-  <div id="bookResults"></div>
+    <div id="loading-spinner" class="spinner hidden"></div>
 
-  <script src="app.js"></script>
+    <section id="recommendations">
+      <div class="recommendation-header">
+        <h2>Recommended Books</h2>
+        <button id="refresh-recommendations">🔁 Refresh</button>
+      </div>
+      <div id="recommendation-list" class="horizontal-scroll"></div>
+    </section>
+
+    <section id="search-results" class="grid hidden"></section>
+
+    <button id="back-button" class="hidden">⬅ Back</button>
+
+    <div id="offline-game" class="hidden">
+      <canvas id="game-canvas" width="300" height="150"></canvas>
+      <p>You're offline. Play this mini-game!</p>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+  </script>
 </body>
 </html>
