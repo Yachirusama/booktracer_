@@ -2,39 +2,40 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tomo Book Tracer</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
+<body class="light-theme">
   <header>
-    <div class="logo">
-      <span class="icon">📚</span>
-      <span class="text">Tomo</span>
+    <h1 id="tomo-title">📚Tomo</h1>
+    <div id="theme-toggle" class="theme-toggle">
+      <img id="theme-icon" src="sun-icon.svg" alt="Toggle theme" />
     </div>
-    <button id="theme-toggle" aria-label="Toggle theme"></button>
   </header>
 
-  <div class="container">
-    <aside id="sidebar">
-      <h2>Top 10 Bestsellers</h2>
-      <select id="genre-filter">
-        <option value="">All Genres</option>
-      </select>
-      <div id="bestsellers"></div>
-    </aside>
+  <aside id="sidebar">
+    <h2>Top Sellers</h2>
+    <div id="genre-filter"></div>
+    <ul id="top-sellers"></ul>
+  </aside>
 
-    <main>
-      <h2>Recommended Books</h2>
-      <div class="controls">
-        <button id="refresh">🔁 Refresh</button>
-        <input type="text" id="search" placeholder="Search books..." />
-        <button id="back" style="display: none;">🔙 Back</button>
-      </div>
-      <div id="book-results"></div>
-    </main>
-  </div>
+  <main>
+    <section id="search-section">
+      <input type="text" id="search-input" placeholder="Search for books..." />
+      <button id="search-button">Search</button>
+    </section>
+
+    <section id="recommendations">
+      <h2>Recommended Books <button id="refresh-button">⟳</button></h2>
+      <div id="recommended-books"></div>
+    </section>
+
+    <section id="search-results">
+      <h2>Search Results</h2>
+      <div id="results-grid"></div>
+    </section>
+  </main>
 
   <script src="app.js"></script>
 </body>
