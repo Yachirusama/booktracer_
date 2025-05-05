@@ -1,151 +1,115 @@
-const searchInput = document.getElementById('searchInput');
-const searchBtn = document.getElementById('searchBtn');
-const refreshBtn = document.getElementById('refreshBtn');
-const themeToggle = document.getElementById('themeToggle');
-const recommendationList = document.getElementById('recommendations');
-const bestsellerList = document.getElementById('bestsellers');
-const genreFilter = document.getElementById('genreSelect');
-const searchResults = document.getElementById('searchResults');
-const html = document.documentElement;
-
-let currentTheme = 'light';
-let currentGenre = 'all';
+const searchInput = document.getElementById("search-input");
+const searchResults = document.getElementById("search-results");
+const refreshBtn = document.getElementById("refresh-btn");
+const themeToggle = document.getElementById("theme-toggle");
+const recommendedSection = document.getElementById("recommended");
+const bestsellersList = document.getElementById("bestsellers");
+const genreSelect = document.getElementById("genre-select");
 
 // Theme toggle
-if (themeToggle) {
-  themeToggle.addEventListener('click', () => {
-    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-    html.setAttribute('data-theme', currentTheme);
-    themeToggle.textContent = currentTheme === 'light' ? '🌙' : '☀️';
-  });
-}
+themeToggle.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+  themeToggle.classList.toggle("dark");
+});
 
-// Live search
-if (searchInput && searchResults) {
-  searchInput.addEventListener('input', () => {
-    const query = searchInput.value.trim();
-    if (query === '') {
-      searchResults.innerHTML = '';
-      return;
-    }
-    searchBooks(query);
-  });
-}
-
-if (searchBtn) {
-  searchBtn.addEventListener('click', () => {
-    const query = searchInput.value.trim();
-    if (query) {
-      searchBooks(query);
-    }
-  });
-}
-
-// Refresh recommendations
-if (refreshBtn) {
-  refreshBtn.addEventListener('click', fetchRecommendations);
-}
-
-// Genre filter
-if (genreFilter) {
-  genreFilter.addEventListener('change', (e) => {
-    currentGenre = e.target.value;
-    fetchBestsellers(currentGenre);
-  });
-}
-
-// Search Books
-async function searchBooks(query) {
-  searchResults.innerHTML = '';
-  try {
-    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}`);
-    const data = await res.json();
-    if (!data.items) {
-      searchResults.innerHTML = '<p>No results found.</p>';
-      return;
-    }
-    data.items.forEach(book => {
-      const info = book.volumeInfo;
-      const bookEl = createBookCard(info);
-      searchResults.appendChild(bookEl);
-    });
-  } catch (err) {
-    searchResults.innerHTML = '<p>Error fetching search results.</p>';
+// Live search (supports special characters, updates per key)
+searchInput.addEventListener("input", async () => {
+  const query = searchInput.value.trim();
+  if (query === "") {
+    searchResults.style.display = "none";
+    searchResults.innerHTML = "";
+    return;
   }
-}
 
-// Recommended books
-async function fetchRecommendations() {
-  recommendationList.innerHTML = '';
-  try {
-    const res = await fetch('https://www.googleapis.com/books/v1/volumes?q=bestseller');
-    const data = await res.json();
-    data.items.slice(0, 5).forEach(book => {
-      const info = book.volumeInfo;
-      const bookEl = createBookCard(info);
-      recommendationList.appendChild(bookEl);
-    });
-  } catch (err) {
-    recommendationList.innerHTML = '<p>Error loading recommendations.</p>';
-  }
-}
+  const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
+    query
+  )}&maxResults=10`;
+  const res = await fetch(url);
+  const data = await res.json();
 
-// Bestsellers
-async function fetchBestsellers(genre = 'bestseller') {
-  bestsellerList.innerHTML = '';
-  try {
-    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(genre)}`);
-    const data = await res.json();
-    data.items.slice(0, 10).forEach(book => {
-      const info = book.volumeInfo;
-      const li = document.createElement('div');
-      li.classList.add('book-entry');
-      li.innerHTML = `
-        <img src="${info.imageLinks?.thumbnail || ''}" alt="${info.title}">
-        <div>
-          <strong>${info.title}</strong><br/>
-          ${info.authors ? info.authors.join(', ') : 'Unknown Author'}<br/>
-          ⭐ ${info.averageRating || 'N/A'}
-        </div>
+  searchResults.innerHTML = "";
+  if (data.items) {
+    data.items.forEach((book) => {
+      const title = book.volumeInfo.title || "No title";
+      const author = (book.volumeInfo.authors || ["Unknown"]).join(", ");
+      const img =
+        book.volumeInfo.imageLinks?.thumbnail || "https://via.placeholder.com/128x193";
+      const link = book.volumeInfo.infoLink || "#";
+
+      const div = document.createElement("div");
+      div.className = "book-card";
+      div.innerHTML = `
+        <img src="${img}" alt="${title}">
+        <div class="book-title">${title}</div>
+        <div class="book-author">${author}</div>
       `;
-      li.onclick = () => {
-        if (info.infoLink) window.open(info.infoLink, '_blank');
-      };
-      bestsellerList.appendChild(li);
+      div.onclick = () => window.open(link, "_blank");
+      searchResults.appendChild(div);
     });
-  } catch (err) {
-    bestsellerList.innerHTML = '<p>Error loading bestsellers.</p>';
+    searchResults.style.display = "flex";
+  } else {
+    searchResults.style.display = "none";
   }
-}
+});
 
-// Helper: Create book card
-function createBookCard(info) {
-  const div = document.createElement('div');
-  div.className = 'book-card';
-  div.innerHTML = `
-    <img src="${info.imageLinks?.thumbnail || ''}" alt="${info.title}">
-    <h3>${info.title}</h3>
-    <p>${info.authors ? info.authors.join(', ') : 'Unknown Author'}</p>
-    <p>⭐ ${info.averageRating || 'N/A'}</p>
-  `;
-  div.onclick = () => {
-    if (info.infoLink) window.open(info.infoLink, '_blank');
-  };
-  return div;
-}
+// Load recommended books
+async function loadRecommendedBooks() {
+  const res = await fetch(
+    `https://www.googleapis.com/books/v1/volumes?q=bestseller&maxResults=6&orderBy=newest`
+  );
+  const data = await res.json();
+  recommendedSection.innerHTML = "";
+  data.items.forEach((book) => {
+    const title = book.volumeInfo.title || "No title";
+    const author = (book.volumeInfo.authors || ["Unknown"]).join(", ");
+    const rating = book.volumeInfo.averageRating || "N/A";
+    const img =
+      book.volumeInfo.imageLinks?.thumbnail || "https://via.placeholder.com/128x193";
 
-// Load genres
-async function loadGenres() {
-  const genres = ['all', 'fiction', 'nonfiction', 'romance', 'mystery', 'fantasy', 'history', 'science'];
-  genres.forEach(genre => {
-    const option = document.createElement('option');
-    option.value = genre;
-    option.textContent = genre.charAt(0).toUpperCase() + genre.slice(1);
-    genreFilter.appendChild(option);
+    const div = document.createElement("div");
+    div.className = "book-card";
+    div.innerHTML = `
+      <img src="${img}" alt="${title}">
+      <div class="book-title">${title}</div>
+      <div class="book-author">${author}</div>
+      <div class="book-rating">⭐ ${rating}</div>
+    `;
+    recommendedSection.appendChild(div);
   });
 }
+refreshBtn.addEventListener("click", loadRecommendedBooks);
 
-// Init
-loadGenres();
-fetchRecommendations();
-fetchBestsellers();
+// Load bestsellers per genre
+async function loadBestsellers(genre = "fiction") {
+  const url = `https://www.googleapis.com/books/v1/volumes?q=subject:${genre}&maxResults=10&orderBy=relevance`;
+  const res = await fetch(url);
+  const data = await res.json();
+  bestsellersList.innerHTML = "";
+
+  data.items.forEach((book) => {
+    const title = book.volumeInfo.title || "No title";
+    const author = (book.volumeInfo.authors || ["Unknown"]).join(", ");
+    const rating = book.volumeInfo.averageRating || "N/A";
+    const img =
+      book.volumeInfo.imageLinks?.thumbnail || "https://via.placeholder.com/128x193";
+
+    const div = document.createElement("div");
+    div.className = "book-card";
+    div.innerHTML = `
+      <img src="${img}" alt="${title}">
+      <div class="book-title">${title}</div>
+      <div class="book-author">${author}</div>
+      <div class="book-rating">⭐ ${rating}</div>
+    `;
+    bestsellersList.appendChild(div);
+  });
+}
+genreSelect.addEventListener("change", (e) => {
+  loadBestsellers(e.target.value);
+});
+
+// Initial Load
+window.addEventListener("DOMContentLoaded", () => {
+  loadRecommendedBooks();
+  loadBestsellers();
+});
