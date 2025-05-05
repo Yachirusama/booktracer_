@@ -1,206 +1,171 @@
+/* General Reset and Theme Setup */
 :root {
-  --light-bg: #f4f4f4;
-  --light-text: #222;
-  --dark-bg: #121212;
-  --dark-text: #eee;
-  --primary: #7b4fc9;
-  --accent: #c62828;
-}
-
-html[data-theme='light'] {
-  background: linear-gradient(135deg, #e0c3fc, #8ec5fc);
-  color: var(--light-text);
-}
-
-html[data-theme='dark'] {
-  background: linear-gradient(135deg, #1a1a2e, #16213e);
-  color: var(--dark-text);
+  --light-bg: #f3f3f3;
+  --light-text: #111;
+  --dark-bg: #1c1c1c;
+  --dark-text: #f3f3f3;
+  --primary: #8e44ad;
+  --card-bg: #ffffff;
+  --card-bg-dark: #2c2c2c;
 }
 
 body {
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  transition: background 0.6s ease, color 0.6s ease;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--light-bg);
+  color: var(--light-text);
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
-header {
+body.dark {
+  background: var(--dark-bg);
+  color: var(--dark-text);
+}
+
+.header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
+  background: var(--primary);
   padding: 1rem 2rem;
-  background-color: var(--primary);
   color: white;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
+  flex-wrap: wrap;
 }
 
 .logo-container {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
 }
 
-.logo-container img {
-  height: 40px;
-  width: auto;
+.logo {
+  width: 120px;
 }
 
-.logo-container h1 {
-  font-size: 1.5rem;
-  margin: 0;
+.slogan {
+  margin-top: 0.4rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #f0eaff;
 }
 
 .search-controls {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  margin-top: 1rem;
 }
 
 .search-controls input {
   padding: 0.5rem;
-  border: none;
   border-radius: 4px;
+  border: none;
+  width: 220px;
   font-size: 1rem;
 }
 
 .search-controls button {
-  padding: 0.5rem 0.75rem;
+  background: white;
   border: none;
   border-radius: 4px;
-  background-color: white;
-  color: var(--primary);
+  padding: 0.3rem;
   cursor: pointer;
-  font-weight: bold;
-  transition: background 0.3s ease, transform 0.2s ease;
+  transition: background 0.3s ease;
 }
 
 .search-controls button:hover {
-  background-color: #ddd;
-  transform: scale(1.05);
+  background: #dcdcdc;
 }
 
-#themeToggle {
-  font-size: 1.2rem;
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-}
-
-#themeToggle:hover {
-  transform: rotate(20deg);
-}
-
-main {
+.main-section {
   display: flex;
-  flex-direction: row;
-  padding: 1rem;
-  gap: 1.5rem;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  flex-wrap: wrap;
 }
 
 .sidebar {
-  width: 250px;
-  background: rgba(255, 255, 255, 0.1);
+  width: 240px;
+  background: linear-gradient(to bottom, #e6e6fa, #ffffff);
   padding: 1rem;
   border-radius: 12px;
-  transition: background 0.3s ease;
 }
 
 .sidebar h2 {
   margin-top: 0;
-  font-size: 1.25rem;
-}
-
-#genreFilter {
-  width: 100%;
-  padding: 0.4rem;
-  margin-bottom: 1rem;
-  border-radius: 6px;
-  border: none;
-}
-
-#bestsellerList {
-  list-style: none;
-  padding: 0;
-}
-
-.book-entry {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-  cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease;
-  padding: 0.5rem;
-  border-radius: 8px;
-}
-
-.book-entry:hover {
-  background-color: rgba(200, 200, 255, 0.1);
-  transform: scale(1.02);
-}
-
-.book-entry img {
-  width: 40px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 4px;
 }
 
 .content {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
 }
 
-.section h2 {
-  margin-bottom: 0.5rem;
-}
-
-#recommendationList,
-#searchResults {
+.book-list {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
+  margin-top: 1rem;
 }
 
 .book-card {
-  width: 150px;
-  background-color: rgba(255, 255, 255, 0.1);
-  padding: 0.75rem;
+  background: var(--card-bg);
+  padding: 1rem;
   border-radius: 10px;
+  width: 160px;
   text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
-  transition: transform 0.3s ease, background 0.2s ease;
+}
+
+body.dark .book-card {
+  background: var(--card-bg-dark);
 }
 
 .book-card:hover {
-  background-color: rgba(200, 200, 255, 0.1);
-  transform: translateY(-5px);
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .book-card img {
   width: 100%;
-  height: 200px;
-  object-fit: contain;
-  border-radius: 8px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 6px;
 }
 
-.book-card h3 {
-  margin: 0.5rem 0 0.25rem;
-  font-size: 1rem;
+.book-title {
+  margin-top: 0.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
 }
 
-.book-card p {
-  margin: 0.25rem 0;
-  font-size: 0.875rem;
+.book-rating {
+  color: #f39c12;
+  font-size: 0.9rem;
+  margin-top: 0.3rem;
 }
 
+/* Search Results Styling */
+.search-results {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 4rem);
+  background: white;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  display: none;
+  border-radius: 12px;
+}
+
+body.dark .search-results {
+  background: #333;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-  main {
+  .main-section {
     flex-direction: column;
   }
 
@@ -208,7 +173,8 @@ main {
     width: 100%;
   }
 
-  .book-card {
-    width: 100%;
+  .search-controls {
+    flex-wrap: wrap;
+    justify-content: center;
   }
 }
