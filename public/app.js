@@ -1,38 +1,20 @@
 const searchInput = document.getElementById("search-input");
 const searchResults = document.getElementById("search-results");
 const refreshBtn = document.getElementById("refresh-btn");
-const searchBtn = document.getElementById("search-btn");
 const themeToggle = document.getElementById("theme-toggle");
 const recommendedSection = document.getElementById("recommended");
 const bestsellersList = document.getElementById("bestsellers");
 const genreSelect = document.getElementById("genre-select");
+const searchBtn = document.getElementById("search-btn");
 
-// Theme toggle
+// Toggle Theme
 themeToggle.addEventListener("click", () => {
   document.body.classList.toggle("dark");
   themeToggle.classList.toggle("dark");
 });
 
-// Live search on input
-searchInput.addEventListener("input", () => {
-  const query = searchInput.value.trim();
-  if (query === "") {
-    searchResults.style.display = "none";
-    searchResults.innerHTML = "";
-    return;
-  }
-  searchBooks(query);
-});
-
-// Search button click
-searchBtn.addEventListener("click", () => {
-  const query = searchInput.value.trim();
-  if (query !== "") {
-    searchBooks(query);
-  }
-});
-
-async function searchBooks(query) {
+// Live Search (with search button)
+async function performSearch(query) {
   const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=10`;
   const res = await fetch(url);
   const data = await res.json();
@@ -61,14 +43,30 @@ async function searchBooks(query) {
   }
 }
 
-// Load recommended books
+searchInput.addEventListener("input", () => {
+  const query = searchInput.value.trim();
+  if (query === "") {
+    searchResults.style.display = "none";
+    searchResults.innerHTML = "";
+    return;
+  }
+  performSearch(query);
+});
+
+searchBtn.addEventListener("click", () => {
+  const query = searchInput.value.trim();
+  if (query !== "") {
+    performSearch(query);
+  }
+});
+
+// Load Recommended Books (Changes on every refresh)
 async function loadRecommendedBooks() {
-  const keywords = ["fiction", "adventure", "fantasy", "history", "science"];
-  const randomKeyword = keywords[Math.floor(Math.random() * keywords.length)];
-  const url = `https://www.googleapis.com/books/v1/volumes?q=${randomKeyword}&maxResults=6&orderBy=newest`;
-  const res = await fetch(url);
+  const randomQuery = `bestseller+${Math.floor(Math.random() * 10000)}`;
+  const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${randomQuery}&maxResults=6`);
   const data = await res.json();
   recommendedSection.innerHTML = "";
+
   if (data.items) {
     data.items.forEach((book) => {
       const title = book.volumeInfo.title || "No title";
@@ -90,14 +88,16 @@ async function loadRecommendedBooks() {
     });
   }
 }
+
 refreshBtn.addEventListener("click", loadRecommendedBooks);
 
-// Load bestsellers based on genre
-async function loadBestsellers(genre = "fiction") {
-  const url = `https://www.googleapis.com/books/v1/volumes?q=subject:${genre}&maxResults=10&orderBy=relevance`;
+// Load Bestsellers by Genre
+async function loadBestsellers(genre = "Fiction") {
+  const url = `https://www.googleapis.com/books/v1/volumes?q=subject:${encodeURIComponent(genre)}&maxResults=10&orderBy=relevance`;
   const res = await fetch(url);
   const data = await res.json();
   bestsellersList.innerHTML = "";
+
   if (data.items) {
     data.items.forEach((book) => {
       const title = book.volumeInfo.title || "No title";
@@ -120,24 +120,24 @@ async function loadBestsellers(genre = "fiction") {
   }
 }
 
-// Load all genres to genreSelect
+genreSelect.addEventListener("change", (e) => {
+  loadBestsellers(e.target.value);
+});
+
+// Populate Genre List
 function populateGenres() {
   const genres = [
-    "fiction", "nonfiction", "history", "biography", "mystery", "romance", "fantasy",
-    "science", "technology", "philosophy", "self-help", "children", "comics", "poetry",
-    "religion", "horror", "drama", "adventure", "education"
+    "Fiction", "Nonfiction", "Mystery", "Fantasy", "Science Fiction", "Romance", "Thriller",
+    "History", "Biography", "Poetry", "Comics", "Graphic Novels", "Young Adult", "Children",
+    "Self-help", "Health", "Travel", "Science", "Religion", "Art", "Business", "Technology", "Education"
   ];
   genres.forEach((genre) => {
     const option = document.createElement("option");
     option.value = genre;
-    option.textContent = genre.charAt(0).toUpperCase() + genre.slice(1);
+    option.textContent = genre;
     genreSelect.appendChild(option);
   });
 }
-
-genreSelect.addEventListener("change", (e) => {
-  loadBestsellers(e.target.value);
-});
 
 // Initial Load
 window.addEventListener("DOMContentLoaded", () => {
