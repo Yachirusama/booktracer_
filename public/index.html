@@ -2,38 +2,45 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tomo</title>
   <link rel="stylesheet" href="styles.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <header class="header">
+  <header>
     <div class="branding">
       <img src="tomologo.png" alt="Tomo Logo" class="logo" />
-      <span class="slogan">A place for Bookworms</span>
+      <div class="slogan">A place for bookworms</div>
     </div>
-    <div class="search-bar">
-      <input id="search-input" type="text" placeholder="Search books..." />
-      <button id="search-btn" title="Search">🔍</button>
-      <button id="refresh-btn" title="Refresh Recommendations">🔄</button>
-      <button id="theme-toggle" title="Toggle Theme">🌙</button>
+    <div class="search-area">
+      <input type="text" id="searchInput" placeholder="Search books..." />
+      <button id="searchBtn">🔍</button>
+      <button id="refreshBtn">🔄</button>
+      <button id="backBtn" style="display:none;">⬅️</button>
+      <button id="themeToggle">🌞</button>
     </div>
   </header>
 
   <main>
     <aside class="sidebar">
+      <div class="genre-filter">
+        <label for="genreSelect">Filter by Genre:</label>
+        <select id="genreSelect">
+          <option value="">All</option>
+        </select>
+      </div>
       <h2>Top 10 Bestsellers</h2>
-      <select id="genre-select">
-        <option value="">Loading genres...</option>
-      </select>
-      <div id="bestsellers" class="book-list"></div>
+      <div id="bestsellers"></div>
     </aside>
 
     <section class="content">
-      <h2>Recommended for You</h2>
-      <div id="recommended" class="book-list"></div>
-      <div id="search-results" class="book-list" style="display: none;"></div>
+      <div class="recommendations">
+        <!-- Recommended books will be inserted here -->
+      </div>
+
+      <div class="search-results" style="display:none;">
+        <!-- Search results will appear here -->
+      </div>
     </section>
   </main>
 
