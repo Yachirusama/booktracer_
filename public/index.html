@@ -3,42 +3,43 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tomo App</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Tomo </title>
+  <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
   <header class="header">
     <div class="logo-container">
-      <img src="/tomologo.png" alt="Tomo Logo" class="logo"/>
-      <p class="slogan">A Place for Book Lovers</p>
+      <img src="tomologo.png" alt="Tomo Logo" class="logo" />
+      <div class="slogan">Trace the best books. Anytime. Anywhere.</div>
     </div>
     <div class="search-controls">
-      <input type="text" id="searchInput" placeholder="Search books..." />
-      <button id="searchBtn" title="Search">
-        <img src="/icons/search.svg" alt="Search" />
-      </button>
-      <button id="refreshBtn" title="Refresh">
-        <img src="/icons/refresh.svg" alt="Refresh" />
-      </button>
-      <button id="themeToggle" title="Toggle Theme">🌙</button>
+      <input type="text" id="search-input" placeholder="Search books..." />
+      <button id="search-btn" title="Search">🔍</button>
+      <button id="refresh-btn" title="Refresh Recommendations">🔄</button>
+      <button id="theme-toggle" title="Toggle Theme">🌓</button>
     </div>
+    <div id="search-results" class="search-results"></div>
   </header>
 
-  <main>
-    <section class="main-section">
-      <aside class="sidebar">
-        <h2>Top 10 Bestsellers</h2>
-        <select id="genreSelect">
-          <option value="all">All Genres</option>
-        </select>
-        <div id="bestsellers" class="book-list"></div>
-      </aside>
+  <main class="main-section">
+    <aside class="sidebar">
+      <h2>Top Sellers by Genre</h2>
+      <select id="genre-select">
+        <option value="fiction">Fiction</option>
+        <option value="nonfiction">Non-Fiction</option>
+        <option value="mystery">Mystery</option>
+        <option value="fantasy">Fantasy</option>
+        <option value="romance">Romance</option>
+        <option value="science">Science</option>
+        <option value="history">History</option>
+        <option value="biography">Biography</option>
+      </select>
+      <div id="bestsellers" class="book-list"></div>
+    </aside>
 
-      <section class="content">
-        <h2>Recommended Books</h2>
-        <div id="recommendations" class="book-list"></div>
-        <div id="searchResults" class="book-list search-results"></div>
-      </section>
+    <section class="content">
+      <h2>📘 Recommended for You</h2>
+      <div id="recommended" class="book-list"></div>
     </section>
   </main>
 
