@@ -8,36 +8,35 @@
 </head>
 <body>
   <header>
-    <div class="logo">📚Tomo</div>
-    <div class="search-bar">
+    <div class="logo">
+      <img src="tomologo.png" alt="Tomo Logo" />
+    </div>
+    <div class="search-container">
       <input type="text" id="searchInput" placeholder="Search books..." />
-      <button id="searchButton">🔍</button>
-      <button id="refreshButton">🔄</button>
-      <button id="backButton" style="display: none;">🔙</button>
+      <button id="searchBtn">🔍</button>
+      <button id="refreshBtn">🔄</button>
+      <button id="backBtn" style="display: none;">🔙</button>
       <button id="themeToggle">🌙</button>
     </div>
   </header>
 
-  <main class="content">
-    <aside id="sidebar">
+  <main>
+    <aside class="sidebar">
       <h2>Top 10 Bestsellers</h2>
       <select id="genreFilter">
-        <option value="">All Genres</option>
+        <option value="all">All Genres</option>
       </select>
-      <div id="bestsellerList"></div>
+      <ul id="bestsellerList"></ul>
     </aside>
 
-    <section>
-      <div id="recommendedBooks" class="book-grid"></div>
-      <div id="searchResults" class="book-grid"></div>
+    <section class="content">
+      <div id="recommendationSection">
+        <h2>Recommended Books</h2>
+        <div id="recommendationList" class="book-list"></div>
+      </div>
+      <div id="searchResults" class="book-list"></div>
     </section>
   </main>
-
-  <footer>
-    <p>📍 Book Tracer | Stay curious.</p>
-  </footer>
-
-  <div class="loading-spinner" id="loadingSpinner" style="display: none;"></div>
 
   <script src="app.js"></script>
 </body>
