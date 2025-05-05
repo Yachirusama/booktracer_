@@ -19,10 +19,9 @@ themeToggle.addEventListener('click', () => {
   themeToggle.textContent = currentTheme === 'dark' ? '🌙' : '🌞';
 });
 
-function createBookCard(book, small = false) {
+function createBookCard(book) {
   const card = document.createElement('div');
   card.classList.add('book-card');
-  if (small) card.classList.add('small');
   card.innerHTML = `
     <img src="${book.image}" alt="${book.title}" />
     <div class="book-info">
@@ -39,37 +38,49 @@ function createBookCard(book, small = false) {
 
 async function fetchTopBooks(genre = '') {
   bestsellersContainer.innerHTML = 'Loading...';
-  const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=subject:${genre || 'bestsellers'}&orderBy=relevance&maxResults=10`);
-  const data = await res.json();
-  bestsellersContainer.innerHTML = '';
+  try {
+    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=subject:${genre || 'bestsellers'}&orderBy=relevance&maxResults=10`);
+    const data = await res.json();
+    bestsellersContainer.innerHTML = '';
 
-  data.items.forEach(item => {
-    const book = {
-      title: item.volumeInfo.title,
-      author: item.volumeInfo.authors?.join(', ') || 'Unknown',
-      image: item.volumeInfo.imageLinks?.thumbnail || '',
-      rating: item.volumeInfo.averageRating || 'N/A',
-      link: item.volumeInfo.infoLink
-    };
-    bestsellersContainer.appendChild(createBookCard(book));
-  });
+    data.items.forEach(item => {
+      const book = {
+        title: item.volumeInfo.title,
+        author: item.volumeInfo.authors?.join(', ') || 'Unknown',
+        image: item.volumeInfo.imageLinks?.thumbnail || '',
+        rating: item.volumeInfo.averageRating || 'N/A',
+        link: item.volumeInfo.infoLink
+      };
+      bestsellersContainer.appendChild(createBookCard(book));
+    });
+  } catch (err) {
+    bestsellersContainer.innerHTML = 'Failed to load bestsellers.';
+  }
 }
 
 async function fetchRecommendedBooks() {
   recommendationsContainer.innerHTML = 'Loading...';
-  const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=fiction&orderBy=newest&maxResults=5`);
-  const data = await res.json();
-  recommendationsContainer.innerHTML = '';
-  data.items.forEach(item => {
-    const book = {
-      title: item.volumeInfo.title,
-      author: item.volumeInfo.authors?.join(', ') || 'Unknown',
-      image: item.volumeInfo.imageLinks?.thumbnail || '',
-      rating: item.volumeInfo.averageRating || 'N/A',
-      link: item.volumeInfo.infoLink
-    };
-    recommendationsContainer.appendChild(createBookCard(book, true));
-  });
+  const keywords = ['fiction', 'novel', 'adventure', 'drama', 'thriller', 'science fiction'];
+  const randomKeyword = keywords[Math.floor(Math.random() * keywords.length)];
+
+  try {
+    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${randomKeyword}&orderBy=newest&maxResults=5`);
+    const data = await res.json();
+    recommendationsContainer.innerHTML = '';
+
+    data.items.forEach(item => {
+      const book = {
+        title: item.volumeInfo.title,
+        author: item.volumeInfo.authors?.join(', ') || 'Unknown',
+        image: item.volumeInfo.imageLinks?.thumbnail || '',
+        rating: item.volumeInfo.averageRating || 'N/A',
+        link: item.volumeInfo.infoLink
+      };
+      recommendationsContainer.appendChild(createBookCard(book));
+    });
+  } catch (err) {
+    recommendationsContainer.innerHTML = 'Failed to load recommendations.';
+  }
 }
 
 async function fetchGenres() {
@@ -89,41 +100,41 @@ async function searchBooks(query) {
   searchResultsContainer.innerHTML = 'Searching...';
   backBtn.style.display = 'inline-block';
 
-  const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=10`);
-  const data = await res.json();
-  searchResultsContainer.innerHTML = '';
+  try {
+    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=10`);
+    const data = await res.json();
+    searchResultsContainer.innerHTML = '';
 
-  if (!data.items?.length) {
-    searchResultsContainer.textContent = 'No results found.';
-    return;
+    if (!data.items?.length) {
+      searchResultsContainer.textContent = 'No results found.';
+      return;
+    }
+
+    data.items.forEach(item => {
+      const book = {
+        title: item.volumeInfo.title,
+        author: item.volumeInfo.authors?.join(', ') || 'Unknown',
+        image: item.volumeInfo.imageLinks?.thumbnail || '',
+        rating: item.volumeInfo.averageRating || 'N/A',
+        link: item.volumeInfo.infoLink
+      };
+      searchResultsContainer.appendChild(createBookCard(book));
+    });
+  } catch (err) {
+    searchResultsContainer.innerHTML = 'Failed to fetch results.';
   }
-
-  data.items.forEach(item => {
-    const book = {
-      title: item.volumeInfo.title,
-      author: item.volumeInfo.authors?.join(', ') || 'Unknown',
-      image: item.volumeInfo.imageLinks?.thumbnail || '',
-      rating: item.volumeInfo.averageRating || 'N/A',
-      link: item.volumeInfo.infoLink
-    };
-    searchResultsContainer.appendChild(createBookCard(book));
-  });
 }
 
 searchBtn.addEventListener('click', () => {
   searchBooks(searchInput.value);
 });
 
-let debounceTimeout;
 searchInput.addEventListener('input', () => {
-  clearTimeout(debounceTimeout);
-  debounceTimeout = setTimeout(() => {
-    if (searchInput.value.trim()) {
-      searchBooks(searchInput.value);
-    } else {
-      backBtn.click();
-    }
-  }, 300);
+  if (searchInput.value.trim()) {
+    searchBooks(searchInput.value);
+  } else {
+    backBtn.click();
+  }
 });
 
 refreshBtn.addEventListener('click', () => {
