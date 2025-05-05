@@ -1,14 +1,41 @@
-/* Font for slogan */
+/* Base styles */
 body {
+  margin: 0;
   font-family: 'Montserrat', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background 0.3s, color 0.3s;
 }
 
-/* Logo and slogan layout */
+:root {
+  --bg-color: #f9f9f9;
+  --text-color: #111;
+  --card-bg: #fff;
+  --highlight: #ececec;
+}
+
+body.dark {
+  --bg-color: #121212;
+  --text-color: #eee;
+  --card-bg: #1e1e1e;
+  --highlight: #333;
+}
+
+/* Header styles */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--card-bg);
+  padding: 10px 20px;
+  border-bottom: 1px solid #ccc;
+  position: relative;
+}
+
 .logo-container {
   display: flex;
   align-items: center;
-  gap: 15px;
-  padding: 10px 20px;
+  gap: 10px;
 }
 
 .logo {
@@ -17,110 +44,142 @@ body {
 }
 
 .slogan {
-  font-size: 1.3rem;
+  font-size: 1rem;
   font-weight: 600;
-  color: #333;
+  color: var(--text-color);
 }
 
-/* Search container */
 .search-container {
-  position: relative;
   display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-right: 20px;
+  gap: 5px;
+  position: relative;
 }
 
 #searchInput {
   padding: 8px 12px;
-  font-size: 1rem;
   width: 250px;
+  border-radius: 4px;
   border: 1px solid #ccc;
-  border-radius: 5px;
 }
 
+#searchButton, #filterButton, #themeToggle, #refreshRecommendations, #backButton {
+  background: var(--highlight);
+  border: none;
+  padding: 8px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#themeToggle {
+  font-size: 18px;
+}
+
+/* Search results dropdown */
 #search-results-dropdown {
   position: absolute;
-  top: 120%;
+  top: 100%;
   left: 0;
   width: 100%;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 999;
-  overflow: hidden;
-  display: none;
-  max-height: 400px;
+  background: var(--card-bg);
+  border: 1px solid #ccc;
+  z-index: 99;
+  max-height: 300px;
   overflow-y: auto;
+  display: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-#search-results-dropdown.show {
-  display: block;
-}
-
-/* Individual result item */
 .search-result-item {
-  display: flex;
-  align-items: flex-start;
   padding: 10px;
-  border-bottom: 1px solid #eee;
   cursor: pointer;
-  transition: background 0.2s ease;
+  border-bottom: 1px solid #ddd;
 }
 
 .search-result-item:hover {
-  background-color: #f0f0f0;
+  background-color: var(--highlight);
 }
 
-.search-result-item img {
-  height: 60px;
-  width: auto;
-  margin-right: 10px;
-  border-radius: 4px;
+/* Book sections */
+.book-section, #search-results-section, aside#sidebar {
+  padding: 20px;
 }
 
-.search-result-details {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.search-result-title {
-  font-weight: 600;
-  font-size: 1rem;
-  color: #222;
-}
-
-.search-result-subtitle {
-  font-size: 0.9rem;
-  color: #666;
-}
-
-/* Recommendation cards - resize */
-#recommendations {
+.book-list {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  padding: 20px;
-  justify-content: center;
 }
 
 .book-card {
-  width: 160px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  background: var(--card-bg);
   padding: 10px;
-  text-align: center;
-  transition: transform 0.2s ease;
-}
-
-.book-card img {
-  width: 100%;
-  height: auto;
-  border-radius: 4px;
+  border-radius: 6px;
+  width: 150px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: transform 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .book-card:hover {
-  transform: translateY(-4px);
+  transform: scale(1.03);
+}
+
+.book-card img {
+  height: 180px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.book-card h3 {
+  font-size: 0.95rem;
+  margin: 8px 0 4px;
+  text-align: center;
+}
+
+.book-card p {
+  font-size: 0.8rem;
+  text-align: center;
+  margin: 0;
+}
+
+/* Sidebar */
+aside#sidebar {
+  background: var(--card-bg);
+  border-left: 1px solid #ccc;
+}
+
+#genreFilter {
+  width: 100%;
+  padding: 6px;
+  margin-bottom: 10px;
+}
+
+/* Buttons */
+button {
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .book-list {
+    justify-content: center;
+  }
+
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  #searchInput {
+    width: 100%;
+  }
+
+  .logo-container {
+    justify-content: center;
+    width: 100%;
+  }
 }
