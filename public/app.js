@@ -1,173 +1,117 @@
-body {
-  margin: 0;
-  font-family: 'Inter', 'Segoe UI', sans-serif;
-  transition: background 0.4s, color 0.4s;
-  background: #fafafa;
-  color: #111;
-}
+const searchInput = document.getElementById("search-input");
+const searchResults = document.getElementById("search-results");
+const refreshBtn = document.getElementById("refresh-btn");
+const themeToggle = document.getElementById("theme-toggle");
+const recommendedSection = document.getElementById("recommended");
+const bestsellersList = document.getElementById("bestsellers");
+const genreSelect = document.getElementById("genre-select");
+const searchBtn = document.getElementById("search-btn");
 
-body.dark {
-  background: #121212;
-  color: #eee;
-}
+// Theme toggle
+themeToggle.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+});
 
-/* Header & Branding */
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  flex-wrap: wrap;
-}
+// Search button click
+searchBtn.addEventListener("click", () => {
+  searchBooks(searchInput.value.trim());
+});
 
-.branding {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.branding .logo {
-  height: 80px;
-  width: auto;
-}
-
-.slogan {
-  font-size: 1.2rem;
-  font-weight: 500;
-  font-family: 'Inter', sans-serif;
-  color: #555;
-}
-
-body.dark .slogan {
-  color: #ccc;
-}
-
-/* Search Bar */
-.search-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
-
-.search-bar input[type="text"] {
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-  max-width: 250px;
-}
-
-.search-bar button {
-  background: none;
-  border: none;
-  font-size: 1.4rem;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.search-bar button:hover {
-  transform: scale(1.2);
-}
-
-/* Book Cards */
-.book-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  padding: 1rem;
-}
-
-.book-card {
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  padding: 0.5rem;
-  width: 150px;
-  text-align: center;
-  transition: transform 0.2s ease;
-  cursor: pointer;
-}
-
-body.dark .book-card {
-  background: #1e1e1e;
-}
-
-.book-card:hover {
-  transform: translateY(-5px);
-}
-
-.book-card img {
-  width: 100%;
-  height: auto;
-  border-radius: 5px;
-}
-
-.book-title {
-  font-weight: bold;
-  margin-top: 0.5rem;
-}
-
-.book-author {
-  font-size: 0.9rem;
-  color: #666;
-}
-
-body.dark .book-author {
-  color: #aaa;
-}
-
-.book-rating {
-  color: #f39c12;
-  font-size: 0.9rem;
-}
-
-/* Main Layout */
-main {
-  display: flex;
-  flex-direction: row;
-}
-
-.sidebar {
-  flex: 0 0 250px;
-  padding: 1rem;
-}
-
-.content {
-  flex: 1;
-}
-
-#genre-select {
-  margin: 0.5rem 0;
-  padding: 0.5rem;
-  font-size: 1rem;
-  border-radius: 0.5rem;
-}
-
-/* Headings */
-h2 {
-  padding-left: 1rem;
-  margin-top: 2rem;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
+// Search input live
+searchInput.addEventListener("input", () => {
+  const query = searchInput.value.trim();
+  if (query === "") {
+    searchResults.style.display = "none";
+    searchResults.innerHTML = "";
+  } else {
+    searchBooks(query);
   }
+});
 
-  .search-bar {
-    width: 100%;
-    justify-content: flex-start;
-  }
+async function searchBooks(query) {
+  const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=10`;
+  const res = await fetch(url);
+  const data = await res.json();
 
-  main {
-    flex-direction: column;
-  }
-
-  .sidebar {
-    width: 100%;
+  searchResults.innerHTML = "";
+  if (data.items) {
+    data.items.forEach((book) => {
+      const card = createBookCard(book);
+      searchResults.appendChild(card);
+    });
+    searchResults.style.display = "flex";
+  } else {
+    searchResults.style.display = "none";
   }
 }
+
+// Create clickable book card
+function createBookCard(book) {
+  const title = book.volumeInfo.title || "No title";
+  const author = (book.volumeInfo.authors || ["Unknown"]).join(", ");
+  const rating = book.volumeInfo.averageRating || "N/A";
+  const img = book.volumeInfo.imageLinks?.thumbnail || "https://via.placeholder.com/128x193";
+  const link = book.volumeInfo.infoLink || "#";
+
+  const div = document.createElement("div");
+  div.className = "book-card";
+  div.innerHTML = `
+    <img src="${img}" alt="${title}">
+    <div class="book-title">${title}</div>
+    <div class="book-author">${author}</div>
+    <div class="book-rating">⭐ ${rating}</div>
+  `;
+  div.onclick = () => window.open(link, "_blank");
+  return div;
+}
+
+// Load recommended books
+async function loadRecommendedBooks() {
+  const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=bestseller&maxResults=6&orderBy=newest`);
+  const data = await res.json();
+  recommendedSection.innerHTML = "";
+  data.items.forEach((book) => {
+    const card = createBookCard(book);
+    recommendedSection.appendChild(card);
+  });
+}
+refreshBtn.addEventListener("click", loadRecommendedBooks);
+
+// Load bestsellers per genre
+async function loadBestsellers(genre = "fiction") {
+  const url = `https://www.googleapis.com/books/v1/volumes?q=subject:${genre}&maxResults=10&orderBy=relevance`;
+  const res = await fetch(url);
+  const data = await res.json();
+  bestsellersList.innerHTML = "";
+  data.items.forEach((book) => {
+    const card = createBookCard(book);
+    bestsellersList.appendChild(card);
+  });
+}
+
+// Load all genre options
+async function populateGenres() {
+  const genres = [
+    "fiction", "nonfiction", "science", "technology", "romance", "fantasy",
+    "history", "mystery", "biography", "comics", "art", "cooking",
+    "education", "sports", "travel", "religion", "health", "music"
+  ];
+
+  genreSelect.innerHTML = "";
+  genres.forEach((genre) => {
+    const opt = document.createElement("option");
+    opt.value = genre;
+    opt.textContent = genre.charAt(0).toUpperCase() + genre.slice(1);
+    genreSelect.appendChild(opt);
+  });
+}
+genreSelect.addEventListener("change", (e) => {
+  loadBestsellers(e.target.value);
+});
+
+// Initial Load
+window.addEventListener("DOMContentLoaded", () => {
+  populateGenres();
+  loadRecommendedBooks();
+  loadBestsellers();
+});
