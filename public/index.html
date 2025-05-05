@@ -4,44 +4,34 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tomo</title>
-  <link rel="stylesheet" href="styles.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
   <header>
-    <div class="branding">
-      <img src="tomologo.png" alt="Tomo Logo" class="logo" />
-      <div class="slogan">A place for bookworms</div>
+    <div class="logo-container">
+      <img src="eeaff065-24d6-465d-a409-a934b719761a.png" alt="Book Tracer Logo" class="logo" />
+      <span class="slogan">A place for bookworms</span>
     </div>
-    <div class="search-area">
+    <div class="search-container">
       <input type="text" id="searchInput" placeholder="Search books..." />
-      <button id="searchBtn" title="Search">🔍</button>
-      <button id="refreshBtn" title="Refresh Recommendations">🔄</button>
-      <button id="backBtn" style="display:none;" title="Back">⬅️</button>
-      <button id="themeToggle" title="Toggle Theme">🌞</button>
+      <button id="searchBtn">🔍</button>
+      <button id="refreshBtn">🔄</button>
+      <button id="themeToggleBtn">🌙</button>
+      <!-- Dropdown for live results -->
+      <div id="search-results-dropdown" class="dropdown hidden"></div>
     </div>
   </header>
 
-  <main>
-    <aside class="sidebar">
-      <div class="genre-filter">
-        <label for="genreSelect">Filter by Genre:</label>
-        <select id="genreSelect">
-          <option value="">All</option>
-        </select>
-      </div>
-      <h2>Top 10 Bestsellers</h2>
-      <div id="bestsellers" class="book-list"></div>
-    </aside>
+  <!-- Book Recommendations -->
+  <section id="recommendations" class="book-row"></section>
 
-    <section class="content">
-      <h2>Recommended for You</h2>
-      <div class="recommendations book-list" id="recommended"></div>
+  <!-- Bestseller Sidebar -->
+  <aside id="bestseller-sidebar">
+    <!-- Genre filter and top 10 bestsellers populated via JS -->
+  </aside>
 
-      <h2 id="results-title" style="display: none;">Search Results</h2>
-      <div class="search-results book-list" id="searchResults" style="display:none;"></div>
-    </section>
-  </main>
+  <!-- Other content goes here -->
 
   <script src="app.js"></script>
 </body>
