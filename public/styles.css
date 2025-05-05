@@ -1,9 +1,9 @@
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
-  transition: background 0.4s, color 0.4s;
   background: #fafafa;
   color: #111;
+  transition: background 0.4s, color 0.4s;
 }
 
 body.dark {
@@ -11,53 +11,51 @@ body.dark {
   color: #eee;
 }
 
-.header {
+header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 1rem;
-  background: transparent;
+  align-items: center;
+  padding: 1rem 2rem;
   flex-wrap: wrap;
 }
 
-.logo-container {
+.branding {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-.logo-container img {
+.branding .logo {
   height: 80px;
   width: auto;
 }
 
 .slogan {
-  font-family: 'Georgia', serif;
+  font-family: 'Inter', sans-serif;
   font-size: 1.2rem;
-  color: #444;
+  color: #222;
 }
 
 body.dark .slogan {
-  color: #ccc;
+  color: #ddd;
 }
 
-.search-controls {
+.search-bar {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  flex-wrap: wrap;
+  margin-top: 1rem;
 }
 
-.search-controls input[type="text"] {
+.search-bar input[type="text"] {
   padding: 0.5rem;
   border-radius: 0.5rem;
   border: 1px solid #ccc;
   font-size: 1rem;
-  flex: 1;
   max-width: 250px;
 }
 
-.search-controls button {
+.search-bar button {
   background: none;
   border: none;
   font-size: 1.5rem;
@@ -65,22 +63,50 @@ body.dark .slogan {
   transition: transform 0.2s ease;
 }
 
-.search-controls button:hover {
+.search-bar button:hover {
   transform: scale(1.2);
 }
 
-#search-results {
-  display: none;
+main {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.sidebar {
+  flex: 0 0 250px;
+  padding: 1rem;
+  background: #f5f5f5;
+}
+
+body.dark .sidebar {
+  background: #1e1e1e;
+}
+
+#genre-select {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #aaa;
+}
+
+.content {
+  flex: 1;
+  padding: 1rem;
+}
+
+.book-list {
+  display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  margin: 1rem;
-  justify-content: flex-start;
+  margin-top: 1rem;
 }
 
 .book-card {
   background: #fff;
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 0.5rem;
   width: 150px;
   text-align: center;
@@ -112,31 +138,12 @@ body.dark .book-card {
   color: #666;
 }
 
-body.dark .book-author {
-  color: #aaa;
-}
-
 .book-rating {
   color: #f39c12;
   font-size: 0.9rem;
 }
 
-#bestsellers,
-#recommended {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  padding: 1rem;
-}
-
 h2 {
-  padding-left: 1rem;
-  margin-top: 2rem;
-}
-
-#genre-select {
-  margin: 0 1rem;
-  padding: 0.5rem;
-  font-size: 1rem;
-  border-radius: 0.5rem;
+  margin-top: 0;
+  font-size: 1.3rem;
 }
