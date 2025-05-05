@@ -4,34 +4,51 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tomo</title>
-  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/png" href="tomologo.png" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
   <header>
     <div class="logo-container">
-      <img src="eeaff065-24d6-465d-a409-a934b719761a.png" alt="Book Tracer Logo" class="logo" />
+      <img src="tomologo.png" alt="Tomo Logo" class="logo" />
       <span class="slogan">A place for bookworms</span>
     </div>
+
     <div class="search-container">
       <input type="text" id="searchInput" placeholder="Search books..." />
-      <button id="searchBtn">🔍</button>
-      <button id="refreshBtn">🔄</button>
-      <button id="themeToggleBtn">🌙</button>
-      <!-- Dropdown for live results -->
-      <div id="search-results-dropdown" class="dropdown hidden"></div>
+      <button id="searchButton">🔍</button>
+      <button id="filterButton">Filter</button>
     </div>
+
+    <div id="search-results-dropdown"></div>
+
+    <button id="themeToggle">🌙</button>
   </header>
 
-  <!-- Book Recommendations -->
-  <section id="recommendations" class="book-row"></section>
+  <main>
+    <section id="recommendations" class="book-section">
+      <h2>Recommended Books</h2>
+      <div id="recommendation-list" class="book-list"></div>
+      <button id="refreshRecommendations">🔄 Refresh</button>
+    </section>
 
-  <!-- Bestseller Sidebar -->
-  <aside id="bestseller-sidebar">
-    <!-- Genre filter and top 10 bestsellers populated via JS -->
-  </aside>
+    <aside id="sidebar">
+      <h3>Top 10 Bestsellers</h3>
+      <select id="genreFilter"></select>
+      <div id="bestseller-list"></div>
+    </aside>
 
-  <!-- Other content goes here -->
+    <section id="search-results-section">
+      <h2>Search Results</h2>
+      <div id="search-results" class="book-list"></div>
+      <button id="backButton">← Back</button>
+    </section>
+  </main>
+
+  <div id="game-container" style="display: none;">
+    <!-- Offline game content will go here -->
+  </div>
 
   <script src="app.js"></script>
 </body>
