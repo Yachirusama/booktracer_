@@ -2,44 +2,38 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tomo </title>
-  <link rel="stylesheet" href="styles.css"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tomo</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <header class="header">
-    <div class="logo-container">
+  <header>
+    <div class="branding">
       <img src="tomologo.png" alt="Tomo Logo" class="logo" />
-      <div class="slogan">Trace the best books. Anytime. Anywhere.</div>
+      <span class="slogan">A place for bookworms</span>
     </div>
-    <div class="search-controls">
-      <input type="text" id="search-input" placeholder="Search books..." />
+    <div class="search-bar">
+      <input id="search-input" type="text" placeholder="Search books..." />
       <button id="search-btn" title="Search">🔍</button>
       <button id="refresh-btn" title="Refresh Recommendations">🔄</button>
-      <button id="theme-toggle" title="Toggle Theme">🌓</button>
+      <button id="theme-toggle" title="Toggle Theme">🌙</button>
     </div>
-    <div id="search-results" class="search-results"></div>
   </header>
 
-  <main class="main-section">
+  <main>
     <aside class="sidebar">
-      <h2>Top Sellers by Genre</h2>
+      <h2>Top 10 Bestsellers</h2>
       <select id="genre-select">
-        <option value="fiction">Fiction</option>
-        <option value="nonfiction">Non-Fiction</option>
-        <option value="mystery">Mystery</option>
-        <option value="fantasy">Fantasy</option>
-        <option value="romance">Romance</option>
-        <option value="science">Science</option>
-        <option value="history">History</option>
-        <option value="biography">Biography</option>
+        <option value="">Loading genres...</option>
       </select>
       <div id="bestsellers" class="book-list"></div>
     </aside>
 
     <section class="content">
-      <h2>📘 Recommended for You</h2>
+      <h2>Recommended for You</h2>
       <div id="recommended" class="book-list"></div>
+      <div id="search-results" class="book-list" style="display: none;"></div>
     </section>
   </main>
 
