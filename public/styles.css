@@ -17,18 +17,35 @@ body.dark {
   justify-content: space-between;
   padding: 1rem;
   background: transparent;
-  position: relative;
+  flex-wrap: wrap;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .logo-container img {
-  height: 100px;
+  height: 80px;
   width: auto;
+}
+
+.slogan {
+  font-family: 'Georgia', serif;
+  font-size: 1.2rem;
+  color: #444;
+}
+
+body.dark .slogan {
+  color: #ccc;
 }
 
 .search-controls {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .search-controls input[type="text"] {
@@ -57,6 +74,7 @@ body.dark {
   flex-wrap: wrap;
   gap: 1rem;
   margin: 1rem;
+  justify-content: flex-start;
 }
 
 .book-card {
@@ -92,6 +110,10 @@ body.dark .book-card {
 .book-author {
   font-size: 0.9rem;
   color: #666;
+}
+
+body.dark .book-author {
+  color: #aaa;
 }
 
 .book-rating {
