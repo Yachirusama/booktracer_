@@ -1,43 +1,43 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tomo App</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Tomo - A Place for Book Lovers</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <div class="logo">
-      <img src="tomologo.png" alt="Tomo Logo" />
+  <header class="header">
+    <div class="logo-container">
+      <img src="tomologo.png" alt="Tomo Logo" class="logo"/>
+      <p class="slogan">A Place for Book Lovers</p>
     </div>
-    <div class="search-container">
+    <div class="search-controls">
       <input type="text" id="searchInput" placeholder="Search books..." />
-      <button id="searchBtn">🔍</button>
-      <button id="refreshBtn">🔄</button>
-      <button id="backBtn" style="display: none;">🔙</button>
-      <button id="themeToggle">🌙</button>
+      <button id="searchBtn" title="Search"><img src="icons/search.svg" alt="Search" /></button>
+      <button id="refreshBtn" title="Refresh"><img src="icons/refresh.svg" alt="Refresh" /></button>
+      <button id="themeToggle" title="Toggle Theme">🌙</button>
     </div>
   </header>
 
   <main>
-    <aside class="sidebar">
-      <h2>Top 10 Bestsellers</h2>
-      <select id="genreFilter">
-        <option value="all">All Genres</option>
-      </select>
-      <ul id="bestsellerList"></ul>
-    </aside>
+    <section class="main-section">
+      <aside class="sidebar">
+        <h2>Top 10 Bestsellers</h2>
+        <select id="genreSelect">
+          <option value="all">All Genres</option>
+        </select>
+        <div id="bestsellers" class="book-list"></div>
+      </aside>
 
-    <section class="content">
-      <div id="recommendationSection">
+      <section class="content">
         <h2>Recommended Books</h2>
-        <div id="recommendationList" class="book-list"></div>
-      </div>
-      <div id="searchResults" class="book-list"></div>
+        <div id="recommendations" class="book-list"></div>
+        <div id="searchResults" class="book-list search-results"></div>
+      </section>
     </section>
   </main>
 
-  <script src="app.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
