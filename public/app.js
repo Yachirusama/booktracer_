@@ -9,7 +9,6 @@ const genreSelect = document.getElementById('genreSelect');
 const bestsellersContainer = document.getElementById('bestsellers');
 
 let currentTheme = localStorage.getItem('theme') || 'light';
-
 document.body.classList.toggle('dark', currentTheme === 'dark');
 themeToggle.textContent = currentTheme === 'dark' ? '🌙' : '🌞';
 
@@ -20,9 +19,10 @@ themeToggle.addEventListener('click', () => {
   themeToggle.textContent = currentTheme === 'dark' ? '🌙' : '🌞';
 });
 
-function createBookCard(book) {
+function createBookCard(book, small = false) {
   const card = document.createElement('div');
   card.classList.add('book-card');
+  if (small) card.classList.add('small');
   card.innerHTML = `
     <img src="${book.image}" alt="${book.title}" />
     <div class="book-info">
@@ -39,7 +39,6 @@ function createBookCard(book) {
 
 async function fetchTopBooks(genre = '') {
   bestsellersContainer.innerHTML = 'Loading...';
-  // Replace this with your actual API
   const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=subject:${genre || 'bestsellers'}&orderBy=relevance&maxResults=10`);
   const data = await res.json();
   bestsellersContainer.innerHTML = '';
@@ -69,7 +68,7 @@ async function fetchRecommendedBooks() {
       rating: item.volumeInfo.averageRating || 'N/A',
       link: item.volumeInfo.infoLink
     };
-    recommendationsContainer.appendChild(createBookCard(book));
+    recommendationsContainer.appendChild(createBookCard(book, true));
   });
 }
 
@@ -115,12 +114,16 @@ searchBtn.addEventListener('click', () => {
   searchBooks(searchInput.value);
 });
 
+let debounceTimeout;
 searchInput.addEventListener('input', () => {
-  if (searchInput.value.trim()) {
-    searchBooks(searchInput.value);
-  } else {
-    backBtn.click();
-  }
+  clearTimeout(debounceTimeout);
+  debounceTimeout = setTimeout(() => {
+    if (searchInput.value.trim()) {
+      searchBooks(searchInput.value);
+    } else {
+      backBtn.click();
+    }
+  }, 300);
 });
 
 refreshBtn.addEventListener('click', () => {
