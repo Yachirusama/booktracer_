@@ -1,3 +1,4 @@
+// === DOM Elements ===
 const searchInput = document.getElementById('searchInput');
 const searchButton = document.getElementById('searchButton');
 const searchDropdown = document.getElementById('search-results-dropdown');
@@ -10,7 +11,7 @@ const themeToggle = document.getElementById('themeToggle');
 const genreFilter = document.getElementById('genreFilter');
 const bestsellerList = document.getElementById('bestseller-list');
 
-// Live Search with Dropdown
+// === Live Search with Dropdown ===
 searchInput.addEventListener('input', async () => {
   const query = searchInput.value.trim();
   if (!query) {
@@ -25,9 +26,7 @@ searchInput.addEventListener('input', async () => {
 
 searchButton.addEventListener('click', () => {
   const query = searchInput.value.trim();
-  if (query) {
-    performSearch(query);
-  }
+  if (query) performSearch(query);
 });
 
 function renderDropdown(books) {
@@ -40,7 +39,10 @@ function renderDropdown(books) {
   books.forEach(book => {
     const item = document.createElement('div');
     item.className = 'dropdown-item';
-    item.textContent = book.title;
+    item.innerHTML = `
+      <img src="${book.cover}" alt="${book.title}" />
+      <span>${book.title}</span>
+    `;
     item.onclick = () => {
       performSearch(book.title);
       searchDropdown.classList.remove('active');
@@ -51,7 +53,7 @@ function renderDropdown(books) {
   searchDropdown.classList.add('active');
 }
 
-// Perform search and display results
+// === Perform Search ===
 async function performSearch(query) {
   const results = await fetchGoogleBooks(query);
   searchResults.innerHTML = '';
@@ -75,13 +77,14 @@ backButton.addEventListener('click', () => {
   backButton.style.display = 'none';
 });
 
-// Google Books API
+// === Google Books API Fetch ===
 async function fetchGoogleBooks(query) {
   try {
     const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=10`);
     const data = await response.json();
     return (data.items || []).map(item => ({
       title: item.volumeInfo.title,
+      description: item.volumeInfo.description || 'No description available.',
       cover: item.volumeInfo.imageLinks?.thumbnail || 'https://via.placeholder.com/60x90?text=No+Cover',
       link: item.volumeInfo.infoLink || '#'
     }));
@@ -91,14 +94,16 @@ async function fetchGoogleBooks(query) {
   }
 }
 
-// Create book card
+// === Create Book Card (Clickable + Hover Description) ===
 function createBookCard(book) {
-  const card = document.createElement('div');
+  const card = document.createElement('a');
   card.className = 'book-card';
+  card.href = book.link;
+  card.target = '_blank';
+  card.title = book.description;
+
   card.innerHTML = `
-    <a href="${book.link}" target="_blank">
-      <img src="${book.cover}" alt="${book.title}" />
-    </a>
+    <img src="${book.cover}" alt="${book.title}" />
     <div class="details">
       <h3>${book.title}</h3>
     </div>
@@ -106,7 +111,7 @@ function createBookCard(book) {
   return card;
 }
 
-// Load Recommendations
+// === Load Recommendations (Default: Bestsellers Fiction) ===
 async function loadRecommendations() {
   const recBooks = await fetchGoogleBooks('bestsellers fiction');
   recommendationList.innerHTML = '';
@@ -117,14 +122,14 @@ async function loadRecommendations() {
 
 refreshBtn.addEventListener('click', loadRecommendations);
 
-// Theme Toggle
+// === Theme Toggle ===
 themeToggle.addEventListener('click', () => {
   document.body.classList.toggle('dark');
   const isDark = document.body.classList.contains('dark');
   themeToggle.textContent = isDark ? '☀️' : '🌙';
 });
 
-// Load Genre Options
+// === Load Genre Filter Options ===
 function loadGenres() {
   const genres = [
     'Fiction', 'Mystery', 'Fantasy', 'Romance', 'Science', 'History', 'Biography'
@@ -137,18 +142,20 @@ function loadGenres() {
   });
 }
 
-// Load Bestsellers by Genre
+// === Load Bestsellers by Selected Genre ===
 async function loadBestsellers(genre = 'Fiction') {
   const books = await fetchGoogleBooks(`bestsellers ${genre}`);
   bestsellerList.innerHTML = '';
-  books.forEach(book => bestsellerList.appendChild(createBookCard(book)));
+  books.forEach(book => {
+    bestsellerList.appendChild(createBookCard(book));
+  });
 }
 
 genreFilter.addEventListener('change', e => {
   loadBestsellers(e.target.value);
 });
 
-// Init
+// === Initial Load ===
 loadGenres();
 loadBestsellers();
 loadRecommendations();
