@@ -3,28 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tomo</title>
+  <title>Book Tracer</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
+<body class="light-theme">
   <header class="header">
-    <div class="logo-container">
+    <div class="logo-slogan">
       <img src="tomologo.png" alt="Tomo Logo" class="logo" />
       <span class="slogan">A place for bookworms</span>
     </div>
-
-    <div class="search-container">
-      <input type="text" id="searchInput" placeholder="Search books..." autocomplete="off" />
-      <button id="searchBtn">🔍</button>
-      <button id="refreshBtn">🔄</button>
-      <button id="backBtn" style="display: none;">←</button>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search books..." />
+      <button id="searchButton">🔍</button>
+      <button id="refreshButton">🔄</button>
+      <button id="backButton" style="display:none;">⬅️</button>
       <button id="themeToggle">🌙</button>
-
-      <!-- Search results now inside search-container -->
-      <div class="search-results" id="searchResults">
-        <h2>Search Results</h2>
-        <div id="resultsList"></div>
-      </div>
     </div>
   </header>
 
@@ -32,17 +25,19 @@
     <aside class="sidebar">
       <h2>Top 10 Bestsellers</h2>
       <select id="genreFilter"></select>
-      <div id="bestsellerList" class="book-list"></div>
+      <ul id="bestsellerList"></ul>
     </aside>
 
     <section class="recommendations">
       <h2>Recommended Books</h2>
-      <div id="recommendationList" class="book-list"></div>
+      <div id="recommendationList"></div>
+    </section>
+
+    <section class="search-results" id="searchResultsContainer" style="display:none;">
+      <h2>Search Results</h2>
+      <div id="searchResults"></div>
     </section>
   </main>
-
-  <!-- Optional Loader -->
-  <div id="loader" class="loader hidden"></div>
 
   <script src="app.js"></script>
 </body>
