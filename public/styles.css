@@ -1,25 +1,38 @@
-/* Global Styles */
-body {
+/* Reset & base styling */
+* {
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
   font-family: 'Segoe UI', sans-serif;
-  transition: background 0.5s ease, color 0.5s ease;
-  background: linear-gradient(135deg, #101018, #1a1a2e);
-  color: #fff;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background 0.4s ease, color 0.4s ease;
+  overflow-x: hidden;
 }
 
-/* Light Theme */
-body.light-theme {
-  background: linear-gradient(135deg, #f0f0f0, #e0e4ff);
-  color: #222;
+:root {
+  --bg-color: #f4f4f4;
+  --text-color: #111;
+  --accent-color: #6200ee;
 }
 
-/* Header */
+.dark-theme {
+  --bg-color: #111;
+  --text-color: #f4f4f4;
+  --accent-color: #bb86fc;
+}
+
 .header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  background: transparent;
+  align-items: center;
   padding: 1rem 2rem;
+  flex-wrap: wrap;
+  background: var(--bg-color);
+  z-index: 2;
   position: relative;
 }
 
@@ -27,153 +40,127 @@ body.light-theme {
   display: flex;
   align-items: center;
   gap: 1rem;
+  max-width: 60%;
 }
 
 .logo-section img {
-  height: 60px;
+  height: 50px;
+  width: auto;
+  object-fit: contain;
 }
 
 .slogan {
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   font-weight: 600;
+  color: var(--text-color);
+  white-space: nowrap;
 }
 
 .search-bar {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  position: relative;
   flex: 1;
-  max-width: 500px;
+  max-width: 480px;
   margin-left: auto;
+  justify-content: flex-end;
 }
 
 .search-bar input {
-  flex: 1;
-  padding: 0.6rem 1rem;
-  border-radius: 12px;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
   border: none;
+  width: 100%;
+  max-width: 280px;
   outline: none;
   font-size: 1rem;
 }
 
 .search-bar button {
-  background: transparent;
+  background: none;
   border: none;
-  font-size: 1.3rem;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  font-size: 1.3rem;
+  transition: transform 0.2s;
 }
 
 .search-bar button:hover {
   transform: scale(1.1);
 }
 
-#themeToggle {
-  font-size: 1.4rem;
-  cursor: pointer;
-  margin-left: 1rem;
-}
-
-/* Main Content */
-.main-content {
-  padding: 1rem 2rem;
-}
-
-.section {
-  margin-top: 2rem;
-  background: rgba(255, 255, 255, 0.05);
+.sidebar {
+  width: 250px;
+  background-color: var(--bg-color);
   padding: 1rem;
-  border-radius: 1rem;
 }
 
-.section h2 {
+.sidebar h2 {
   margin-bottom: 1rem;
-  color: #ffcc66;
 }
 
-.book-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: #222;
-  padding: 0.8rem;
-  margin: 0.5rem;
-  border-radius: 1rem;
-  width: 140px;
-  text-decoration: none;
-  color: inherit;
-  transition: transform 0.3s ease;
-}
-
-.book-card:hover {
-  transform: translateY(-5px);
-}
-
-.book-card img {
-  height: 180px;
-  object-fit: contain;
-  margin-bottom: 0.5rem;
-  border-radius: 0.5rem;
-}
-
-.book-card .book-info h4 {
-  font-size: 0.95rem;
-  margin: 0.2rem 0;
-  text-align: center;
-}
-
-.book-card .book-info p {
-  font-size: 0.85rem;
-  color: #ccc;
-}
-
-/* Layouts */
-#recommendationList,
-#searchResults {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-#searchResultsContainer {
-  display: none;
-  margin-top: 1rem;
-}
-
-/* Genre Dropdown */
-#genreFilter {
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
+.genre-filter {
+  width: 100%;
+  padding: 0.4rem;
   font-size: 1rem;
   margin-bottom: 1rem;
 }
 
-/* Buttons */
-#backButton {
-  display: none;
-  margin-left: 1rem;
-  padding: 0.3rem 0.8rem;
-  border: none;
-  border-radius: 6px;
-  background: #ffcc66;
-  color: #000;
-  cursor: pointer;
+.bestseller-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-/* Responsive */
+.book-card {
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 0.5rem;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.book-card:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.book-card img {
+  height: 60px;
+  width: auto;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.book-card-title {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .header {
     flex-direction: column;
     align-items: flex-start;
   }
 
+  .logo-section {
+    justify-content: center;
+    max-width: 100%;
+  }
+
   .search-bar {
+    justify-content: flex-start;
     width: 100%;
     margin-top: 1rem;
   }
 
-  .book-card {
-    width: 120px;
+  .slogan {
+    font-size: 1rem;
+  }
+
+  .book-card img {
+    height: 50px;
   }
 }
