@@ -3,54 +3,41 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tomo</title>
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="icon" type="image/png" href="tomologo.png" />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <title>Book Tracer</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="icon" href="tomologo.png"/>
 </head>
 <body>
-  <header>
-    <div class="left-header">
-      <div class="logo-container">
-        <img src="tomologo.png" alt="Tomo Logo" class="logo" />
-        <span class="slogan">A place for bookworms</span>
-      </div>
+  <header class="header">
+    <div class="logo-container">
+      <img src="tomologo.png" alt="Tomo Logo" class="logo"/>
+      <h1 class="slogan">A place for bookworms</h1>
     </div>
-
-    <div class="right-header">
-      <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Search books..." autocomplete="off" />
-        <button id="searchButton">🔍</button>
-        <button id="filterButton">Filter</button>
-        <div id="search-results-dropdown"></div>
-      </div>
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Search books..."/>
+      <button id="searchBtn">🔍</button>
+      <button id="refreshBtn">🔄</button>
       <button id="themeToggle">🌙</button>
     </div>
   </header>
 
-  <main>
-    <aside id="sidebar">
-      <h3>Top 10 Bestsellers</h3>
+  <main class="main-content">
+    <aside class="sidebar">
+      <h2>Top 10 Bestsellers</h2>
       <select id="genreFilter"></select>
-      <div id="bestseller-list"></div>
+      <div id="bestsellerList"></div>
     </aside>
 
-    <section id="recommendations" class="book-section">
-      <h2>Recommended Books</h2>
-      <div id="recommendation-list" class="book-list"></div>
-      <button id="refreshRecommendations">🔄 Refresh</button>
+    <section class="recommendations">
+      <h2>#Spotlight</h2>
+      <div id="recommendedBooks" class="book-list"></div>
     </section>
 
-    <section id="search-results-section">
+    <section class="search-results">
       <h2>Search Results</h2>
-      <div id="search-results" class="book-list"></div>
-      <button id="backButton">← Back</button>
+      <div id="searchResults" class="book-list"></div>
     </section>
   </main>
-
-  <div id="game-container" style="display: none;">
-    <!-- Offline game content will go here -->
-  </div>
 
   <script src="app.js"></script>
 </body>
