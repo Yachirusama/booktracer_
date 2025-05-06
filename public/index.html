@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Book Tracer</title>
+  <title>Tomo</title>
   <link rel="stylesheet" href="styles.css"/>
   <link rel="icon" href="tomologo.png"/>
 </head>
@@ -15,9 +15,11 @@
     </div>
     <div class="search-container">
       <input type="text" id="searchInput" placeholder="Search books..."/>
-      <button id="searchBtn">🔍</button>
-      <button id="refreshBtn">🔄</button>
+      <button id="searchButton">🔍</button>
+      <button id="refreshRecommendations">🔄</button>
       <button id="themeToggle">🌙</button>
+      <button id="backButton" style="display: none;">← Back</button>
+      <div id="search-results-dropdown" class="dropdown"></div>
     </div>
   </header>
 
@@ -25,15 +27,15 @@
     <aside class="sidebar">
       <h2>Top 10 Bestsellers</h2>
       <select id="genreFilter"></select>
-      <div id="bestsellerList"></div>
+      <div id="bestseller-list"></div>
     </aside>
 
     <section class="recommendations">
       <h2>#Spotlight</h2>
-      <div id="recommendedBooks" class="book-list"></div>
+      <div id="recommendation-list" class="book-list"></div>
     </section>
 
-    <section class="search-results">
+    <section id="search-results-section" class="search-results" style="display: none;">
       <h2>Search Results</h2>
       <div id="searchResults" class="book-list"></div>
     </section>
