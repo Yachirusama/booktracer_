@@ -4,22 +4,27 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tomo</title>
-  <link rel="stylesheet" href="styles.css"/>
-  <link rel="icon" href="tomologo.png"/>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header class="header">
     <div class="logo-container">
-      <img src="tomologo.png" alt="Tomo Logo" class="logo"/>
-      <h1 class="slogan">A place for bookworms</h1>
+      <img src="eeaff065-24d6-465d-a409-a934b719761a.png" alt="Tomo Logo" class="logo" />
+      <span class="slogan">A place for bookworms</span>
     </div>
+
     <div class="search-container">
-      <input type="text" id="searchInput" placeholder="Search books..."/>
-      <button id="searchButton">🔍</button>
-      <button id="refreshRecommendations">🔄</button>
+      <input type="text" id="searchInput" placeholder="Search books..." autocomplete="off" />
+      <button id="searchBtn">🔍</button>
+      <button id="refreshBtn">🔄</button>
+      <button id="backBtn" style="display: none;">←</button>
       <button id="themeToggle">🌙</button>
-      <button id="backButton" style="display: none;">← Back</button>
-      <div id="search-results-dropdown" class="dropdown"></div>
+
+      <!-- Search results now inside search-container -->
+      <div class="search-results" id="searchResults">
+        <h2>Search Results</h2>
+        <div id="resultsList"></div>
+      </div>
     </div>
   </header>
 
@@ -27,19 +32,17 @@
     <aside class="sidebar">
       <h2>Top 10 Bestsellers</h2>
       <select id="genreFilter"></select>
-      <div id="bestseller-list"></div>
+      <div id="bestsellerList" class="book-list"></div>
     </aside>
 
     <section class="recommendations">
-      <h2>#Spotlight</h2>
-      <div id="recommendation-list" class="book-list"></div>
-    </section>
-
-    <section id="search-results-section" class="search-results" style="display: none;">
-      <h2>Search Results</h2>
-      <div id="searchResults" class="book-list"></div>
+      <h2>Recommended Books</h2>
+      <div id="recommendationList" class="book-list"></div>
     </section>
   </main>
+
+  <!-- Optional Loader -->
+  <div id="loader" class="loader hidden"></div>
 
   <script src="app.js"></script>
 </body>
