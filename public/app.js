@@ -10,7 +10,7 @@ const themeToggle = document.getElementById('themeToggle');
 const genreFilter = document.getElementById('genreFilter');
 const bestsellerList = document.getElementById('bestseller-list');
 
-// Live Search w/ Dropdown
+// Live Search with Dropdown
 searchInput.addEventListener('input', async () => {
   const query = searchInput.value.trim();
   if (!query) {
@@ -39,6 +39,7 @@ function renderDropdown(books) {
 
   books.forEach(book => {
     const item = document.createElement('div');
+    item.className = 'dropdown-item';
     item.textContent = book.title;
     item.onclick = () => {
       performSearch(book.title);
@@ -50,12 +51,12 @@ function renderDropdown(books) {
   searchDropdown.classList.add('active');
 }
 
-// Perform search and show results section
+// Perform search and display results
 async function performSearch(query) {
   const results = await fetchGoogleBooks(query);
   searchResults.innerHTML = '';
   searchDropdown.classList.remove('active');
-  recommendationList.parentElement.style.display = 'none';
+  document.querySelector('.recommendations').style.display = 'none';
   searchResultsSection.style.display = 'block';
   backButton.style.display = 'inline-block';
 
@@ -68,45 +69,50 @@ async function performSearch(query) {
 backButton.addEventListener('click', () => {
   searchResults.innerHTML = '';
   searchInput.value = '';
+  searchDropdown.classList.remove('active');
   searchResultsSection.style.display = 'none';
-  recommendationList.parentElement.style.display = 'block';
+  document.querySelector('.recommendations').style.display = 'block';
   backButton.style.display = 'none';
 });
 
-// Fetch from Google Books API
+// Google Books API
 async function fetchGoogleBooks(query) {
   try {
     const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=10`);
     const data = await response.json();
     return (data.items || []).map(item => ({
       title: item.volumeInfo.title,
-      cover: item.volumeInfo.imageLinks?.thumbnail || '',
+      cover: item.volumeInfo.imageLinks?.thumbnail || 'https://via.placeholder.com/60x90?text=No+Cover',
       link: item.volumeInfo.infoLink || '#'
     }));
   } catch (err) {
-    console.error('Error fetching books:', err);
+    console.error('Book fetch error:', err);
     return [];
   }
 }
 
-// Create book card element
+// Create book card
 function createBookCard(book) {
   const card = document.createElement('div');
   card.className = 'book-card';
   card.innerHTML = `
     <a href="${book.link}" target="_blank">
       <img src="${book.cover}" alt="${book.title}" />
-      <p>${book.title}</p>
     </a>
+    <div class="details">
+      <h3>${book.title}</h3>
+    </div>
   `;
   return card;
 }
 
-// Recommendations
+// Load Recommendations
 async function loadRecommendations() {
   const recBooks = await fetchGoogleBooks('bestsellers fiction');
   recommendationList.innerHTML = '';
-  recBooks.forEach(book => recommendationList.appendChild(createBookCard(book)));
+  recBooks.forEach(book => {
+    recommendationList.appendChild(createBookCard(book));
+  });
 }
 
 refreshBtn.addEventListener('click', loadRecommendations);
@@ -114,11 +120,12 @@ refreshBtn.addEventListener('click', loadRecommendations);
 // Theme Toggle
 themeToggle.addEventListener('click', () => {
   document.body.classList.toggle('dark');
-  themeToggle.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
+  const isDark = document.body.classList.contains('dark');
+  themeToggle.textContent = isDark ? '☀️' : '🌙';
 });
 
-// Bestseller Sidebar
-async function loadGenres() {
+// Load Genre Options
+function loadGenres() {
   const genres = [
     'Fiction', 'Mystery', 'Fantasy', 'Romance', 'Science', 'History', 'Biography'
   ];
@@ -130,6 +137,7 @@ async function loadGenres() {
   });
 }
 
+// Load Bestsellers by Genre
 async function loadBestsellers(genre = 'Fiction') {
   const books = await fetchGoogleBooks(`bestsellers ${genre}`);
   bestsellerList.innerHTML = '';
@@ -140,7 +148,7 @@ genreFilter.addEventListener('change', e => {
   loadBestsellers(e.target.value);
 });
 
-// Initialize
+// Init
 loadGenres();
 loadBestsellers();
 loadRecommendations();
